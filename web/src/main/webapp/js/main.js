@@ -1,25 +1,33 @@
 /*
  * If you want to query another API append this something like
  * &host=http://localhost:9000/
- * to the URL or overwrite the 'host' variable.
- */
-var tmpArgs = parseUrlWithHisto();
-var host;
+ * to the URL or overwrite the 'host' variable.*/
 
-// check host as deployment-script can insert host here
+var tmpArgs = parseUrlWithHisto();
+
+
+var host = tmpArgs["host"];
+// var host = "http://graphhopper.com/api/1";
 if (!host) {
     if (location.port === '') {
         host = location.protocol + '//' + location.hostname;
     } else {
         host = location.protocol + '//' + location.hostname + ":" + location.port;
+
     }
 }
 
+
+var selectedWeighting = tmpArgs["weighting"];
+
 var ghRequest = new GHRequest(host);
+
 var bounds = {};
 
-var nominatim = "https://nominatim.openstreetmap.org/search";
-var nominatim_reverse = "https://nominatim.openstreetmap.org/reverse";
+//var nominatim = "http://open.mapquestapi.com/nominatim/v1/search.php";
+//var nominatim_reverse = "http://open.mapquestapi.com/nominatim/v1/reverse.php";
+var nominatim = "http://nominatim.openstreetmap.org/search";
+var nominatim_reverse = "http://nominatim.openstreetmap.org/reverse";
 var routingLayer;
 var map;
 var browserTitle = "GraphHopper Maps - Driving Directions";
@@ -57,10 +65,11 @@ $(document).ready(function(e) {
             // https://github.com/defunkt/jquery-pjax/issues/143#issuecomment-6194330
 
             var state = History.getState();
-            console.log(state);
             initFromParams(state.data, true);
         });
     }
+
+
 
     $('#locationform').submit(function(e) {
         // no page reload
@@ -75,6 +84,8 @@ $(document).ready(function(e) {
     });
 
     var urlParams = parseUrlWithHisto();
+    console.log("ghRequest.getInfo() = " + ghRequest.getInfo().toString());
+
     $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo())
             .then(function(arg1, arg2) {
                 // init translation retrieved from first call (fetchTranslationMap)
@@ -91,14 +102,16 @@ $(document).ready(function(e) {
 
                 initI18N();
 
-                // init bounding box from getInfo result
                 var json = arg2[0];
+
+                // init bounding box from getInfo result
                 var tmp = json.bbox;
                 bounds.initialized = true;
                 bounds.minLon = tmp[0];
                 bounds.minLat = tmp[1];
                 bounds.maxLon = tmp[2];
                 bounds.maxLat = tmp[3];
+
                 var vehiclesDiv = $("#vehicles");
                 function createButton(vehicle) {
                     var button = $("<button class='vehicle-btn' title='" + tr(vehicle) + "'/>");
@@ -115,6 +128,8 @@ $(document).ready(function(e) {
 
                 if (json.features) {
                     ghRequest.features = json.features;
+                    if (isProduction())
+                        delete json.features['bike']
 
                     var vehicles = Object.keys(json.features);
                     if (vehicles.length > 0)
@@ -125,10 +140,37 @@ $(document).ready(function(e) {
                     }
                 }
 
+                //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
+                var sensorsTxt = json.sensors;
+
+                for (var i = 0; i < sensorsTxt.length; i++)
+                {
+                    var wsensor = sensorsTxt[i].replace("_", " ");
+                    optionValue = sensorsTxt[i].toLowerCase();
+                    $('#weightingSelect').append($('<option>', {
+                        value: optionValue,
+                        text: wsensor
+                    }));
+
+                }
+                //---End
+                //
+                //@Amal Elgammal: if the user opens the url with a query, the value of the weighting in the query
+                //is reflected to the corresponding drop-down list box on the webpage
+
+                if (selectedWeighting)
+                {
+                    $("#weightingSelect").prop('value', selectedWeighting);
+                }
+                //--End
+
+
                 initMap();
 
                 // execute query
                 initFromParams(urlParams, true);
+
+
             }, function(err) {
                 console.log(err);
                 $('#error').html('GraphHopper API offline? <a href="http://graphhopper.com/maps">Refresh</a>'
@@ -151,19 +193,18 @@ $(document).ready(function(e) {
     setAutoCompleteList("to");
 });
 
+
+
 function initFromParams(params, doQuery) {
     ghRequest.init(params);
     var fromAndTo = params.from && params.to;
+
     var routeNow = params.point && params.point.length === 2 || fromAndTo;
     if (routeNow) {
         if (fromAndTo)
             resolveCoords(params.from, params.to, doQuery);
         else
             resolveCoords(params.point[0], params.point[1], doQuery);
-    } else if (params.point) {
-        ghRequest.from = new GHInput(params.point);
-        resolve("from", ghRequest.from);
-        focus(ghRequest.from, 15, true);
     }
 }
 
@@ -205,15 +246,16 @@ function adjustMapSize() {
 function initMap() {
     adjustMapSize();
     console.log("init map at " + JSON.stringify(bounds));
-    
-    var osmAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+    // mapquest provider
+    var osmAttr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
     var tp = "ls";
     if (L.Browser.retina)
         tp = "lr";
 
-    var lyrk = L.tileLayer('https://tiles.lyrk.org/' + tp + '/{z}/{x}/{y}?apikey=6e8cfef737a140e2a58c8122aaa26077', {
-        attribution: osmAttr + ', <a href="https://geodienste.lyrk.de/">Lyrk</a>',
+    var lyrk = L.tileLayer('http://{s}.tiles.lyrk.org/' + tp + '/{z}/{x}/{y}?apikey=6e8cfef737a140e2a58c8122aaa26077', {
+        attribution: osmAttr + ', <a href="http://geodienste.lyrk.de/">Lyrk</a>',
         subdomains: ['a', 'b', 'c']
     });
 
@@ -247,7 +289,7 @@ function initMap() {
         subdomains: ['topo4', 'topo', 'topo2', 'topo3']
     });
 
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: osmAttr
     });
 
@@ -613,13 +655,18 @@ function routeLatLng(request, doQuery) {
     // do_zoom should not show up in the URL but in the request object to avoid zooming for history change
     var doZoom = request.do_zoom;
     request.do_zoom = true;
+    setWeighting(request);
+    setVechile(request);
 
     var urlForHistory = request.createFullURL();
     // not enabled e.g. if no cookies allowed (?)
     // if disabled we have to do the query and cannot rely on the statechange history event    
     if (!doQuery && History.enabled) {
         // 2. important workaround for encoding problems in history.js
+
+        console.log("urlForHistory = " + urlForHistory);
         var params = parseUrl(urlForHistory);
+
         console.log(params);
         params.do_zoom = doZoom;
         // force a new request even if we have the same parameters
@@ -650,9 +697,12 @@ function routeLatLng(request, doQuery) {
     $("#vehicles button").removeClass("selectvehicle");
     $("button#" + request.vehicle.toLowerCase()).addClass("selectvehicle");
 
+//Check the actual sent request
     var urlForAPI = request.createURL("point=" + from + "&point=" + to);
     descriptionDiv.html('<img src="img/indicator.gif"/> Search Route ...');
     request.doRequest(urlForAPI, function(json) {
+
+        console.log("Sent URL to the servlet: " + urlForAPI);
         descriptionDiv.html("");
         if (json.info.errors) {
             var tmpErrors = json.info.errors;
@@ -663,6 +713,13 @@ function routeLatLng(request, doQuery) {
             return;
         }
         var path = json.paths[0];
+        //Result??
+        /*for (var ar in path)
+         {
+         console.log("Resulted path,Key = " + ar + ", value = "+ path[ar]);
+         }*/
+
+
         var geojsonFeature = {
             "type": "Feature",
             // "style": myStyle,                
@@ -761,9 +818,9 @@ function routeLatLng(request, doQuery) {
             var exportLink = $("#exportLink a");
             exportLink.attr('href', urlForHistory);
             var startOsmLink = $("<a>start</a>");
-            startOsmLink.attr("href", "https://www.openstreetmap.org/?zoom=14&mlat=" + request.from.lat + "&mlon=" + request.from.lng);
+            startOsmLink.attr("href", "http://www.openstreetmap.org/?zoom=14&mlat=" + request.from.lat + "&mlon=" + request.from.lng);
             var endOsmLink = $("<a>end</a>");
-            endOsmLink.attr("href", "https://www.openstreetmap.org/?zoom=14&mlat=" + request.to.lat + "&mlon=" + request.to.lng);
+            endOsmLink.attr("href", "http://www.openstreetmap.org/?zoom=14&mlat=" + request.to.lat + "&mlon=" + request.to.lng);
             hiddenDiv.append("<br/><span>View on OSM: </span>").append(startOsmLink).append(endOsmLink);
 
             var osrmLink = $("<a>OSRM</a>");
@@ -781,10 +838,10 @@ function routeLatLng(request, doQuery) {
                 addToGoogle = "&dirflg=b";
                 // ? addToBing = "&mode=B";
             }
-            googleLink.attr("href", "https://maps.google.com/?q=saddr=" + from + "&daddr=" + to + addToGoogle);
+            googleLink.attr("href", "http://maps.google.com/?q=saddr=" + from + "&daddr=" + to + addToGoogle);
             hiddenDiv.append(googleLink);
             var bingLink = $("<a>Bing</a> ");
-            bingLink.attr("href", "https://www.bing.com/maps/default.aspx?rtp=adr." + from + "~adr." + to + addToBing);
+            bingLink.attr("href", "http://www.bing.com/maps/default.aspx?rtp=adr." + from + "~adr." + to + addToBing);
             hiddenDiv.append(bingLink);
             $("#info").append(hiddenDiv);
         }
@@ -918,14 +975,12 @@ function parseUrl(query) {
         var key = vars[i].substring(0, indexPos);
         var value = vars[i].substring(indexPos + 1);
         value = decodeURIComponent(value.replace(/\+/g, ' '));
-        if(value === "")
-            continue;
-        
+
         if (typeof res[key] === "undefined") {
             if (value === 'true')
                 res[key] = true;
             else if (value === 'false')
-                res[key] = false;            
+                res[key] = false;
             else {
                 var tmp = Number(value);
                 if (isNaN(tmp))
@@ -964,6 +1019,8 @@ function mySubmit() {
     }
     // route!
     resolveCoords(fromStr, toStr);
+
+
 }
 
 function floor(val, precision) {
@@ -1169,3 +1226,25 @@ function dataToText(data) {
 function isProduction() {
     return host.indexOf("graphhopper.com") > 0;
 }
+
+//Reads the selected weighting option from the webpage and passes it to be appended in the request
+function setWeighting(request) {
+    //@Amal Elgammal: to add the selected weighting to the request
+    var weighting = $("#weightingSelect").val().toLowerCase();
+    weighting = weighting.replace(" ", "_");
+    request.weighting = weighting;
+}
+
+function toTitleCase(str)
+{
+    return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+function setVechile(request)
+{
+
+
+}
+;

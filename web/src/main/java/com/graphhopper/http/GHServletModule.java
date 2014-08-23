@@ -64,5 +64,10 @@ public class GHServletModule extends ServletModule
 
         serve("/route*").with(GraphHopperServlet.class);
         bind(GraphHopperServlet.class).in(Singleton.class);
+        
+        serve("/sensors*").with(SensorsServlet.class);
+        bind(SensorsServlet.class).in(Singleton.class);
+        
+        
     }
 }

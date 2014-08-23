@@ -136,15 +136,16 @@ body {
 }
 #hosting {
     display: none;
-    /*    float: left;*/
+    float: left;
     padding-top: 4px;
     padding-bottom: 10px;
-    /* color: #666666; */
+    color: #FF0000;
     font-size: smaller;
     opacity: 0.8;
+  
 }
 #hosting a {
-    text-decoration: none;
+    //text-decoration: none;
     color: #00cc33;
 }
 #exportLink {

@@ -95,6 +95,12 @@
             <version>${jetty.version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        
         <!-- for integration tests of service -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>

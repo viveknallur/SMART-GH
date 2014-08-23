@@ -23,6 +23,7 @@ import com.graphhopper.util.Constants;
 import com.graphhopper.util.Helper;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import org.json.JSONObject;
+import org.ini4j.Ini;
+import java.io.FileReader;
 
 /**
  * @author Peter Karich
@@ -88,7 +91,63 @@ public class InfoServlet extends GHBaseServlet
 
         if (!Helper.isEmpty(props.get("prepare.date")))
             json.put("prepare_date", props.get("prepare.date"));
-
+        
+        //@Amal Elgammal: Append sent json to also include available senser data with respect
+        //to the opened map. Also map name and city name are sent.
+        String osmFile = hopper.getOSMFile();
+        //System.out.println("osmFile=" + osmFile);
+        
+        ArrayList sensorsTxt = new ArrayList();
+        
+        sensorsTxt = getAvailableSensors(osmFile);
+        //logger.info("These weighting are also available for "+ osmFile +":" + sensorsTxt.toString());
+        json.put("osmFile", osmFile);
+        json.put("city", getCity(osmFile));
+        json.put("sensors",sensorsTxt);
+        
         writeJson(req, res, json);
+        
+       
+    }
+    
+    ArrayList getAvailableSensors(String osmFile) throws IOException
+    {
+        //we assume that names of the osm files should be in this format <city><optional '-'><any optional string><.*>
+        
+        String cityName = getCity(osmFile);
+        
+        //sensors configuration files are named as cityname.config
+        String fileName = "./sensors-config-files/"+cityName + ".config";
+        
+        //String fileName = "./sensors-config-files/dublin.config";
+        ArrayList sensorsTxt = new ArrayList();
+        try
+        {
+            Ini ini = new Ini(new FileReader(fileName));
+          
+            for(String key: ini.get("SensorsAvailable").keySet())
+            {
+                String sensorName = ini.get("SensorsAvailable").fetch(key);
+                String text = ini.get(sensorName).fetch("text");
+                sensorsTxt.add(text);
+            }
+           
+        } catch (IOException e)
+        {
+            logger.error(e.getMessage());
+        }
+           return sensorsTxt;
+    }
+    
+    String getCity(String osmFile)
+    {
+        int num = osmFile.split("/").length;
+        String cityName = osmFile.split("/")[num-1];
+        
+        cityName = cityName.split("\\.")[0];
+        if (cityName.contains("-"))
+             cityName = cityName.split("-")[0];
+        
+        return cityName;
     }
 }

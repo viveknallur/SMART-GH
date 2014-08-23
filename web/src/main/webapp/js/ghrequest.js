@@ -30,8 +30,7 @@ GHRequest = function(host) {
     this.do_zoom = true;
     // use jsonp here if host allows CORS
     this.dataType = "json";
-    // This key can be updated at any time. Get your own API key here: http://graphhopper.com/#enterprise
-    this.key = "Cmmtvx01R56rdHcQQo7VjI6rgPgxuFLvqI8cR31u";
+    this.key = "K1KVyGYve5choCJAbyejstj5Ho0dEa6RbBnwHbSw";
 };
 
 GHRequest.prototype.init = function(params) {
@@ -52,7 +51,7 @@ GHRequest.prototype.init = function(params) {
     if (params.vehicle)
         this.vehicle = params.vehicle;
     if (params.weighting)
-        this.weighting = params.weighting;
+       this.weighting = params.weighting;
     if (params.algorithm)
         this.algorithm = params.algorithm;
     if (params.locale)
@@ -138,10 +137,14 @@ GHRequest.prototype.createFullURL = function() {
 };
 
 GHRequest.prototype.createPath = function(url) {
-    if (this.vehicle && this.vehicle !== "car")
+    
+    //@Amal ELgammal: commented to include vechile in the URl anyway
+    if (this.vehicle/* && this.vehicle !== "car"*/)
         url += "&vehicle=" + this.vehicle;
-    // fastest or shortest
-    if (this.weighting && this.weighting !== "fastest")
+  
+     // fastest or shortest
+    //@Amal ELgammal: commented to include weighting in the URL anyway
+    if (this.weighting /*&& this.weighting !== "fastest"*/)
         url += "&weighting=" + this.weighting;
     if (this.locale && this.locale !== "en")
         url += "&locale=" + this.locale;
@@ -261,7 +264,7 @@ GHRequest.prototype.doRequest = function(url, callback) {
 
 GHRequest.prototype.getInfo = function() {
     var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
-    console.log(url);
+    console.log("url created inside getInfo" + url);
     return $.ajax({
         "url": url,
         "timeout": 3000,
@@ -315,7 +318,7 @@ GHRequest.prototype.fetchTranslationMap = function(urlLocaleParam) {
         // let servlet figure out the locale from the Accept-Language header
         urlLocaleParam = "";
     var url = this.host + "/i18n/" + urlLocaleParam + "?type=" + this.dataType + "&key=" + this.key;
-    console.log(url);
+    console.log("URL created inside fetchTranslationMap =" + url);
     return $.ajax({
         "url": url,
         "timeout": 3000,

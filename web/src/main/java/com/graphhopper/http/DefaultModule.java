@@ -32,10 +32,10 @@ public class DefaultModule extends AbstractModule
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CmdArgs args;
-
+  
     public DefaultModule( CmdArgs args )
     {
-        this.args = CmdArgs.readFromConfigAndMerge(args, "config", "graphhopper.config");
+        this.args = args;
     }
 
     @Override
@@ -53,9 +53,7 @@ public class DefaultModule extends AbstractModule
             bind(GraphHopper.class).toInstance(hopper);
 
             long timeout = args.getLong("web.timeout", 3000);
-            bind(Long.class).annotatedWith(Names.named("timeout")).toInstance(timeout);
-            boolean jsonpAllowed = args.getBool("web.jsonpAllowed", false);
-            bind(Boolean.class).annotatedWith(Names.named("jsonpAllowed")).toInstance(jsonpAllowed);
+            bind(Long.class).annotatedWith(Names.named("timeout")).toInstance(timeout);            
             bind(TranslationMap.class).toInstance(hopper.getTranslationMap());
         } catch (Exception ex)
         {
