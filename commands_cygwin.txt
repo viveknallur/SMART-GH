@@ -1,0 +1,9 @@
+c:/users/elgammaa/SMART-GH
+
+./graphhopper.sh web ./maps/dublin-m50.osm
+
+./graphhopper.sh web dublin-m50.osm
+
+mvn --projects core -DskipTests=true install assembly:single
+mvn package -DskipTests=true
+mvn package
