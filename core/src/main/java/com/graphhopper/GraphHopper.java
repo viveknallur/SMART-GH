@@ -840,6 +840,9 @@ public class GraphHopper implements GraphHopperAPI
         GHPoint startPoint = points.get(0);
         StopWatch sw = new StopWatch().start();
         QueryResult fromRes = locationIndex.findClosest(startPoint.lat, startPoint.lon, edgeFilter);
+        //
+        System.out.println("fromRes = "+ fromRes.toString());
+        
         String debug = "idLookup[0]:" + sw.stop().getSeconds() + "s";
         sw.stop();
         if (!fromRes.isValid())
@@ -851,9 +854,15 @@ public class GraphHopper implements GraphHopperAPI
         List<Path> paths = new ArrayList<Path>(points.size() - 1);
         for (int placeIndex = 1; placeIndex < points.size(); placeIndex++)
         {
+            //
+            System.out.println("points.size() = "+ points.size());
+            
             GHPoint point = points.get(placeIndex);
             sw = new StopWatch().start();
             QueryResult toRes = locationIndex.findClosest(point.lat, point.lon, edgeFilter);
+            //
+            System.out.println("toRes = "+ toRes.toString());
+            
             debug += ", [" + placeIndex + "] idLookup:" + sw.stop().getSeconds() + "s";
             if (!toRes.isValid())
             {
@@ -882,9 +891,16 @@ public class GraphHopper implements GraphHopperAPI
                 }
             } else
             {
+                //Amal: IMP.
                 Weighting weighting = createWeighting(request.getWeighting(), encoder);
+                //
+                System.out.println("weighting = "+ weighting);
+                
                 prepare = NoOpAlgorithmPreparation.createAlgoPrepare(graph, algoStr, encoder, weighting);
                 algo = prepare.createAlgo();
+                
+                //
+                System.out.println("prepare.createAlgo.toString "+ algo.toString());
             }
 
             debug += ", algoInit:" + sw.stop().getSeconds() + "s";
@@ -894,6 +910,9 @@ public class GraphHopper implements GraphHopperAPI
             if (path.getMillis() < 0)
                 throw new RuntimeException("Time was negative. Please report as bug and include:" + request);
 
+            //
+            System.out.println("path = "+ path);
+            
             paths.add(path);
             debug += ", " + algo.getName() + "-routing:" + sw.stop().getSeconds() + "s, " + path.getDebugInfo();
             fromRes = toRes;
@@ -906,6 +925,7 @@ public class GraphHopper implements GraphHopperAPI
             throw new RuntimeException("There should be exactly one more places than paths. places:" + points.size() + ", paths:" + paths.size());
 
         rsp.setDebugInfo(debug);
+        System.out.println("paths = "+ paths);
         return paths;
     }
 
