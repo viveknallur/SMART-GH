@@ -88,6 +88,8 @@ public class GraphHopperServlet extends GHBaseServlet
         } else
         {
             FlagEncoder algoVehicle = hopper.getEncodingManager().getEncoder(vehicleStr);
+            //Amal
+            System.out.println("algoVehicle="+ algoVehicle);
             rsp = hopper.route(new GHRequest(infoPoints).
                     setVehicle(algoVehicle.toString()).
                     setWeighting(weighting).
@@ -106,6 +108,7 @@ public class GraphHopperServlet extends GHBaseServlet
                 + "min, points:" + points.getSize() + ", took:" + took
                 + ", debug - " + rsp.getDebugInfo() + ", " + algoStr + ", "
                 + weighting + ", " + vehicleStr;
+        
 
         if (rsp.hasErrors())
             logger.error(logStr + ", errors:" + rsp.getErrors());

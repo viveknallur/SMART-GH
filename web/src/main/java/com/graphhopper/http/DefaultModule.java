@@ -43,6 +43,7 @@ public class DefaultModule extends AbstractModule
     {
         try
         {
+            System.out.println("Value of args coming from the config file = "+ args);
             GraphHopper hopper = new GraphHopper().forServer().init(args);
             hopper.importOrLoad();
             logger.info("loaded graph at:" + hopper.getGraphHopperLocation()
