@@ -117,9 +117,10 @@ public class InfoServlet extends GHBaseServlet
         String cityName = getCity(osmFile);
         
         //sensors configuration files are named as cityname.config
-        String fileName = "./sensors-config-files/"+cityName + ".config";
         
-        //String fileName = "./sensors-config-files/dublin.config";
+        //TODO: check wehen running from netbeans, what is the root dir?
+        String fileName = "./sensors-config-files/"+cityName + ".config";
+
         ArrayList sensorsTxt = new ArrayList();
         try
         {

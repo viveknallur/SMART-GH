@@ -21,3 +21,5 @@ TODO:
 
 3. If Bike or Foot is specificed in 'acceptWay' in config file, the user to be provided the option to specify 'Elevation' Yes or NO
    -> elevation is equals false by default
+
+4. check wehen running from netbeans, what is the root dir? cant find file, and cant read sensor data!

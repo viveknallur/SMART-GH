@@ -17,6 +17,21 @@
 package com.graphhopper.routing.util;
 
 import com.graphhopper.util.EdgeIteratorState;
+import java.util.Random;
+
+import java.io.IOException;                                                    
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;                                                      
+import java.util.Map;                                                          
+import java.util.List;                                                          
+                                                                               
+import redis.clients.jedis.BinaryJedis;                                        
+import redis.clients.jedis.Jedis;                                              
+import redis.clients.jedis.Protocol;                                           
+import redis.clients.jedis.exceptions.JedisConnectionException;                
+import redis.clients.jedis.exceptions.JedisDataException;                      
+import redis.clients.util.SafeEncoder;  
 
 /**
  * Calculates the least noisy route- independent of a vehicle as the calculation is based on 
@@ -25,8 +40,11 @@ import com.graphhopper.util.EdgeIteratorState;
  */
 public class LeastNoisyWeighting implements Weighting
 {
+    String currentCity;
+    
     public LeastNoisyWeighting()
     {
+        System.out.println("LeastNoiseWeighting instantiated!");
         
     }
     
@@ -40,16 +58,49 @@ public class LeastNoisyWeighting implements Weighting
      @Override
     public double calcWeight( EdgeIteratorState edge, boolean reverse )
     {
-        //TODO : First test when you pass least_noise from the web app
-        //if this invokes here--Code to capture noise value of edge from Redis and returns it!
-        return edge.getDistance();
+        //Experimenting with returning a random radom between 0-80...Worked!
+        /*Random nw = new Random();
+        double returnedRandom = nw.nextInt(100);
+        System.out.println("Random noise value for edge = " +edge+ " = "+ returnedRandom );
+        return returnedRandom;*/
+        
+        double noiseValue = getNoiseFromRedis(edge);
+        return noiseValue;
+    
     }
+    
+      double getNoiseFromRedis(EdgeIteratorState edge)
+    {
+        double noiseValue=0;
+        String city = getCurrentCity();
+        //TODO: connect to redis
+        //based on the value of city, the appropriate database is selected, and query with the edge to return the noise value
+        //check if we can increment the time of the noise reading to instructions in the response??
+        
+        
+        return noiseValue;
+    }
+      
+      //TODO: Start here: should be set in the route method (graphhopper) when selecting and init the appropriate weighting
+      void setCurrentCity(String city)
+      {
+          this.currentCity = city;
+      }
+  
+      String getCurrentCity()
+      {
+          return currentCity;
+          
+      }
+    
     
     @Override
     public String toString()
     {
-        //TODO: check if we need to define it with the encoder manger or elsewhere
+        //TODO: check if we need to register it with the encodering manger or elsewhere
         return "LEAST_NOISY";
     }
+    
+  
     
 }

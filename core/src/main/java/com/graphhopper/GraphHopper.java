@@ -782,7 +782,15 @@ public class GraphHopper implements GraphHopperAPI
             else
                 return new FastestWeighting(encoder);
         }
-        return new ShortestWeighting();
+        else if("least_noisy".equals(weighting))
+        { 
+            System.out.println("LeastNoisyWeighting object is created...Huurrraaayyyy");
+            return new LeastNoisyWeighting();
+            
+        }
+        else{
+            return new ShortestWeighting();
+        }
     }
 
     @Override

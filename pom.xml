@@ -137,6 +137,33 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
             </plugin>
+            
+            <!--Amal: redis maven plugin, check if we need it!-->
+            <plugin>
+                <groupId>ru.trylogic.maven.plugins</groupId>
+                <artifactId>redis-maven-plugin</artifactId>
+                <version>1.2.3</version>
+                <configuration>
+                    <forked>true</forked>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-redis</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-redis</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>    
     
@@ -146,7 +173,14 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
-        </dependency>        
+        </dependency>  
+        
+        <!-- Amal: Added to allow the connection to Redis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.1.0</version>
+        </dependency>      
     </dependencies>
     
     <!-- mvn deploy -DperformRelease=true -->
