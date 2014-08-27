@@ -24,7 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;                                                      
 import java.util.Map;                                                          
-import java.util.List;                                                          
+import java.util.List;   
+import java.util.*;
                                                                                
 import redis.clients.jedis.BinaryJedis;                                        
 import redis.clients.jedis.Jedis;                                              
@@ -45,6 +46,34 @@ public class LeastNoisyWeighting implements Weighting
     public LeastNoisyWeighting()
     {
         System.out.println("LeastNoiseWeighting instantiated!");
+        try
+        {
+        
+        Jedis jedis = new Jedis("localhost");
+        String hashname = "dublin_ways_set";
+        //Map<String, String> decibles = jedis.hgetAll(hashname);
+        //System.out.println("Noise Entries = " + decibles);
+        Set<String> affectedEdges = jedis.smembers(hashname);
+        System.out.println("dublin_ways_set = " + affectedEdges);
+        
+        /*for(Map.Entry<String, String> value: decibles.entrySet())
+        {
+            String date = value.getKey();
+            String noise = value.getValue();
+            System.out.println("on " + date + ", noise was: " + noise);
+        }*/
+        } catch(JedisConnectionException e)
+        {
+            System.out.println("JedisConnectionException: " +e.getMessage());
+        } catch(JedisDataException e)
+        {
+            System.out.println("JedisDataException: " +e.getMessage());
+            
+        } catch(Exception e)
+        {
+            System.out.println("Error: " +e.getMessage());
+            
+        }
         
     }
     
@@ -59,17 +88,17 @@ public class LeastNoisyWeighting implements Weighting
     public double calcWeight( EdgeIteratorState edge, boolean reverse )
     {
         //Experimenting with returning a random radom between 0-80...Worked!
-        /*Random nw = new Random();
+        Random nw = new Random();
         double returnedRandom = nw.nextInt(100);
-        System.out.println("Random noise value for edge = " +edge+ " = "+ returnedRandom );
-        return returnedRandom;*/
+       // System.out.println("Random noise value for edge = " +edge+ " = "+ returnedRandom );
+        return returnedRandom;
         
-        double noiseValue = getNoiseFromRedis(edge);
-        return noiseValue;
+        //double noiseValue = getNoiseFromRedis(edge);
+        //return noiseValue;
     
     }
     
-      double getNoiseFromRedis(EdgeIteratorState edge)
+      double getNoiseFromRedis(EdgeIteratorState edge) throws JedisConnectionException, JedisDataException
     {
         double noiseValue=0;
         String city = getCurrentCity();
@@ -77,6 +106,7 @@ public class LeastNoisyWeighting implements Weighting
         //based on the value of city, the appropriate database is selected, and query with the edge to return the noise value
         //check if we can increment the time of the noise reading to instructions in the response??
         
+
         
         return noiseValue;
     }
@@ -93,6 +123,7 @@ public class LeastNoisyWeighting implements Weighting
           
       }
     
+
     
     @Override
     public String toString()

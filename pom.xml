@@ -143,25 +143,6 @@
                 <groupId>ru.trylogic.maven.plugins</groupId>
                 <artifactId>redis-maven-plugin</artifactId>
                 <version>1.2.3</version>
-                <configuration>
-                    <forked>true</forked>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start-redis</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-redis</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>shutdown</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             
         </plugins>
