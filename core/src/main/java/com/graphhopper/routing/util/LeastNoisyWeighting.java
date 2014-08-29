@@ -56,6 +56,7 @@ public class LeastNoisyWeighting implements Weighting
         Set<String> affectedEdges = jedis.smembers(hashname);
         System.out.println("dublin_ways_set = " + affectedEdges);
         
+       
         /*for(Map.Entry<String, String> value: decibles.entrySet())
         {
             String date = value.getKey();
@@ -103,7 +104,8 @@ public class LeastNoisyWeighting implements Weighting
         double noiseValue=0;
         String city = getCurrentCity();
         //TODO: connect to redis
-        //based on the value of city, the appropriate database is selected, and query with the edge to return the noise value
+        //The Python code to be extended to include the type of the readings with the key for each has
+        //i.e.edge_type (type is the reading type from the relevant config file)
         //check if we can increment the time of the noise reading to instructions in the response??
         
 
@@ -122,8 +124,6 @@ public class LeastNoisyWeighting implements Weighting
           return currentCity;
           
       }
-    
-
     
     @Override
     public String toString()

@@ -162,6 +162,20 @@
             <artifactId>jedis</artifactId>
             <version>2.1.0</version>
         </dependency>      
+        
+        <!-- Amal: Added to allow parsing OSM map to get edge-ids of a specific map and populate Redis with Random Senosor readings for testing purposes -->
+        <dependency>
+            <groupId>org.openstreetmap.osmosis</groupId>
+            <artifactId>osmosis-core</artifactId>
+            <version>0.43-RELEASE</version>
+        </dependency>
+        
+        <dependency>
+	<groupId>org.openstreetmap.osmosis</groupId>
+	<artifactId>osmosis-xml</artifactId>
+	<version>0.43-RELEASE</version>
+        
+</dependency>
     </dependencies>
     
     <!-- mvn deploy -DperformRelease=true -->
