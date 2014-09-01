@@ -299,6 +299,7 @@ public class GraphHopperStorage implements GraphStorage
     {
         ensureNodeIndex(Math.max(a, b));
         int edge = internalEdgeAdd(a, b);
+        
         EdgeIterable iter = new EdgeIterable(EdgeFilter.ALL_EDGES);
         iter.setBaseNode(a);
         iter.setEdgeId(edge);
@@ -328,7 +329,6 @@ public class GraphHopperStorage implements GraphStorage
         connectNewEdge(fromNodeId, newOrExistingEdge);
         if (fromNodeId != toNodeId)
             connectNewEdge(toNodeId, newOrExistingEdge);
-
         return newOrExistingEdge;
     }
 
@@ -382,6 +382,7 @@ public class GraphHopperStorage implements GraphStorage
         edges.setInt(edgePointer + E_NODEB, nodeOther);
         edges.setInt(edgePointer + E_LINKA, nextEdge);
         edges.setInt(edgePointer + E_LINKB, nextEdgeOther);
+        
         return edgePointer;
     }
 
@@ -515,6 +516,7 @@ public class GraphHopperStorage implements GraphStorage
         @Override
         public double getDistance()
         {
+            
             return getDist(edgePointer);
         }
 
@@ -579,9 +581,12 @@ public class GraphHopperStorage implements GraphStorage
         @Override
         public String getName()
         {
+            System.out.println("E_NAME = "+ E_NAME);
             int nameIndexRef = edges.getInt(edgePointer + E_NAME);
             return nameIndex.get(nameIndexRef);
         }
+        
+       
 
         @Override
         public EdgeIteratorState setName( String name )
@@ -729,7 +734,7 @@ public class GraphHopperStorage implements GraphStorage
 
         protected void setEdgeId( int edgeId )
         {
-            this.nextEdge = this.edgeId = edgeId;
+            this.nextEdge = this.edgeId = edgeId;        
             this.edgePointer = (long) nextEdge * edgeEntryBytes;
         }
 

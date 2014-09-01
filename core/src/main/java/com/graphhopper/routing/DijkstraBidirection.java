@@ -60,6 +60,7 @@ public class DijkstraBidirection extends AbstractBidirAlgo
     {
         super(graph, encoder, weighting);
         initCollections(1000);
+        System.out.println("Entered DijkstraBidirection");
     }
 
     protected void initCollections( int locs )
@@ -135,6 +136,7 @@ public class DijkstraBidirection extends AbstractBidirAlgo
     void fillEdges( int currNode, double currWeight, int currRef,
             IntDoubleBinHeap openSet, EdgeWrapper wrapper, EdgeExplorer explorer, boolean reverse )
     {
+
         EdgeIterator iter = explorer.setBaseNode(currNode);
         while (iter.next())
         {

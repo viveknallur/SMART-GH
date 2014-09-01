@@ -17,6 +17,8 @@ package com.graphhopper.routing.util;
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -27,7 +29,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisDataException;
-
 
 /**
  *
@@ -48,17 +49,20 @@ public class PopulateRedisRandomNoise
         try
         {
             Jedis jedis = new Jedis("localhost");
+            jedis.flushAll();
 
             for (int i = 0; i < handler.waysIDs.size(); i++)
             {
                 String hashkey = handler.waysIDs.get(i);
+                System.out.println("hashkey = "+hashkey);
                 hashkey = "dublin-noise-" + hashkey;
+
                 Random noiseValue = new Random();
                 double returnedNoise = noiseValue.nextInt(80);
                 String noise = String.valueOf(returnedNoise);
                 Random noiseTime = new Random();
                 double returnedTime = noiseTime.nextInt(23);
-                String ntime = String.valueOf(returnedTime);
+                String ntime = String.valueOf(returnedTime) + "time";
                 jedis.hset(hashkey, "Noisetube_value", noise);
                 jedis.hset(hashkey, "Noisetube_timestamp", ntime);
             }
@@ -82,6 +86,12 @@ public class PopulateRedisRandomNoise
 class SAXHandler extends DefaultHandler
 {
     ArrayList<String> waysIDs = new ArrayList<String>();
+    String wayId, wayName, wayRef;
+
+    public SAXHandler()
+    {
+        super();
+    }
 
     @Override
     public void startElement( String uri, String localName, String qName, Attributes attributes ) throws SAXException
@@ -89,9 +99,39 @@ class SAXHandler extends DefaultHandler
 
         if (qName.equalsIgnoreCase("way"))
         {
-            waysIDs.add(attributes.getValue("id"));
+            wayId = attributes.getValue("id");
+            System.out.println("WayID = " + wayId);
         }
+        else if (qName.equalsIgnoreCase("tag"))
+        {
+            if (attributes.getValue("k").equalsIgnoreCase("name"))
+            {
+                wayName = attributes.getValue("v");
+                System.out.println("wayName = " + wayName);
+            }
+            else if(attributes.getValue("k").equalsIgnoreCase("ref"))
+            {
+                wayRef = attributes.getValue("v");
+                System.out.println("wayRef = " + wayRef);
+            }
+        }
+       
+    }
+    
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException 
+    {
+        if (qName.equalsIgnoreCase("way"))
+        {
+           if(wayId!=null && wayName!=null && wayRef!=null)
+           {
+               waysIDs.add(wayName+"-"+wayRef+"-"+wayId);
+           }
+            
+        }
+        
     }
 
 }
+
 

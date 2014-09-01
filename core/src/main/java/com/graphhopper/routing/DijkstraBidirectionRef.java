@@ -51,6 +51,7 @@ public class DijkstraBidirectionRef extends AbstractBidirAlgo
     {
         super(graph, encoder, weighting);
         initCollections(1000);
+        System.out.println("Entered DijkstraBidirectionRef");
     }
 
     protected void initCollections( int nodes )
@@ -163,6 +164,7 @@ public class DijkstraBidirectionRef extends AbstractBidirAlgo
             double tmpWeight = weighting.calcWeight(iter, reverse) + currEdge.weight;
 
             EdgeEntry de = shortestWeightMap.get(adjNode);
+
             if (de == null)
             {
                 de = new EdgeEntry(iter.getEdge(), adjNode, tmpWeight);

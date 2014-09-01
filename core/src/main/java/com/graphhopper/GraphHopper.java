@@ -909,6 +909,7 @@ public class GraphHopper implements GraphHopperAPI
                 
                 //
                 System.out.println("prepare.createAlgo.toString "+ algo.toString());
+                System.out.println("algo.getName() "+ algo.getName());
             }
 
             debug += ", algoInit:" + sw.stop().getSeconds() + "s";
