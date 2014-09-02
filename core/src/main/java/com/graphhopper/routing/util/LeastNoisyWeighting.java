@@ -18,14 +18,6 @@ package com.graphhopper.routing.util;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Random;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.*;
-
 import redis.clients.jedis.BinaryJedis;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Protocol;
@@ -46,7 +38,6 @@ public class LeastNoisyWeighting implements Weighting
     public LeastNoisyWeighting()
     {
         System.out.println("LeastNoiseWeighting instantiated!");
-
     }
 
     @Override
@@ -60,44 +51,64 @@ public class LeastNoisyWeighting implements Weighting
     public double calcWeight( EdgeIteratorState edge, boolean reverse )
     {
         //Experimenting with returning a random radom between 0-80...Worked!
-        Random nw = new Random();
-        double returnedRandom = nw.nextInt(100);
+        /*Random nw = new Random();
+         double returnedRandom = nw.nextInt(100);
 
-        System.out.println("edge.getEdge() = " + edge.getEdge());
-        System.out.println("edge.getFlags() = " + edge.getFlags());
-        System.out.println("edge.getName() = " + edge.getName());
+         System.out.println("edge.getEdge() = " + edge.getEdge());
+         System.out.println("edge.getFlags() = " + edge.getFlags());
+         System.out.println("edge.getName() = " + edge.getName());
 
-        return returnedRandom;
+         return returnedRandom;*/
 
-        //double noiseValue = getNoiseFromRedis(edge);
-        //return noiseValue;
+        double noiseValue = getNoiseFromRedis(edge);
+        return noiseValue;
     }
 
     double getNoiseFromRedis( EdgeIteratorState edge ) throws JedisConnectionException, JedisDataException
     {
-        double noiseValue = 0;
+        double noiseValue = 30;
+        String ntime;
+        //TODO, get the city name from the graph
         String city = getCurrentCity();
-        //TODO: connect to redis
-        //The Python code to be extended to include the type of the readings with the key for each has
-        //i.e.edge_type (type is the reading type from the relevant config file)
-        //check if we can increment the time of the noise reading to instructions in the response??
 
+        //Matching keys is very very slow
         try
         {
 
             Jedis jedis = new Jedis("localhost");
-            String hashname = "dublin_ways_set";
-        //Map<String, String> decibles = jedis.hgetAll(hashname);
-            //System.out.println("Noise Entries = " + decibles);
-            Set<String> affectedEdges = jedis.smembers(hashname);
-        //System.out.println("dublin_ways_set = " + affectedEdges);
+            String edgeName = edge.getName();
+            //Set<String> matchedEdges = new HashSet();
 
-            /*for(Map.Entry<String, String> value: decibles.entrySet())
+            if (edgeName.length() > 0)
+            {
+
+                if (edgeName.contains(","))
+                    edgeName = edgeName.replace(", ", "_");
+
+                edgeName = "dublin_noise_" + edgeName;
+                
+                System.out.println("edgeName = " + edgeName);
+                
+                if (jedis.exists(edgeName))
+                {
+                    noiseValue = Double.parseDouble(jedis.hget(edgeName, "noise"));
+                    System.out.println("noiseValue = " + noiseValue);
+                    ntime = jedis.hget(edgeName, "timestamp");
+                }
+            }
+
+            /*if (edgeName.length() >0)
              {
-             String date = value.getKey();
-             String noise = value.getValue();
-             System.out.println("on " + date + ", noise was: " + noise);
+             matchedEdges = jedis.keys("dublin_noise_"+edgeName+"*");
              }*/
+            //could loop on all returned edges, and get the average of returned noise readings, however, it would make
+            //the process slower
+            //if(matchedEdges.size()>0)
+            //{
+            //Iterator iter = matchedEdges.iterator();
+            //String firstKey = (String)iter.next();
+            //}
+            //check what to do with time and how to amend the instruction list with noise readings and timestamp 
         } catch (JedisConnectionException e)
         {
             System.out.println("JedisConnectionException: " + e.getMessage());

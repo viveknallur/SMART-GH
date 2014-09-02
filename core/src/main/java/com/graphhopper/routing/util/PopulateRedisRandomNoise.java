@@ -17,8 +17,6 @@ package com.graphhopper.routing.util;
 
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -45,7 +43,6 @@ public class PopulateRedisRandomNoise
         SAXHandler handler = new SAXHandler();
         parser.parse("output.xml", handler);
         System.out.println("Number of ways = " + handler.waysIDs.size());
-        System.out.println("1st way = " + handler.waysIDs.get(0));
         try
         {
             Jedis jedis = new Jedis("localhost");
@@ -54,8 +51,8 @@ public class PopulateRedisRandomNoise
             for (int i = 0; i < handler.waysIDs.size(); i++)
             {
                 String hashkey = handler.waysIDs.get(i);
-                System.out.println("hashkey = "+hashkey);
-                hashkey = "dublin-noise-" + hashkey;
+                //System.out.println("hashkey = "+hashkey);
+                hashkey = "dublin_noise_" + hashkey;
 
                 Random noiseValue = new Random();
                 double returnedNoise = noiseValue.nextInt(80);
@@ -63,8 +60,21 @@ public class PopulateRedisRandomNoise
                 Random noiseTime = new Random();
                 double returnedTime = noiseTime.nextInt(23);
                 String ntime = String.valueOf(returnedTime) + "time";
-                jedis.hset(hashkey, "Noisetube_value", noise);
-                jedis.hset(hashkey, "Noisetube_timestamp", ntime);
+
+                if (!jedis.exists(hashkey))
+                {
+                    jedis.hset(hashkey, "noise", noise);
+
+                } else
+                {
+                    String currentNoise = jedis.hget(hashkey, "noise");
+                    returnedNoise = (returnedNoise + Double.parseDouble(currentNoise)) / 2;
+                    noise = String.valueOf(returnedNoise);
+                    jedis.hset(hashkey, "noise", noise);
+                }
+
+                jedis.hset(hashkey, "timestamp", ntime);
+
             }
 
         } catch (JedisConnectionException e)
@@ -86,7 +96,10 @@ public class PopulateRedisRandomNoise
 class SAXHandler extends DefaultHandler
 {
     ArrayList<String> waysIDs = new ArrayList<String>();
-    String wayId, wayName, wayRef;
+    String wayId ="";
+    String wayName="";
+    String wayRef="";
+    int refFlag = 0;
 
     public SAXHandler()
     {
@@ -100,38 +113,47 @@ class SAXHandler extends DefaultHandler
         if (qName.equalsIgnoreCase("way"))
         {
             wayId = attributes.getValue("id");
-            System.out.println("WayID = " + wayId);
-        }
-        else if (qName.equalsIgnoreCase("tag"))
+        } else if (qName.equalsIgnoreCase("tag"))
         {
             if (attributes.getValue("k").equalsIgnoreCase("name"))
             {
                 wayName = attributes.getValue("v");
-                System.out.println("wayName = " + wayName);
-            }
-            else if(attributes.getValue("k").equalsIgnoreCase("ref"))
+                
+            } else if (attributes.getValue("k").equalsIgnoreCase("ref"))
             {
                 wayRef = attributes.getValue("v");
-                System.out.println("wayRef = " + wayRef);
+                refFlag = 1;
             }
         }
-       
+
     }
-    
+
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException 
+    public void endElement( String uri, String localName, String qName ) throws SAXException
     {
+        //exclude wayid and could be added (TODO) it as a set inside the hash; e.g. key: dublin_noise_Parnell_R111, fields:(noise, timestamp, wayIDs:Set)
+
         if (qName.equalsIgnoreCase("way"))
         {
-           if(wayId!=null && wayName!=null && wayRef!=null)
-           {
-               waysIDs.add(wayName+"-"+wayRef+"-"+wayId);
-           }
+            if (wayName.length()>0)
+            {
+                String firstToken = wayName.split(" ")[0];
+
+                if (firstToken.matches(".*\\d.*"))
+                {
+                    if (wayName.length() > firstToken.length())
+                        wayName = wayName.substring(firstToken.length() + 1);
+                }
+
+                if (refFlag == 1)
+                    waysIDs.add(wayName + "_" + wayRef);
+                else
+                    waysIDs.add(wayName);
+            }
+            refFlag = 0;
             
         }
-        
+
     }
 
 }
-
-
