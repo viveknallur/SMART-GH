@@ -76,6 +76,8 @@ public class GraphHopperServlet extends GHBaseServlet
         String weighting = getParam(req, "weighting", "fastest");
         String algoStr = getParam(req, "algorithm", "");
         String localeStr = getParam(req, "locale", "en");
+        //@Amal Elgammal
+        hopper.setElevation(elevation);
 
         StopWatch sw = new StopWatch().start();
         GHResponse rsp;

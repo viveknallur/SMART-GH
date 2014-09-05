@@ -23,7 +23,9 @@ GHRequest = function(host) {
     this.weighting = "fastest";
     this.points_encoded = true;
     this.instructions = true;
-    this.elevation = false;
+    //@Amal Elgammal: commented to pass it as a parameter if bike and/or foot is set in the properties.config 
+    //this.elevation = false;
+    this.elevation = true;
     this.features = {};
     this.debug = false;
     this.locale = "en";
@@ -64,8 +66,14 @@ GHRequest.prototype.init = function(params) {
     if ('points_encoded' in params)
         this.points_encoded = params.points_encoded;
 
-    this.elevation = false;
+    //@Amal Elgammal commented
+    //this.elevation = false;
+    
+    this.elevation = true;
     var featureSet = this.features[this.vehicle];
+    console.log("featureSet = " + featureSet.toString());
+    console.log("this.elevation = " + this.elevation);
+    
     if (featureSet && featureSet.elevation) {
         if ('elevation' in params)
             this.elevation = params.elevation;
@@ -220,7 +228,9 @@ function decodePath(encoded, is3D) {
 GHRequest.prototype.doRequest = function(url, callback) {
     var that = this;
     $.ajax({
-        "timeout": 30000,
+        //@Amal Elgammal: commented to increarse the timeout as leastnoisy calculations takes longer
+        //"timeout": 30000,
+        "timeout": 60000,
         "url": url,
         "success": function(json) {
             if (json.paths) {
