@@ -115,6 +115,8 @@ $(document).ready(function(e) {
                 var vehiclesDiv = $("#vehicles");
                 function createButton(vehicle) {
                     var button = $("<button class='vehicle-btn' title='" + tr(vehicle) + "'/>");
+                    //Amal
+                    console.log("vehicle = " + vehicle + ", while tr(vehicle) = " + tr(vehicle))
                     button.attr('id', vehicle);
                     button.html("<img src='img/" + vehicle + ".png' alt='" + tr(vehicle) + "'></img>");
                     button.click(function() {
@@ -123,8 +125,27 @@ $(document).ready(function(e) {
                         resolveTo();
                         routeLatLng(ghRequest);
                     });
+                    
+                    
+                    //@Amal Elgammal: Sets elevation to true if vechile !=false
+                    //TODO: Check when to set elevation
+                    if (vehicle === 'car')
+                    {
+                        console.log("ghRequest.vehicle is true");
+                        ghRequest.elevation = "false";
+                        console.log("Now request.elevation = " + ghRequest.elevation);
+                    }
+                    else
+                    {
+                        ghRequest.elevation = "true";
+
+                    }    //end
+
                     return button;
                 }
+
+
+            
 
                 if (json.features) {
                     ghRequest.features = json.features;
@@ -658,13 +679,14 @@ function routeLatLng(request, doQuery) {
     setWeighting(request);
     setVechile(request);
 
+
     var urlForHistory = request.createFullURL();
     // not enabled e.g. if no cookies allowed (?)
     // if disabled we have to do the query and cannot rely on the statechange history event    
     if (!doQuery && History.enabled) {
         // 2. important workaround for encoding problems in history.js
 
-        console.log("urlForHistory = " + urlForHistory);
+        //console.log("urlForHistory = " + urlForHistory);
         var params = parseUrl(urlForHistory);
 
         console.log(params);
@@ -1244,7 +1266,6 @@ function toTitleCase(str)
 
 function setVechile(request)
 {
-
 
 }
 ;

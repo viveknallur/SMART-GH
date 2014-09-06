@@ -24,8 +24,7 @@ GHRequest = function(host) {
     this.points_encoded = true;
     this.instructions = true;
     //@Amal Elgammal: commented to pass it as a parameter if bike and/or foot is set in the properties.config 
-    //this.elevation = false;
-    this.elevation = true;
+    this.elevation = false;
     this.features = {};
     this.debug = false;
     this.locale = "en";
@@ -69,16 +68,16 @@ GHRequest.prototype.init = function(params) {
     //@Amal Elgammal commented
     //this.elevation = false;
     
-    this.elevation = true;
+    //this.elevation = true;
     var featureSet = this.features[this.vehicle];
-    console.log("featureSet = " + featureSet.toString());
+    console.log("featureSet.tostring() = " + featureSet.toString());
     console.log("this.elevation = " + this.elevation);
     
     if (featureSet && featureSet.elevation) {
         if ('elevation' in params)
             this.elevation = params.elevation;
         else
-            this.elevation = true;
+            this.elevation = false;
     }
 
     if (params.q) {
@@ -168,6 +167,7 @@ GHRequest.prototype.createPath = function(url) {
 
     if(this.elevation)
         url += "&elevation=true";
+    
     if (this.debug)
         url += "&debug=true";
     return url;
