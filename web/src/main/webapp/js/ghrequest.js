@@ -23,7 +23,6 @@ GHRequest = function(host) {
     this.weighting = "fastest";
     this.points_encoded = true;
     this.instructions = true;
-    //@Amal Elgammal: commented to pass it as a parameter if bike and/or foot is set in the properties.config 
     this.elevation = false;
     this.features = {};
     this.debug = false;
@@ -52,12 +51,15 @@ GHRequest.prototype.init = function(params) {
     if (params.vehicle)
         this.vehicle = params.vehicle;
     if (params.weighting)
-       this.weighting = params.weighting;
+        this.weighting = params.weighting;
     if (params.algorithm)
         this.algorithm = params.algorithm;
     if (params.locale)
         this.locale = params.locale;
-
+    //@Amal ELgammal: commented to take the elevation value based on the user selection
+    //if (params.elevation)
+    this.elevation = params.elevation;
+    //
     if ('do_zoom' in params)
         this.do_zoom = params.do_zoom;
     if ('instructions' in params)
@@ -67,15 +69,18 @@ GHRequest.prototype.init = function(params) {
 
     //@Amal Elgammal commented
     //this.elevation = false;
-    
-    //this.elevation = true;
+
     var featureSet = this.features[this.vehicle];
     console.log("featureSet.tostring() = " + featureSet.toString());
-    console.log("this.elevation = " + this.elevation);
-    
+    console.log("this.elevation in ghrequest.init = " + this.elevation);
+
     if (featureSet && featureSet.elevation) {
         if ('elevation' in params)
+        {
             this.elevation = params.elevation;
+            //Amal
+            console.log("feature set=true and elevation is in params and this.elevation =" + this.elevation);
+        }
         else
             this.elevation = false;
     }
@@ -118,6 +123,7 @@ GHRequest.prototype.initVehicle = function(vehicle) {
 };
 
 GHRequest.prototype.hasElevation = function() {
+    console.log("hasEleveation function returns this.elevation = " + this.elevation);
     return this.elevation;
 };
 
@@ -144,12 +150,12 @@ GHRequest.prototype.createFullURL = function() {
 };
 
 GHRequest.prototype.createPath = function(url) {
-    
+
     //@Amal ELgammal: commented to include vechile in the URl anyway
     if (this.vehicle/* && this.vehicle !== "car"*/)
         url += "&vehicle=" + this.vehicle;
-  
-     // fastest or shortest
+
+    // fastest or shortest
     //@Amal ELgammal: commented to include weighting in the URL anyway
     if (this.weighting /*&& this.weighting !== "fastest"*/)
         url += "&weighting=" + this.weighting;
@@ -165,9 +171,12 @@ GHRequest.prototype.createPath = function(url) {
     if (!this.points_encoded)
         url += "&points_encoded=false";
 
-    if(this.elevation)
+    //@Amal Elgammal: Add Elevation anyway in the request
+    //url += "&elevation="+this.elevation;
+    if (this.elevation)
         url += "&elevation=true";
-    
+
+
     if (this.debug)
         url += "&debug=true";
     return url;

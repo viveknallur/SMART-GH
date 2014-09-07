@@ -19,6 +19,8 @@ if (!host) {
 
 
 var selectedWeighting = tmpArgs["weighting"];
+var selectedElevation = tmpArgs["elevation"];
+console.log("Elevation at the beginning of main.js if user directly submitted a query URL= "+ selectedElevation);
 
 var ghRequest = new GHRequest(host);
 
@@ -115,8 +117,6 @@ $(document).ready(function(e) {
                 var vehiclesDiv = $("#vehicles");
                 function createButton(vehicle) {
                     var button = $("<button class='vehicle-btn' title='" + tr(vehicle) + "'/>");
-                    //Amal
-                    console.log("vehicle = " + vehicle + ", while tr(vehicle) = " + tr(vehicle))
                     button.attr('id', vehicle);
                     button.html("<img src='img/" + vehicle + ".png' alt='" + tr(vehicle) + "'></img>");
                     button.click(function() {
@@ -126,26 +126,9 @@ $(document).ready(function(e) {
                         routeLatLng(ghRequest);
                     });
                     
-                    
-                    //@Amal Elgammal: Sets elevation to true if vechile !=false
-                    //TODO: Check when to set elevation
-                    if (vehicle === 'car')
-                    {
-                        console.log("ghRequest.vehicle is true");
-                        ghRequest.elevation = "false";
-                        console.log("Now request.elevation = " + ghRequest.elevation);
-                    }
-                    else
-                    {
-                        ghRequest.elevation = "true";
-
-                    }    //end
-
                     return button;
                 }
 
-
-            
 
                 if (json.features) {
                     ghRequest.features = json.features;
@@ -153,6 +136,7 @@ $(document).ready(function(e) {
                         delete json.features['bike']
 
                     var vehicles = Object.keys(json.features);
+                    //@Amal Elgammal: TODO: check, maybe related to the exception raised when multiple vehicles are specified in properties.config
                     if (vehicles.length > 0)
                         ghRequest.initVehicle(vehicles[0]);
 
@@ -182,6 +166,16 @@ $(document).ready(function(e) {
                 if (selectedWeighting)
                 {
                     $("#weightingSelect").prop('value', selectedWeighting);
+                }
+                //--End
+                
+                //
+                //@Amal Elgammal: if the user opens the url with an elevation value, the value of the elevation in the query
+                //is reflected to the corresponding checkbox on the webpage
+
+                if (selectedElevation)
+                {
+                    $("#elevationCheck").prop('checked',true);
                 }
                 //--End
 
@@ -677,6 +671,7 @@ function routeLatLng(request, doQuery) {
     var doZoom = request.do_zoom;
     request.do_zoom = true;
     setWeighting(request);
+    setElevation(request);
     setVechile(request);
 
 
@@ -1255,6 +1250,21 @@ function setWeighting(request) {
     var weighting = $("#weightingSelect").val().toLowerCase();
     weighting = weighting.replace(" ", "_");
     request.weighting = weighting;
+}
+
+//Gets the value of elevation and  passes it to be appended in the request
+function setElevation(request) {
+    //@Amal Elgammal: to add the selected Elevation to the request
+    if ($("#elevationCheck").prop('checked'))
+    {
+        request.elevation=true;   
+    }
+    else
+    {
+        request.elevation=false;
+    }
+     console.log("request.elevation vale in setElevation function is: "+ request.elevation);
+    
 }
 
 function toTitleCase(str)
