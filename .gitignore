@@ -31,3 +31,4 @@ srtmprovider/
 core/docs/
 .*#
 cgiarprovider/
+/SMART-GH-Android/nbproject/private/

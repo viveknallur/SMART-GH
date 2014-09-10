@@ -76,15 +76,15 @@ TODO:
  
 
 
-3. Instruction list may also include noise readings on different segments when least-noise weighting is selected, which are displayed with the reading
+2. Instruction list may also include noise readings on different segments when least-noise weighting is selected, which are displayed with the reading
    timestamp.
 
 
-4. When routing based on the noise readings, shall we take distance into consideration, the algorithm might return a very long route
+3. When routing based on the noise readings, shall we take distance into consideration, the algorithm might return a very long route
    just because it's the least noisy. A solution could be to have two weighting: 'least_noisy' that takes distance into account, and
    abolute-least-noisy' that just cares about noise--To BE DISCUSSED
 
-5. If more than one vechile is specified in "osmreader.acceptway" in config.properties, the aplication raises an exception when it runs; i.e "Multiple encoders are active, can't return one". currently, only one vechile type is accepted; car,foot,bike,mtb,racingbike.
+4. If more than one vechile is specified in "osmreader.acceptway" in config.properties, the aplication raises an exception when it runs; i.e "Multiple encoders are active, can't return one". currently, only one vechile type is accepted; car,foot,bike,mtb,racingbike.
    -> This exception is actually coming from EncodingManger when encodingManager.getSingle() is called inside route() inside graphhopper
    -> Also check getVehicleCount() inside encodingManager()
    -> Maybe this could be solved by defining another method similar to getSingle() that returns multiple FlagEncoder corresponding to
@@ -95,16 +95,16 @@ Miscellaneous
 -------------
 
 
-6. Investigate with heatmap on the visualization of noise readings on the map! would be cool:)
+5. Investigate with heatmap on the visualization of noise readings on the map! would be cool:)
 
 
-7. Generate an Andriod app out of the Netbeans project
+6. Generate an Andriod app out of the Netbeans project
 
 
-8. in LeastNoisyWeighting, check what calls getMinWeight() method, and what it's needed for 
+7. in LeastNoisyWeighting, check what calls getMinWeight() method, and what it's needed for 
 
 
-9. Graphhopper noise routing: Check Chweighting which is called by other algorithms to see if NoiseWeightig needs to be incorporated by anyway, probably
+8. Graphhopper noise routing: Check Chweighting which is called by other algorithms to see if NoiseWeightig needs to be incorporated by anyway, probably
    this is also related to 8.
 
 
