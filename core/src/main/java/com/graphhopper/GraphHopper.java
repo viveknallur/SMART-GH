@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -785,12 +786,31 @@ public class GraphHopper implements GraphHopperAPI
         else if("least_noisy".equals(weighting))
         { 
             System.out.println("LeastNoisyWeighting object is created...Huurrraaayyyy");
-            return new LeastNoisyWeighting();
+            //@Amal: send the City name to be used when quering Redis
+            Weighting leastNoisyWeighting = new LeastNoisyWeighting();
+            String cityName = getCityName();
+            System.out.println("current city = " +cityName);
+            leastNoisyWeighting.setCurrentCity(cityName);
+            return leastNoisyWeighting;
+            
+            //return new LeastNoisyWeighting();
             
         }
         else{
             return new ShortestWeighting();
         }
+    }
+    
+    
+    //@Amal Elgammal: A function to set the current city by extracting it from the graph name
+    //which is needed by LeastNoisyWeighting to form the hash key City_sensorType_EdgeId[_Ref]
+    String getCityName()
+    {
+       String city=graph.getDirectory().toString();
+       String[] graphDir = city.split("/");
+       //System.out.println("graphDir.length =" + graphDir.length + ", city should be = "+ graphDir[graphDir.length - 1]);
+       city=graphDir[graphDir.length - 1].split("-")[0];
+        return city; 
     }
 
     @Override

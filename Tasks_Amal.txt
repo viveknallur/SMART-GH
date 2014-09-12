@@ -37,7 +37,9 @@ Graphhopper web
    a way to ditinguish between them. Having said that, Python code needs to be changed as described in point '1' in TODO list below. 
 9. 'Elevation' is added to the web page as a checkbox, so that the user can select whether to enable elevation of not. It's false by default. If the
     relevant checkbox is selected, "Elevation=true" is sent as a parameter with the URL query
-   -> elevation is equals false by default    
+   -> elevation is equals false by default   
+
+10. Webpage is now working to accept multipe types of vehicles;e.g. car, foot, bike 
     
 
 
@@ -73,8 +75,6 @@ TODO:
      to the Redis solution is that We might consider *again* amending the OSM map with new tags and retrieving them from the graph 
      (have no idea how they manipulate bytecode!).
 
- 
-
 
 2. Instruction list may also include noise readings on different segments when least-noise weighting is selected, which are displayed with the reading
    timestamp.
@@ -84,11 +84,6 @@ TODO:
    just because it's the least noisy. A solution could be to have two weighting: 'least_noisy' that takes distance into account, and
    abolute-least-noisy' that just cares about noise--To BE DISCUSSED
 
-4. If more than one vechile is specified in "osmreader.acceptway" in config.properties, the aplication raises an exception when it runs; i.e "Multiple encoders are active, can't return one". currently, only one vechile type is accepted; car,foot,bike,mtb,racingbike.
-   -> This exception is actually coming from EncodingManger when encodingManager.getSingle() is called inside route() inside graphhopper
-   -> Also check getVehicleCount() inside encodingManager()
-   -> Maybe this could be solved by defining another method similar to getSingle() that returns multiple FlagEncoder corresponding to
-      the values specified in osmreader.acceptWay
 
 ------------------------------------------------------------------------------------------------------------------------------
 Miscellaneous

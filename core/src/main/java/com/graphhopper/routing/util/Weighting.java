@@ -41,4 +41,7 @@ public interface Weighting
      * +Infinity. Make sure your method does not return NaN which can e.g. occur for 0/0.
      */
     double calcWeight( EdgeIteratorState edge, boolean reverse );
+    
+    //@Amal Elgammal: enable setting the city name in case of LeastNoisyWeighting
+    public void setCurrentCity( String city );
 }

@@ -34,6 +34,7 @@ import redis.clients.util.SafeEncoder;
 public class LeastNoisyWeighting implements Weighting
 {
     String currentCity;
+    String sensorReading = "noise";
 
     public LeastNoisyWeighting()
     {
@@ -68,10 +69,8 @@ public class LeastNoisyWeighting implements Weighting
     {
         double noiseValue = 30;
         String ntime;
-        //TODO, get the city name from the graph
-        String city = getCurrentCity();
-
-        //Matching keys is very very slow
+        
+        //Matching keys based on patterns is very very slow
         try
         {
 
@@ -85,10 +84,9 @@ public class LeastNoisyWeighting implements Weighting
                 if (edgeName.contains(","))
                     edgeName = edgeName.replace(", ", "_");
 
-                edgeName = "dublin_noise_" + edgeName;
-                
+                //edgeName = "dublin_noise_" + edgeName;
+                edgeName =  this.currentCity+"_"+this.sensorReading+"_"+ edgeName;
                 System.out.println("edgeName = " + edgeName);
-                
                 if (jedis.exists(edgeName))
                 {
                     noiseValue = Double.parseDouble(jedis.hget(edgeName, "noise"));
@@ -125,18 +123,14 @@ public class LeastNoisyWeighting implements Weighting
         return noiseValue;
     }
 
-    //TODO: Start here: should be set in the route method (graphhopper) when selecting and init the appropriate weighting
-    void setCurrentCity( String city )
+    
+    @Override
+    public void setCurrentCity( String city )
     {
         this.currentCity = city;
     }
 
-    String getCurrentCity()
-    {
-        return currentCity;
-
-    }
-
+    //TODO: Start here: should be set in the route method (graphhopper) when selecting and init the appropriate weighting
     @Override
     public String toString()
     {

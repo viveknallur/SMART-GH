@@ -48,4 +48,12 @@ public class ShortestWeighting implements Weighting
     {
         return "SHORTEST";
     }
+    
+     @Override
+     public void setCurrentCity( String city )
+     {   
+         
+     }
+
+
 }

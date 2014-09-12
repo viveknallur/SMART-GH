@@ -61,6 +61,12 @@ public class PreparationWeighting implements Weighting
         return "PREPARE+" + userWeighting.toString();
     }
 
+     @Override
+     public void setCurrentCity( String city )
+     {   
+         
+     }
+     
     Weighting getUserWeighting()
     {
         return userWeighting;
