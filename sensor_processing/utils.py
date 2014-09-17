@@ -48,11 +48,13 @@ def get_relevant_streets(latitude, longitude, propagation_value=None):
             if street_distance > propagation_value:
                 continue
             else:
-                # TODO: Check if name is present, else ignore
-                # DO THIS NOW!!
-                relevant_streets.add(street[u'openstreetmapId'])
-                logger.info("For openstreetmapid:%s"%(street[u'openstreetmapId']))
-		logger.info("Found street:%s"%(street[u'name']))
+                try:
+                    relevant_streets.add(street[u'name'])
+                    logger.debug("For openstreetmapid:%s"%(street[u'openstreetmapId']))
+                    logger.debug("Found street:%s"%(street[u'name']))
+                except KeyError:
+                    logger.debug("No name found for openstreetmapId:%s"%(street[u'openstreetmapId']))
+                    continue
 		
     else:
         logger.warn("Could not retrieve reverse geocoding information")

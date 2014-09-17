@@ -59,6 +59,7 @@ def create_noise_sensor_hash(sensor_name, sensor_file, sensor_propagation):
                         # sleep for a little while, just to be polite
                         time.sleep(3)
                         for street in relevant_streets:
+                            logger.debug("Updating sensor value for %s"%(street))
                             sensor_hash[street].update({sensor_name +"_value":loudness, \
                             sensor_name + "_timestamp": timestamp})
     except ET.ParseError as pe:
