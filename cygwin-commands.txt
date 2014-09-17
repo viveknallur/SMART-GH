@@ -1,3 +1,3 @@
-cd C:/Users/amola/graphhopper
+cd  C:/Users/elgammaa/SMART-GH1
 
 ./graphhopper.sh web ./maps/dublin-m50.osm
