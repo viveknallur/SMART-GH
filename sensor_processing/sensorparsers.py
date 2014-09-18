@@ -20,7 +20,7 @@ import constants
 import summerlogger
 import utils
 
-def create_noise_sensor_hash(sensor_name, sensor_file, sensor_propagation):
+def create_noise_sensor_hash(hash_prefix, sensor_name, sensor_file, sensor_propagation):
     """
     This function reads an XML file created by NoiseTube, finds the appropriate
     streets that the readings pertain to, and creates a hash that can be
@@ -30,7 +30,7 @@ def create_noise_sensor_hash(sensor_name, sensor_file, sensor_propagation):
 
     :returns: Hash containing Way-id and sensor value and timestamp
     """
-    logger = logging.getLogger('summer.reverse_geocode.create_noise_sensor_hash')
+    logger = logging.getLogger('summer.sensorparsers.create_noise_sensor_hash')
     logger.info("Parsing sensor data for: %s"%(sensor_name,))
     sensor_file = os.path.abspath(sensor_file)
     logger.info("Sensor data being grabbed from:%s"%(sensor_file))
@@ -59,9 +59,9 @@ def create_noise_sensor_hash(sensor_name, sensor_file, sensor_propagation):
                         # sleep for a little while, just to be polite
                         time.sleep(3)
                         for street in relevant_streets:
-                            logger.debug("Updating sensor value for %s"%(street))
-                            sensor_hash[street].update({sensor_name +"_value":loudness, \
-                            sensor_name + "_timestamp": timestamp})
+                            street_hash_name = ''.join([hash_prefix,'_',street])
+                            logger.debug("Updating sensor value for %s"%(street_hash_name))
+                            sensor_hash[street_hash_name].update({"value":loudness, "timestamp": timestamp})
     except ET.ParseError as pe:
         logger.warn("Malformed XML. Skipping rest of the file")
     logger.info("Finished processing %s"%(sensor_file))
@@ -78,7 +78,7 @@ def relevant_noise_measurement(prev_lat, prev_long, cur_lat, cur_long, \
 
     """
     logger = \
-        logging.getLogger('summer.reverse_geocode.relevant_noise_measurement')
+        logging.getLogger('summer.sensorparsers.relevant_noise_measurement')
     prev_lat = float(prev_lat)
     prev_long = float(prev_long)
     cur_lat = float(cur_lat)

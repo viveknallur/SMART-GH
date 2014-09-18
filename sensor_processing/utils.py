@@ -27,7 +27,7 @@ def get_relevant_streets(latitude, longitude, propagation_value=None):
     :returns: A set of all streets within propagation distance of the sensor, in 
     the form of openstreetmap's way-id
     """
-    logger = logging.getLogger('summer.reverse_geocode.get_relevant_streets')
+    logger = logging.getLogger('summer.utils.get_relevant_streets')
     prefix_url = \
     'http://services.gisgraphy.com/street/streetsearch?format=json'
     lat_url = '&lat='
@@ -49,7 +49,7 @@ def get_relevant_streets(latitude, longitude, propagation_value=None):
                 continue
             else:
                 try:
-                    relevant_streets.add(street[u'name'])
+                    relevant_streets.add(street[u'name'].__str__())
                     logger.debug("For openstreetmapid:%s"%(street[u'openstreetmapId']))
                     logger.debug("Found street:%s"%(street[u'name']))
                 except KeyError:

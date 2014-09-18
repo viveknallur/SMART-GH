@@ -57,20 +57,21 @@ def exponential_weighted_moving_average(sensor_name, newly_parsed_hash, \
         logger.debug("No historical data present. Returning new hash")
         return newly_parsed_hash
     else:
+        logger.debug(historical_data_hash)
         # Do a sanity check to see if current data is newer than historical
-        historical_date = historical_data_hash[sensor_name + "_timestamp"]
-        current_date = newly_parsed_hash[sensor_name + "_timestamp"]
+        historical_date = historical_data_hash["timestamp"]
+        current_date = newly_parsed_hash["timestamp"]
         if utils.is_date_older(historical_date, current_date):
             # continue processing
-            new_sensor_value = float(newly_parsed_hash[sensor_name + "_value"])
+            new_sensor_value = float(newly_parsed_hash["value"])
             logger.debug("new sensor value: %s"%(new_sensor_value))
-            historical_value = float(historical_data_hash[sensor_name + "_value"])
+            historical_value = float(historical_data_hash["value"])
             logger.debug("historical sensor value: %s"%(historical_value))
             aggregated_value = new_sensor_value + ALPHA * (historical_value - \
                     new_sensor_value)
             logger.debug("Aggregated sensor value: %s"%(aggregated_value))
-            newly_parsed_hash[sensor_name + "_value"] = aggregated_value
-            newly_parsed_hash[sensor_name + "_timestamp"] = current_date
+            newly_parsed_hash["value"] = aggregated_value
+            newly_parsed_hash["timestamp"] = current_date
             return newly_parsed_hash
         else:
             # The newly_parsed_hash contains old sensor data. Ignore it and 
