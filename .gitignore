@@ -24,6 +24,8 @@ debug.sh
 *.pbf
 *.dem
 *.log
+*.pyc
+*.class
 core/TODO*.txt
 cgiarprovider/
 *.gh

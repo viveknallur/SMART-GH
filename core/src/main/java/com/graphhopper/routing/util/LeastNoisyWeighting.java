@@ -110,7 +110,7 @@ public class LeastNoisyWeighting implements Weighting
             System.out.println("edgeName = " + edgeName);
             if (jedis.exists(edgeName))
             {
-                noiseValue = Double.parseDouble(jedis.hget(edgeName, "noise"));
+                noiseValue = Double.parseDouble(jedis.hget(edgeName, "value"));
                 System.out.println("noiseValue = " + noiseValue);
                 ntime = jedis.hget(edgeName, "timestamp");
             }
