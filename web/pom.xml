@@ -95,6 +95,7 @@
             <version>${jetty.version}</version>
         </dependency>
         
+        <!-- @Amal ELgammal: Added to enable parsing of sensor readings config files-->
         <dependency>
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>

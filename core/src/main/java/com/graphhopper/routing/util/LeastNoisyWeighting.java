@@ -16,18 +16,17 @@
 package com.graphhopper.routing.util;
 
 import com.graphhopper.util.EdgeIteratorState;
-import java.util.Random;
-
-import redis.clients.jedis.BinaryJedis;
+import java.io.FileReader;
+import java.io.IOException;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Protocol;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisDataException;
-import redis.clients.util.SafeEncoder;
+import org.ini4j.Ini;
+import java.io.PrintWriter;
 
 /**
  * Calculates the least noisy route- independent of a vehicle as the calculation is based on the
- * noise data linked to edges stores in Redis
+ * noise data linked to edges stored in Redis
  * <p>
  * @author Amal Elgammal
  */
@@ -35,78 +34,35 @@ public class LeastNoisyWeighting implements Weighting
 {
     String currentCity;
     String sensorReading = "noise";
+    Jedis jedis;
 
     public LeastNoisyWeighting()
     {
-        System.out.println("LeastNoiseWeighting instantiated!");
+
     }
 
-    @Override
-    public double getMinWeight( double noiseValue )
+    public LeastNoisyWeighting( String city ) throws JedisConnectionException, JedisDataException
     {
-        //TODO: Check if this needs to be updated
-        return noiseValue;
-    }
-
-    @Override
-    public double calcWeight( EdgeIteratorState edge, boolean reverse )
-    {
-        //Experimenting with returning a random radom between 0-80...Worked!
-        /*Random nw = new Random();
-         double returnedRandom = nw.nextInt(100);
-
-         System.out.println("edge.getEdge() = " + edge.getEdge());
-         System.out.println("edge.getFlags() = " + edge.getFlags());
-         System.out.println("edge.getName() = " + edge.getName());
-
-         return returnedRandom;*/
-
-        double noiseValue = getNoiseFromRedis(edge);
-        return noiseValue;
-    }
-
-    double getNoiseFromRedis( EdgeIteratorState edge ) throws JedisConnectionException, JedisDataException
-    {
-        double noiseValue = 30;
-        String ntime;
-        
-        //Matching keys based on patterns is very very slow
+        //System.out.println("LeastNoiseWeighting instantiated with city parameter!");
+        this.currentCity = city;
+        //System.out.println("this.currentCity inside constructor = " + this.currentCity);
+        String host="";
+        String fileName = "./sensors-config-files/" + this.currentCity + ".config";
+        System.out.println("fileName = " + fileName);
         try
         {
+            Ini ini = new Ini(new FileReader(fileName));
+            host = ini.get("ConnectionSettings").fetch("REDIS_URL");
+            System.out.println("jedisHost = " + host);
+        } catch (IOException e)
+        {
+            System.out.println("IOError: " + e.getMessage());
+        }
 
-            Jedis jedis = new Jedis("localhost");
-            String edgeName = edge.getName();
-            //Set<String> matchedEdges = new HashSet();
+        try
+        {
+            jedis = new Jedis(host);
 
-            if (edgeName.length() > 0)
-            {
-
-                if (edgeName.contains(","))
-                    edgeName = edgeName.replace(", ", "_");
-
-                //edgeName = "dublin_noise_" + edgeName;
-                edgeName =  this.currentCity+"_"+this.sensorReading+"_"+ edgeName;
-                System.out.println("edgeName = " + edgeName);
-                if (jedis.exists(edgeName))
-                {
-                    noiseValue = Double.parseDouble(jedis.hget(edgeName, "noise"));
-                    System.out.println("noiseValue = " + noiseValue);
-                    ntime = jedis.hget(edgeName, "timestamp");
-                }
-            }
-
-            /*if (edgeName.length() >0)
-             {
-             matchedEdges = jedis.keys("dublin_noise_"+edgeName+"*");
-             }*/
-            //could loop on all returned edges, and get the average of returned noise readings, however, it would make
-            //the process slower
-            //if(matchedEdges.size()>0)
-            //{
-            //Iterator iter = matchedEdges.iterator();
-            //String firstKey = (String)iter.next();
-            //}
-            //check what to do with time and how to amend the instruction list with noise readings and timestamp 
         } catch (JedisConnectionException e)
         {
             System.out.println("JedisConnectionException: " + e.getMessage());
@@ -120,17 +76,50 @@ public class LeastNoisyWeighting implements Weighting
 
         }
 
+    }
+
+    @Override
+    public double getMinWeight( double noiseValue )
+    {
+        //TODO: Check if this needs to be updated with other routing algorithms
         return noiseValue;
     }
 
-    
     @Override
-    public void setCurrentCity( String city )
+    public double calcWeight( EdgeIteratorState edge, boolean reverse )
     {
-        this.currentCity = city;
+        double noiseValue = getNoiseFromRedis(edge);
+        return noiseValue;
     }
 
-    //TODO: Start here: should be set in the route method (graphhopper) when selecting and init the appropriate weighting
+    double getNoiseFromRedis( EdgeIteratorState edge )
+    {
+        double noiseValue = 52;
+        String ntime;
+
+        String edgeName = edge.getName();
+
+        if (edgeName.length() > 0)
+        {
+            if (edgeName.contains(","))
+            {
+                edgeName = edgeName.split(",")[0];
+            }
+            
+            edgeName = this.currentCity + "_" + this.sensorReading + "_" + edgeName;
+            System.out.println("edgeName = " + edgeName);
+            if (jedis.exists(edgeName))
+            {
+                noiseValue = Double.parseDouble(jedis.hget(edgeName, "noise"));
+                System.out.println("noiseValue = " + noiseValue);
+                ntime = jedis.hget(edgeName, "timestamp");
+            }
+        }
+
+        //TODO: check what to do with time and how to amend the instruction list with noise readings and timestamp 
+        return noiseValue;
+    }
+
     @Override
     public String toString()
     {

@@ -55,12 +55,7 @@ public class FastestWeighting implements Weighting
             return Double.POSITIVE_INFINITY;
         return edge.getDistance() / (speed * SPEED_CONV);
     }
-    
-     @Override
-     public void setCurrentCity( String city )
-     {   
-         
-     }
+
 
     @Override
     public String toString()
