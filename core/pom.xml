@@ -83,6 +83,13 @@
             <artifactId>osmosis-osm-binary</artifactId>
             <version>0.43.1</version>
         </dependency>
+        <!-- @Amal ELgammal: Added to enable parsing of sensor readings config files-->
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+        
     </dependencies>
         
     <build>

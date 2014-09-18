@@ -634,13 +634,6 @@ public abstract class AbstractRoutingAlgorithmTester
             {
                 return distance;
             }
-            //@Amal ELgammal
-            
-            @Override
-            public void setCurrentCity( String city )
-            {
-
-            }
 
             @Override
             public double calcWeight( EdgeIteratorState edge, boolean reverse )

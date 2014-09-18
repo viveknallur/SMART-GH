@@ -786,11 +786,15 @@ public class GraphHopper implements GraphHopperAPI
         else if("least_noisy".equals(weighting))
         { 
             System.out.println("LeastNoisyWeighting object is created...Huurrraaayyyy");
+            
             //@Amal: send the City name to be used when quering Redis
-            Weighting leastNoisyWeighting = new LeastNoisyWeighting();
             String cityName = getCityName();
             System.out.println("current city = " +cityName);
-            leastNoisyWeighting.setCurrentCity(cityName);
+           
+            Weighting leastNoisyWeighting = new LeastNoisyWeighting(cityName);
+            
+             //leastNoisyWeighting.setCurrentCity(cityName);
+            
             return leastNoisyWeighting;
             
             //return new LeastNoisyWeighting();
