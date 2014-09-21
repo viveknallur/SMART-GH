@@ -41,7 +41,7 @@ public class PopulateRedisRandomNoise
         SAXParserFactory parserFactor = SAXParserFactory.newInstance();
         SAXParser parser = parserFactor.newSAXParser();
         SAXHandler handler = new SAXHandler();
-        parser.parse("output.xml", handler);
+        parser.parse("../maps/output.xml", handler);
         System.out.println("Number of ways = " + handler.waysIDs.size());
         try
         {
@@ -63,14 +63,14 @@ public class PopulateRedisRandomNoise
 
                 if (!jedis.exists(hashkey))
                 {
-                    jedis.hset(hashkey, "noise", noise);
+                    jedis.hset(hashkey, "value", noise);
 
                 } else
                 {
-                    String currentNoise = jedis.hget(hashkey, "noise");
+                    String currentNoise = jedis.hget(hashkey, "value");
                     returnedNoise = (returnedNoise + Double.parseDouble(currentNoise)) / 2;
                     noise = String.valueOf(returnedNoise);
-                    jedis.hset(hashkey, "noise", noise);
+                    jedis.hset(hashkey, "value", noise);
                 }
 
                 jedis.hset(hashkey, "timestamp", ntime);
@@ -96,9 +96,9 @@ public class PopulateRedisRandomNoise
 class SAXHandler extends DefaultHandler
 {
     ArrayList<String> waysIDs = new ArrayList<String>();
-    String wayId ="";
-    String wayName="";
-    String wayRef="";
+    String wayId = "";
+    String wayName = "";
+    String wayRef = "";
     int refFlag = 0;
 
     public SAXHandler()
@@ -118,7 +118,7 @@ class SAXHandler extends DefaultHandler
             if (attributes.getValue("k").equalsIgnoreCase("name"))
             {
                 wayName = attributes.getValue("v");
-                
+
             } else if (attributes.getValue("k").equalsIgnoreCase("ref"))
             {
                 wayRef = attributes.getValue("v");
@@ -135,7 +135,7 @@ class SAXHandler extends DefaultHandler
 
         if (qName.equalsIgnoreCase("way"))
         {
-            if (wayName.length()>0)
+            if (wayName.length() > 0)
             {
                 String firstToken = wayName.split(" ")[0];
 
@@ -145,13 +145,13 @@ class SAXHandler extends DefaultHandler
                         wayName = wayName.substring(firstToken.length() + 1);
                 }
 
-                if (refFlag == 1)
-                    waysIDs.add(wayName + "_" + wayRef);
-                else
-                    waysIDs.add(wayName);
+                // if (refFlag == 1)
+                //    waysIDs.add(wayName + "_" + wayRef);
+                //else
+                waysIDs.add(wayName);
             }
             refFlag = 0;
-            
+
         }
 
     }
