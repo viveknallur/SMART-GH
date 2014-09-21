@@ -27,7 +27,7 @@ logger = logging.getLogger('summer.process_sensor_data_daemon')
 while True:
     try:
         # os.getenv returns a default value, whereas os.environ.get does not
-        config_file_pattern = os.getenv('CONFIG_PATTERN', 'dublin.config')
+        config_file_pattern = os.getenv('CONFIG_PATTERN', '../sensors-config-files/dublin.config')
         logger.info("Config file pattern to be globbed: \
                                                 %s"%(config_file_pattern))
         config_files = glob.glob(config_file_pattern)

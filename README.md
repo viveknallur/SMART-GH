@@ -16,7 +16,8 @@ SMART-GH Pre-requisites:
 	- Linux: (http://redis.io/download)
 	- Windows: One click Redis install as a Windows service(https://github.com/rgl/redis/downloads)
  * Windows user must install Cygwin: https://www.cygwin.com/
- * Sensor parsing: (TODO: vivek describes what needs to be installed and how; Python...etc. )
+ * Sensor data: To download, reverse-geocode and transform sensor data into a format usable by SMART-GH, python is required. Any version >2.6 will do (but not version 3). Having installed python, install the required libraries using the `pip' command. 
+	- (sudo, if required) pip install -r requirements.txt
 		
 Get Started with SMART-GH
 -------------------------
@@ -28,6 +29,7 @@ Get Started with SMART-GH
  4. Run Sensor parsing Daemon:
 	- Go to SMART-GH/sensor_processing
 	- run "python process_sensor_data_daemon.py"
+	(This will take some time depending on the amount of sensor data being transformed)
  5. Run "mvn -DskipTests package" (use Cygwin if you are using Windows)
  6. Run "./graphhopper.sh web ./maps/dublin-m50.osm" (use Cygwin if you are using Windows)
  
