@@ -23,6 +23,7 @@ Get Started with SMART-GH
 
  1. Clone SMART-GH: https://github.com/DIVERSIFY-project/SMART-GH.git
  2. Copy dublin-m50.osm map (https://www.dropbox.com/s/ozo6nowib7dcfbj/dublin-m50.osm?dl=0) to SMART-GH/maps
+	- For sensor-based routing to work correctly, all maps should be placed in maps folder, and should be named following this naming convention: city-*.osm; e.g.,paris-centre.osm
  3. Make sure that 'config.properties' file exists inside SMART-GH folder, and that it satisfies these settings: https://www.dropbox.com/s/bsnkxc3vtgax0tf/config.properties?dl=0
  4. Run Sensor parsing Daemon:
 	- Go to SMART-GH/sensor_processing
