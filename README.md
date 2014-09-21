@@ -27,12 +27,11 @@ Get Started with SMART-GH
  4. Run Sensor parsing Daemon:
 	- Go to SMART-GH/sensor_processing
 	- run "python process_sensor_data_daemon.py"
- 5. Run "mvn install -DskipTests" (use Cygwin if you are using Windows)
- 6. Run "mvn package" (use Cygwin if you are using Windows)
- 5. Run "./graphhopper.sh web ./maps/dublin-m50.osm" (use Cygwin if you are using Windows)
+ 5. Run "mvn -DskipTests package" (use Cygwin if you are using Windows)
+ 6. Run "./graphhopper.sh web ./maps/dublin-m50.osm" (use Cygwin if you are using Windows)
  
 Features
----------------
+---------
 
  * Written in Java
  * Open Source
