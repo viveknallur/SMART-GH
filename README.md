@@ -3,8 +3,8 @@
 SMART-GH extends graphhopper (https://graphhopper.com/) ,which is a fast and memory efficient Java road routing engine released under Apache License 2.0, with a smart and personalized dimension. 
 SMART-GH integrates real time data captured from sensors, utilizing citizens as sensors, and enables the user to submit smart and personalized routing requests:
 
-•	Transport mode: car, foot, bike, mtb and racing bike.
-•	Quality of route: fastest, shortest, least noisy, least air polluted, least polluted (combination of sensors).
+	- Transport mode: car, foot, bike, mtb and racing bike.
+	- Quality of route: fastest, shortest, least noisy, least air polluted, least polluted (combination of sensors).
 
 GraphHopper is tuned towards road networks with OpenStreetMap data but can be useful for public transport problems as well.
 
