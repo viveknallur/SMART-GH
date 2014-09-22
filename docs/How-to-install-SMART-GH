@@ -16,8 +16,14 @@ SMART-GH Pre-requisites:
 	- Linux: (http://redis.io/download)
 	- Windows: One click Redis install as a Windows service(https://github.com/rgl/redis/downloads)
  * Windows user must install Cygwin: https://www.cygwin.com/
- * Sensor data: To download, reverse-geocode and transform sensor data into a format usable by SMART-GH, python is required. Any version >2.6 will do (but not version 3). Having installed python, install the required libraries using the `pip' command. 
+ * Sensor data: To download, reverse-geocode and transform sensor data into a format usable by SMART-GH, python is required. Any version >2.6 will do (but not version 3). 
+   Having installed python, install the required libraries using the `pip' command. 
 	- (sudo, if required) pip install -r requirements.txt
+	- Windows: 
+			  - download get-pip.py from:http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows
+			  - Run "python get-pip.py"
+			  - Run "C:\PythonXX\Tools\Scripts\win_add2path.py"
+			  - Run "pip install -r requirements.txt"
 		
 Get Started with SMART-GH
 -------------------------
@@ -45,14 +51,3 @@ Features
  * ...
  
  
-Graphhopper links:
------------------
-Read through our [docs](https://github.com/graphhopper/graphhopper/blob/master/docs/index.md), 
-[how to contribute](https://github.com/graphhopper/graphhopper/blob/master/CONTRIBUTING.md) and 
-ask questions on [Stackoverflow](http://stackoverflow.com/questions/tagged/graphhopper)
-or sign up to the [mailing list](http://graphhopper.com/#developers).
-
-Graphhoper [![Build Status](https://secure.travis-ci.org/graphhopper/graphhopper.png?branch=master)](http://travis-ci.org/graphhopper/graphhopper)
-
-There are subprojects to make GraphHopper working on [Android](https://github.com/graphhopper/graphhopper/blob/master/docs/android/index.md) or 
-as a [web application](https://github.com/graphhopper/graphhopper/tree/master/web).
