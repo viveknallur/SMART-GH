@@ -35,3 +35,15 @@ Features
  * Works on the desktop, as a web service and offline on Android
  * Well tested
  * [... more](http://graphhopper.com/#overview)
+ 
+Graphhopper links:
+-----------------
+Read through our [docs](https://github.com/graphhopper/graphhopper/blob/master/docs/index.md), 
+[how to contribute](https://github.com/graphhopper/graphhopper/blob/master/CONTRIBUTING.md) and 
+ask questions on [Stackoverflow](http://stackoverflow.com/questions/tagged/graphhopper)
+or sign up to the [mailing list](http://graphhopper.com/#developers).
+
+Graphhoper [![Build Status](https://secure.travis-ci.org/graphhopper/graphhopper.png?branch=master)](http://travis-ci.org/graphhopper/graphhopper)
+
+There are subprojects to make GraphHopper working on [Android](https://github.com/graphhopper/graphhopper/blob/master/docs/android/index.md) or 
+as a [web application](https://github.com/graphhopper/graphhopper/tree/master/web).
