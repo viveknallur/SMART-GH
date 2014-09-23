@@ -32,10 +32,10 @@ while True:
                                                 %s"%(config_file_pattern))
         config_files = glob.glob(config_file_pattern)
         for config_file in config_files:
-			print(""Processing config file for city: %s"%(config_file)))
-            logger.info("Processing config file for city: %s"%(config_file))
-            process_sensor.update_streets_with_sensor_data(os.path.abspath(config_file))
-            logger.info("Done processing config file for city: %s"%(config_file))
+                print("Processing config file for city: %s"%(config_file))
+                logger.info("Processing config file for city: %s"%(config_file))
+                process_sensor.update_streets_with_sensor_data(os.path.abspath(config_file))
+                logger.info("Done processing config file for city: %s"%(config_file))
     except Exception as e:
         logger.warn("Did not call sensor processing daemon: %s"%(e))
         logger.info("Will try again in %s minutes"%(MINUTES_TO_SLEEP))
