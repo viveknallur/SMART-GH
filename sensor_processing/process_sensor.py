@@ -62,8 +62,17 @@ def update_streets_with_sensor_data(city_config_file):
             sensor_type = sensor_config['type']
             hash_prefix = ''.join([city_prefix, '_', sensor_type])
             logger.info("Type of sensor: %s"%(sensor_type))
-            parser_module, parser_func = \
-                sensor_config['parser'].split('.')
+            websvc_module, websvc_func = sensor_config['webservice'].split('.')
+            websvclib = importlib.import_module(websvc_module)
+            websvcfunc = getattr(websvclib, websvc_func)
+            if websvcfunc(sensor_config):
+                logger.info("Successfully got data from webservice")
+                logger.info("Moving on to parsing data...")
+            else:
+                logger.warn("Could not get data from webservice")
+                logger.warn("Giving up on this sensor's data")
+                return False
+            parser_module, parser_func = sensor_config['parser'].split('.')
             parserlib = importlib.import_module(parser_module)
             sensor_parser = getattr(parserlib, parser_func)
             sensor_propagation = int(sensor_config['propagation'])

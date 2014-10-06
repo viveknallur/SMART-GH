@@ -17,9 +17,14 @@ def call_nt_webservice(config_vals):
         url = config_vals['url']
         api_key = config_vals['api_key']
         city_id = config_vals['city_id']
+        # To be polite to the NoiseTube folks, we hit their server
+        # only asking for data from the last 24 hrs
+        yesterday = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+        since_option = ''.join(['&since=', \
+            yesterday.strftime("%Y-%m-%dT%H:%M:%S")])
         data_filename = 'latest_noisetube_readings.json'
         
-        full_url = ''.join([url, api_key,'&city=',city_id])
+        full_url = ''.join([url, api_key,'&city=',city_id, since_option])
         try:
             logger.info("Webservice at url: %s"%(full_url))
             logger.info("Trying to get data...")
@@ -28,14 +33,19 @@ def call_nt_webservice(config_vals):
                 logger.info("Data received successfully")
                 readings_data = jsonpickle.decode(nt_response.read())
                 logger.info("Number of readings received: %s"%(len(readings_data)))
+                if not readings_data:
+                    logger.info("No fresh readings found. Won't write anything")
+                    return True
                 logger.info("Type of readings_data: %s"%(type(readings_data)))
                 full_data_path = ''.join([dirname, data_filename])
                 with open(full_data_path, "w") as datafile:
                     datafile.write(jsonpickle.encode(readings_data))
                     logger.info("Finished writing latest NoiseTube data")
+                    return True
         except Exception as e:
             logger.warn("Could not retrieve data from NoiseTube")
             logger.warn("Reason: %s"%(e.str()))
+            return False
         
 
 if __name__ == '__main__':

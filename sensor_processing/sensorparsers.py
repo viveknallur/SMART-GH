@@ -6,7 +6,7 @@ create a hash, that can be returned.
 # std libs
 import collections
 import ConfigParser
-import json
+import jsonpickle
 import logging
 import os
 import time
@@ -35,35 +35,72 @@ def create_noise_sensor_hash(hash_prefix, sensor_name, sensor_file, sensor_propa
     sensor_file = os.path.abspath(sensor_file)
     logger.info("Sensor data being grabbed from:%s"%(sensor_file))
     sensor_hash = collections.defaultdict(dict)
-    prev_latitude = 0
-    prev_longitude = 0
-    try:
-            for event, elem in ET.iterparse(sensor_file):
-                if elem.tag == "measurement":
-                    loudness = elem.get('loudness')
-                    timestamp = elem.get('timeStamp')
-                    geoloc = elem.get('location')
-                    if geoloc is None:
-                        continue
-                    lat,long = geoloc.lstrip("geo:").split(",")
-                    if not relevant_noise_measurement(prev_latitude, prev_longitude, \
-                                                        lat, long, sensor_propagation):
-                        logger.debug("Prev: %s,%s | curr: %s,%s"%(prev_latitude, \
-                                prev_longitude, lat, long))
-                        logger.debug("Skipping this measurement")
-                        continue
-                    else:
-                        prev_latitude, prev_longitude = lat, long
-                        relevant_streets = utils.get_relevant_streets(lat, long,\
-                                sensor_propagation)
-                        # sleep for a little while, just to be polite
-                        time.sleep(3)
-                        for street in relevant_streets:
-                            street_hash_name = ''.join([hash_prefix,'_',street])
-                            logger.debug("Updating sensor value for %s"%(street_hash_name))
-                            sensor_hash[street_hash_name].update({"value":loudness, "timestamp": timestamp})
-    except ET.ParseError as pe:
-        logger.warn("Malformed XML. Skipping rest of the file")
+    # check if it's a JSON file or an XML file
+    file_ext = os.path.splitext(sensor_file)[1]
+    if file_ext == '.xml':
+            prev_latitude = 0
+            prev_longitude = 0
+            try:
+                    for event, elem in ET.iterparse(sensor_file):
+                        if elem.tag == "measurement":
+                            loudness = elem.get('loudness')
+                            timestamp = elem.get('timeStamp')
+                            geoloc = elem.get('location')
+                            if geoloc is None:
+                                continue
+                            lat,long = geoloc.lstrip("geo:").split(",")
+                            if not relevant_noise_measurement(prev_latitude, prev_longitude, \
+                                                                lat, long, sensor_propagation):
+                                logger.debug("Prev: %s,%s | curr: %s,%s"%(prev_latitude, \
+                                        prev_longitude, lat, long))
+                                logger.debug("Skipping this measurement")
+                                continue
+                            else:
+                                prev_latitude, prev_longitude = lat, long
+                                relevant_streets = utils.get_relevant_streets(lat, long,\
+                                        sensor_propagation)
+                                # sleep for a little while, just to be polite
+                                time.sleep(3)
+                                for street in relevant_streets:
+                                    street_hash_name = ''.join([hash_prefix,'_',street])
+                                    logger.debug("Updating sensor value for %s"%(street_hash_name))
+                                    sensor_hash[street_hash_name].update({"value":loudness, "timestamp": timestamp})
+            except ET.ParseError as pe:
+                logger.warn("Malformed XML. Skipping rest of the file")
+    elif file_ext == '.json':
+        # decode the json file and essentially do the same as above
+        readings_from_file = open(sensor_file, "r").read()
+        readings_data = jsonpickle.decode(readings_from_file)
+        logger.info("Number of entries in file: %s"%(len(readings_data)))
+        prev_latitude = 0
+        prev_longitude = 0
+        for reading in readings_data:
+            loudness = reading['loudness']
+            lat = reading['lat']
+            long = reading['lng']
+            timestamp = reading['made_at']
+            if lat is None or long is None:
+                continue
+            logger.debug("Prev: %s,%s | curr: %s,%s"%(prev_latitude, \
+                                        prev_longitude, lat, long))
+            if not relevant_noise_measurement(prev_latitude, prev_longitude, \
+                    lat, long, sensor_propagation):
+                logger.debug("Skipping this measurement")
+                continue
+            else:
+                prev_latitude, prev_longitude = lat, long
+                relevant_streets = utils.get_relevant_streets(lat, long,\
+                                        sensor_propagation)
+                # sleep for a little while, just to be polite
+                time.sleep(3)
+                for street in relevant_streets:
+                    street_hash_name = ''.join([hash_prefix,'_',street])
+                    logger.debug("Updating sensor value for %s"%(street_hash_name))
+                    sensor_hash[street_hash_name].update({"value":loudness, \
+                        "timestamp": timestamp})
+    else:
+        # We don't understand this file format. Give up
+        logger.warn("File format not understood. Cowardly giving up")
     logger.info("Finished processing %s"%(sensor_file))
     logger.info("Number of streets affected by sensor update: %d"%(len(sensor_hash)))
     return sensor_hash

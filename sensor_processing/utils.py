@@ -35,29 +35,33 @@ def get_relevant_streets(latitude, longitude, propagation_value=None):
 
     full_url = ''.join([prefix_url,lat_url, str(latitude), long_url, str(longitude)])
     logger.debug("Connecting to: %s"%(full_url))
-    geo_response = urlopen_with_retry(full_url)
     relevant_streets = set()
-    if geo_response.code == 200:
-        logger.debug("Received reverse geocoding information")
-        json_geo = json.loads(geo_response.read())
-        num_results = int(json_geo[u'numFound'])
-        logger.info ("Number of results retrieved: %d"%(num_results,))
-        all_streets = json_geo[u'result']
-        for street in all_streets:
-            street_distance = int(street[u'distance'])
-            if street_distance > propagation_value:
-                continue
-            else:
-                try:
-                    relevant_streets.add(street[u'name'].__str__())
-                    logger.debug("For openstreetmapid:%s"%(street[u'openstreetmapId']))
-                    logger.debug("Found street:%s"%(street[u'name']))
-                except KeyError:
-                    logger.debug("No name found for openstreetmapId:%s"%(street[u'openstreetmapId']))
-                    continue
-		
+    try:
+        geo_response = urlopen_with_retry(full_url)
+    except urllib2.URLError as ue:
+        logger.warn("Could not get reverse geo-coded info. Giving up for this location")
     else:
-        logger.warn("Could not retrieve reverse geocoding information")
+            if geo_response.code == 200:
+                logger.debug("Received reverse geocoding information")
+                json_geo = json.loads(geo_response.read())
+                num_results = int(json_geo[u'numFound'])
+                logger.info ("Number of results retrieved: %d"%(num_results,))
+                all_streets = json_geo[u'result']
+                for street in all_streets:
+                    street_distance = int(street[u'distance'])
+                    if street_distance > propagation_value:
+                        continue
+                    else:
+                        try:
+                            relevant_streets.add(street[u'name'].__str__())
+                            logger.debug("For openstreetmapid:%s"%(street[u'openstreetmapId']))
+                            logger.debug("Found street:%s"%(street[u'name']))
+                        except KeyError:
+                            logger.debug("No name found for openstreetmapId:%s"%(street[u'openstreetmapId']))
+                            continue
+                        
+            else:
+                logger.warn("Could not retrieve reverse geocoding information")
 
     return relevant_streets
 
