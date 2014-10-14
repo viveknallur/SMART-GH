@@ -11,7 +11,7 @@ import summerlogger
 
 def call_nt_webservice(config_vals):
         logger = \
-        logging.getLogger('summer.get_noisetube_readings.call_nt_webservice')
+        logging.getLogger('summer.webservices.call_nt_webservice')
         
         dirname = config_vals['dirname']
         url = config_vals['url']
@@ -46,6 +46,20 @@ def call_nt_webservice(config_vals):
             logger.warn("Could not retrieve data from NoiseTube")
             logger.warn("Reason: %s"%(e.str()))
             return False
+
+def call_noop_webservice(config_vals):
+    """
+    This webservice function is a no-op, i.e., it immediately returns True.
+    It's meant for cases, where there is no actual web-service to call, rather
+    the data is already available in a file, which is placed appropriately.
+    Typically, this happens when we get historical data. For instance, from
+    Dublin City Council's publically avaible air pollution data.
+    """
+    logger = \
+        logging.getLogger('summer.webservices.call_noop_webservice')
+
+    logger.info("No-op webservice. Returning true")
+    return True
         
 
 if __name__ == '__main__':

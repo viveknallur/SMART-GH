@@ -29,7 +29,7 @@ def noop_aggregator(sensor_name, newly_parsed_hash, historical_data_hash=None):
     :returns: newly_parsed_hash
     """
     logger = logging.getLogger('summer.aggregator.noop_aggregator')
-    logger.info("No-Op aggregator. Returning newly_parsed_hash")
+    logger.debug("No-Op aggregator. Returning newly_parsed_hash")
     return newly_parsed_hash
 
 def exponential_weighted_moving_average(sensor_name, newly_parsed_hash, \
