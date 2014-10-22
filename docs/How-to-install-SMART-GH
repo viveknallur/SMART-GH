@@ -37,6 +37,32 @@ Get Started with SMART-GH
 	- run "python process_sensor_data_daemon.py"
  5. Run "mvn -DskipTests package" (use Cygwin if you are using Windows)
  6. Run "./graphhopper.sh web ./maps/dublin-m50.osm" (use Cygwin if you are using Windows)
+
+Using the Sensors' Data
+-----------------------
+If you have access to your own sensor data, and want SMART-GH to make use of it 
+while routing, take a look at the config file inside 'sensors-config-files' directory.
+Add your own sensor, and implement the parser that parses your sensors' data
+and feeds it into Redis.
+
+If you don't have access to your own sensor data, you can still play around with
+the data we have for Dublin city. 'dublin_db.rdb' contains the sensor data that 
+we have and is located in the 'sensor_processing' directory. Please point your
+redis server to that file (copy it to any location you prefer), and you're good
+to go! 
+
+Contributing Sensor Data
+------------------------
+There are two ways to add sensor data:
+
+ 1. Create a web-service that can access sensor-data
+        * Add the name of this web-service to the config file
+        * Write a parser to parse through your data, filter it, etc.
+        * Add your sensor to the config file
+        * Run the sensor parsing daemon (as above, in 'Getting Started')
+ 2. Contact us with details about your sensors. If they pertain to Dublin 
+(for the moment, we're only using Dublin), then we can implement a parser for you
+
  
 Features
 ---------
