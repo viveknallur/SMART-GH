@@ -136,7 +136,7 @@ $(document).ready(function(e) {
                         delete json.features['bike']
 
                     var vehicles = Object.keys(json.features);
-                    //@Amal Elgammal: TODO: check, maybe related to the exception raised when multiple vehicles are specified in properties.config
+                    
                     if (vehicles.length > 0)
                         ghRequest.initVehicle(vehicles[0]);
 
@@ -150,7 +150,16 @@ $(document).ready(function(e) {
 
                 for (var i = 0; i < sensorsTxt.length; i++)
                 {
-                    var wsensor = sensorsTxt[i].replace("_", " ");
+                    var wsensor = sensorsTxt[i]; 
+                    wsensor = wsensor.replace("_", " ");
+                    if(wsensor.indexOf("_") >=0)
+                    {
+                         wsensor = wsensor.replace("_", " ");   
+                    }
+               
+                    
+                      console.log("Now wsensor = "+ wsensor);
+                    
                     optionValue = sensorsTxt[i].toLowerCase();
                     $('#weightingSelect').append($('<option>', {
                         value: optionValue,
