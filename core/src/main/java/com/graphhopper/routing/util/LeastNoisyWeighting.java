@@ -22,7 +22,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisDataException;
 import org.ini4j.Ini;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Calculates the least noisy route- independent of a vehicle as the calculation is based on the
@@ -34,6 +37,7 @@ public class LeastNoisyWeighting implements Weighting
 {
     String currentCity;
     String sensorReading = "noise";
+    private double DEFAULT_NOISE_VALUE;
     Jedis jedis;
 
     public LeastNoisyWeighting()
@@ -43,10 +47,8 @@ public class LeastNoisyWeighting implements Weighting
 
     public LeastNoisyWeighting( String city ) throws JedisConnectionException, JedisDataException
     {
-        //System.out.println("LeastNoiseWeighting instantiated with city parameter!");
         this.currentCity = city;
-        //System.out.println("this.currentCity inside constructor = " + this.currentCity);
-        String host="";
+        String host = "";
         String fileName = "./sensors-config-files/" + this.currentCity + ".config";
         System.out.println("fileName = " + fileName);
         try
@@ -75,7 +77,44 @@ public class LeastNoisyWeighting implements Weighting
             System.out.println("Error: " + e.getMessage());
 
         }
+        DEFAULT_NOISE_VALUE = getAvgNoiseValue();
+        System.out.println(" DEFAULT_SMOKE_VALUE = " + DEFAULT_NOISE_VALUE);
 
+    }
+
+    double getAvgNoiseValue()
+    {
+        double medianNoiseValue = 30;
+        String pattern = currentCity + "_" + sensorReading + "_*";
+        System.out.println(" pattern = " + pattern);
+        Set matchedRedisKeys = jedis.keys(pattern);
+
+        if (matchedRedisKeys.size() > 0)
+        {
+            ArrayList<String> array = new ArrayList();
+            array.addAll(matchedRedisKeys);
+            Collections.sort(array);
+            System.out.println(" array length after sorting = " + array.size());
+
+            int middle = array.size() / 2;
+
+            System.out.println(" middle = " + middle);
+            if (array.size() % 2 == 1)
+            {
+                medianNoiseValue = Double.parseDouble(jedis.hget(array.get(middle), "value"));
+                return medianNoiseValue;
+            } else
+            {
+                medianNoiseValue = (Double.parseDouble(jedis.hget(array.get(middle - 1), "value"))
+                        + Double.parseDouble(jedis.hget(array.get(middle - 1), "value"))) / 2;
+                return medianNoiseValue;
+            }
+
+        } else
+        {
+            System.out.print("medianSmokeValue if no smoke data is available = " + medianNoiseValue);
+            return medianNoiseValue;
+        }
     }
 
     @Override
@@ -105,7 +144,7 @@ public class LeastNoisyWeighting implements Weighting
             {
                 edgeName = edgeName.split(",")[0];
             }
-            
+
             edgeName = this.currentCity + "_" + this.sensorReading + "_" + edgeName;
             System.out.println("edgeName = " + edgeName);
             if (jedis.exists(edgeName))
