@@ -103,10 +103,7 @@ public class GraphHopperWeb implements GraphHopperAPI
                     + "&min_path_precision=" + request.getHint("douglas.minprecision", 1)
                     + "&algo=" + request.getAlgorithm()
                     + "&locale=" + request.getLocale().toString()
-                    + "&elevation=" + withElevation
-                    //Added by Amal Elgammal
-                    + "&weighting=" + "leastNoise"
-                    + "&vechile=" + "Bike";
+                    + "&elevation=" + withElevation;
             
             String str = downloader.downloadAsString(url);
             JSONObject json = new JSONObject(str);

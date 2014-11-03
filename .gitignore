@@ -35,3 +35,6 @@ core/docs/
 cgiarprovider/
 /SMART-GH-Android/nbproject/private/
 /HTML5Application/nbproject/private/
+/WebServices/RestfulWSApp/nbproject/private/
+/WebServices/RestfulWSApp/dist/
+/WebServices/RestfulWSApp/build/
