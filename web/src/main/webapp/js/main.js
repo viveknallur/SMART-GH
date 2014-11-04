@@ -5,7 +5,13 @@
 
 var tmpArgs = parseUrlWithHisto();
 
+for (var key in tmpArgs)
+{
+    if (tmpArgs.hasOwnProperty(key)) {
+        console.log("main.js..." + key + " = " + tmpArgs[key]);
+    }
 
+}
 var host = tmpArgs["host"];
 // var host = "http://graphhopper.com/api/1";
 if (!host) {
@@ -17,10 +23,11 @@ if (!host) {
     }
 }
 
+console.log("main.js...host = " + host);
 
 var selectedWeighting = tmpArgs["weighting"];
 var selectedElevation = tmpArgs["elevation"];
-console.log("Elevation at the beginning of main.js if user directly submitted a query URL= "+ selectedElevation);
+console.log("Elevation at the beginning of main.js if user directly submitted a query URL= " + selectedElevation);
 
 var ghRequest = new GHRequest(host);
 
@@ -52,7 +59,7 @@ var iconTo = L.icon({
     iconAnchor: [12, 40]
 });
 
-$(document).ready(function(e) {
+$(document).ready(function (e) {
     // fixing cross domain support e.g in Opera
     jQuery.support.cors = true;
 
@@ -61,7 +68,7 @@ $(document).ready(function(e) {
 
     var History = window.History;
     if (History.enabled) {
-        History.Adapter.bind(window, 'statechange', function() {
+        History.Adapter.bind(window, 'statechange', function () {
             // No need for workaround?
             // Chrome and Safari always emit a popstate event on page load, but Firefox doesn’t
             // https://github.com/defunkt/jquery-pjax/issues/143#issuecomment-6194330
@@ -73,23 +80,22 @@ $(document).ready(function(e) {
 
 
 
-    $('#locationform').submit(function(e) {
+    $('#locationform').submit(function (e) {
         // no page reload
         e.preventDefault();
         mySubmit();
     });
 
-    $('#gpxExportButton a').click(function(e) {
+    $('#gpxExportButton a').click(function (e) {
         // no page reload
         e.preventDefault();
         exportGPX();
     });
 
     var urlParams = parseUrlWithHisto();
-    console.log("ghRequest.getInfo() = " + ghRequest.getInfo().toString());
 
     $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo())
-            .then(function(arg1, arg2) {
+            .then(function (arg1, arg2) {
                 // init translation retrieved from first call (fetchTranslationMap)
                 var translations = arg1[0];
 
@@ -106,6 +112,14 @@ $(document).ready(function(e) {
 
                 var json = arg2[0];
 
+                for (var key in json)
+                {
+                    if (json.hasOwnProperty(key)) {
+                        console.log("main.js, values of (ghRequest.getInfo())[0]...of " + key + " = " + json[key]);
+                    }
+
+                }
+
                 // init bounding box from getInfo result
                 var tmp = json.bbox;
                 bounds.initialized = true;
@@ -119,13 +133,13 @@ $(document).ready(function(e) {
                     var button = $("<button class='vehicle-btn' title='" + tr(vehicle) + "'/>");
                     button.attr('id', vehicle);
                     button.html("<img src='img/" + vehicle + ".png' alt='" + tr(vehicle) + "'></img>");
-                    button.click(function() {
+                    button.click(function () {
                         ghRequest.initVehicle(vehicle);
                         resolveFrom();
                         resolveTo();
                         routeLatLng(ghRequest);
                     });
-                    
+
                     return button;
                 }
 
@@ -136,7 +150,7 @@ $(document).ready(function(e) {
                         delete json.features['bike']
 
                     var vehicles = Object.keys(json.features);
-                    
+
                     if (vehicles.length > 0)
                         ghRequest.initVehicle(vehicles[0]);
 
@@ -150,16 +164,16 @@ $(document).ready(function(e) {
 
                 for (var i = 0; i < sensorsTxt.length; i++)
                 {
-                    var wsensor = sensorsTxt[i]; 
+                    var wsensor = sensorsTxt[i];
                     wsensor = wsensor.replace("_", " ");
-                    if(wsensor.indexOf("_") >=0)
+                    if (wsensor.indexOf("_") >= 0)
                     {
-                         wsensor = wsensor.replace("_", " ");   
+                        wsensor = wsensor.replace("_", " ");
                     }
-               
-                    
-                      console.log("Now wsensor = "+ wsensor);
-                    
+
+
+                    console.log("Now wsensor = " + wsensor);
+
                     optionValue = sensorsTxt[i].toLowerCase();
                     $('#weightingSelect').append($('<option>', {
                         value: optionValue,
@@ -177,14 +191,14 @@ $(document).ready(function(e) {
                     $("#weightingSelect").prop('value', selectedWeighting);
                 }
                 //--End
-                
+
                 //
                 //@Amal Elgammal: if the user opens the url with an elevation value, the value of the elevation in the query
                 //is reflected to the corresponding checkbox on the webpage
 
                 if (selectedElevation)
                 {
-                    $("#elevationCheck").prop('checked',true);
+                    $("#elevationCheck").prop('checked', true);
                 }
                 //--End
 
@@ -195,7 +209,7 @@ $(document).ready(function(e) {
                 initFromParams(urlParams, true);
 
 
-            }, function(err) {
+            }, function (err) {
                 console.log(err);
                 $('#error').html('GraphHopper API offline? <a href="http://graphhopper.com/maps">Refresh</a>'
                         + '<br/>Status: ' + err.statusText + '<br/>' + host);
@@ -209,7 +223,7 @@ $(document).ready(function(e) {
                 initMap();
             });
 
-    $(window).resize(function() {
+    $(window).resize(function () {
         adjustMapSize();
     });
 
@@ -246,7 +260,7 @@ function resolveCoords(fromStr, toStr, doQuery) {
         routeLatLng(ghRequest, doQuery);
     } else {
         // at least one text input from user -> wait for resolve as we need the coord for routing     
-        $.when(resolveFrom(), resolveTo()).done(function(fromArgs, toArgs) {
+        $.when(resolveFrom(), resolveTo()).done(function (fromArgs, toArgs) {
             routeLatLng(ghRequest, doQuery);
         });
     }
@@ -337,12 +351,12 @@ function initMap() {
                 index: 1
             }, {
                 text: 'Show coordinates',
-                callback: function(e) {
+                callback: function (e) {
                     alert(e.latlng.lat + "," + e.latlng.lng);
                 }
             }, {
                 text: 'Center map here',
-                callback: function(e) {
+                callback: function (e) {
                     map.panTo(e.latlng);
                 }
             }]
@@ -432,7 +446,7 @@ function setFlag(coord, isFrom) {
             icon: (isFrom ? iconFrom : iconTo),
             draggable: true
         }).addTo(routingLayer).bindPopup(isFrom ? "Start" : "End");
-        marker.on('dragend', function(e) {
+        marker.on('dragend', function (e) {
             routingLayer.clearLayers();
             // inconsistent leaflet API: event.target.getLatLng vs. mouseEvent.latlng?
             var latlng = e.target.getLatLng();
@@ -466,7 +480,7 @@ function resolve(fromOrTo, locCoord) {
     $("#" + fromOrTo + "Indicator").show();
     $("#" + fromOrTo + "Input").val(locCoord.input);
 
-    return createAmbiguityList(locCoord).done(function(arg1) {
+    return createAmbiguityList(locCoord).done(function (arg1) {
         var errorDiv = $("#" + fromOrTo + "ResolveError");
         errorDiv.empty();
 
@@ -518,11 +532,11 @@ function createAmbiguityList(locCoord) {
             type: "GET",
             dataType: "json",
             timeout: timeout
-        }).fail(function(err) {
+        }).fail(function (err) {
             // not critical => no alert
             locCoord.error = "Error while looking up coordinate";
             console.log(err);
-        }).pipe(function(json) {
+        }).pipe(function (json) {
             if (!json) {
                 locCoord.error = "No description found for coordinate";
                 return [locCoord];
@@ -539,7 +553,7 @@ function createAmbiguityList(locCoord) {
             return [locCoord];
         });
     } else {
-        return doGeoCoding(locCoord.input, 10, timeout).pipe(function(jsonArgs) {
+        return doGeoCoding(locCoord.input, 10, timeout).pipe(function (jsonArgs) {
             if (!jsonArgs || jsonArgs.length == 0) {
                 locCoord.error = "No area description found";
                 return [locCoord];
@@ -653,7 +667,7 @@ function doGeoCoding(input, limit, timeout) {
 }
 
 function createCallback(errorFallback) {
-    return function(err) {
+    return function (err) {
         console.log(errorFallback + " " + JSON.stringify(err));
     };
 }
@@ -726,7 +740,7 @@ function routeLatLng(request, doQuery) {
 //Check the actual sent request
     var urlForAPI = request.createURL("point=" + from + "&point=" + to);
     descriptionDiv.html('<img src="img/indicator.gif"/> Search Route ...');
-    request.doRequest(urlForAPI, function(json) {
+    request.doRequest(urlForAPI, function (json) {
 
         console.log("Sent URL to the servlet: " + urlForAPI);
         descriptionDiv.html("");
@@ -799,7 +813,7 @@ function routeLatLng(request, doQuery) {
         var tmpDist = createDistanceString(path.distance);
         descriptionDiv.append(tr("routeInfo", [tmpDist, tmpTime]));
 
-        $('.defaulting').each(function(index, element) {
+        $('.defaulting').each(function (index, element) {
             $(element).css("color", "black");
         });
 
@@ -817,7 +831,7 @@ function routeLatLng(request, doQuery) {
 
             if (partialInstr) {
                 var moreDiv = $("<button id='moreButton'>" + tr("moreButton") + "..</button>");
-                moreDiv.click(function() {
+                moreDiv.click(function () {
                     moreDiv.remove();
                     for (var m = len; m < path.instructions.length; m++) {
                         var instr = path.instructions[m];
@@ -832,7 +846,7 @@ function routeLatLng(request, doQuery) {
             hiddenDiv.hide();
 
             var toggly = $("<button id='expandDetails'>+</button>");
-            toggly.click(function() {
+            toggly.click(function () {
                 hiddenDiv.toggle();
             });
             $("#info").append(toggly);
@@ -951,7 +965,7 @@ function addInstruction(main, instr, instrIndex, lngLat) {
     var instructionDiv = $("<tr class='instruction'/>");
     instructionDiv.html(str);
     if (lngLat) {
-        instructionDiv.click(function() {
+        instructionDiv.click(function () {
             if (routeSegmentPopup)
                 map.removeLayer(routeSegmentPopup);
 
@@ -1038,7 +1052,7 @@ function mySubmit() {
     if (toStr == "To") {
         // lookup area
         ghRequest.from = new GHInput(fromStr);
-        $.when(resolveFrom()).done(function() {
+        $.when(resolveFrom()).done(function () {
             focus(ghRequest.from);
         });
         return;
@@ -1090,14 +1104,14 @@ function stringFormat(str, args) {
 
     if (str.indexOf("%1$s") >= 0) {
         // with position arguments ala %2$s
-        return str.replace(/\%(\d+)\$s/g, function(match, matchingNum) {
+        return str.replace(/\%(\d+)\$s/g, function (match, matchingNum) {
             matchingNum--;
             return typeof args[matchingNum] != 'undefined' ? args[matchingNum] : match;
         });
     } else {
         // no position so only values ala %s
         var matchingNum = 0;
-        return str.replace(/\%s/g, function(match) {
+        return str.replace(/\%s/g, function (match) {
             var val = typeof args[matchingNum] != 'undefined' ? args[matchingNum] : match;
             matchingNum++;
             return val;
@@ -1151,15 +1165,15 @@ function setAutoCompleteList(fromOrTo) {
         autoSelectFirst: false,
         paramName: "q",
         dataType: ghRequest.dataType,
-        onSearchStart: function(params) {
+        onSearchStart: function (params) {
             // query server only if not a parsable point (i.e. format lat,lon)
             var val = new GHInput(params.q).lat;
             return val === undefined;
         },
-        serviceUrl: function() {
+        serviceUrl: function () {
             return ghRequest.createGeocodeURL();
         },
-        transformResult: function(response, originalQuery) {
+        transformResult: function (response, originalQuery) {
             response.suggestions = [];
             for (var i = 0; i < response.hits.length; i++) {
                 var hit = response.hits[i];
@@ -1167,17 +1181,17 @@ function setAutoCompleteList(fromOrTo) {
             }
             return response;
         },
-        onSearchError: function(element, q, jqXHR, textStatus, errorThrown) {
+        onSearchError: function (element, q, jqXHR, textStatus, errorThrown) {
             // too many errors if interrupted console.log(element + ", " + JSON.stringify(q) + ", textStatus " + textStatus + ", " + errorThrown);
         },
-        formatResult: function(suggestion, currInput) {
+        formatResult: function (suggestion, currInput) {
             // avoid highlighting for now as this breaks the html sometimes
             return dataToHtml(suggestion.data, currInput);
         },
-        onSelect: function(suggestion) {
+        onSelect: function (suggestion) {
             options.onPreSelect(suggestion);
         },
-        onPreSelect: function(suggestion) {
+        onPreSelect: function (suggestion) {
             var req = ghRequest.to;
             if (isFrom)
                 req = ghRequest.from;
@@ -1266,19 +1280,19 @@ function setElevation(request) {
     //@Amal Elgammal: to add the selected Elevation to the request
     if ($("#elevationCheck").prop('checked'))
     {
-        request.elevation=true;   
+        request.elevation = true;
     }
     else
     {
-        request.elevation=false;
+        request.elevation = false;
     }
-     console.log("request.elevation vale in setElevation function is: "+ request.elevation);
-    
+    console.log("request.elevation vale in setElevation function is: " + request.elevation);
+
 }
 
 function toTitleCase(str)
 {
-    return str.replace(/\w\S*/g, function(txt) {
+    return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }

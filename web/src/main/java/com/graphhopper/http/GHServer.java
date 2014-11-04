@@ -22,10 +22,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
-import com.graphhopper.util.CmdArgs;
 import java.net.InetSocketAddress;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import com.graphhopper.util.CmdArgs;
 
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
@@ -45,7 +46,17 @@ public class GHServer
 {
     public static void main( String[] args ) throws Exception
     {
+        /*System.out.println("Inside GHServer...length of args = " + args.length);  
+        
+       for(int i=0; i< args.length;i++)
+       {
+           System.out.println("Inside GHServer...where args[i] = " + args[i]);  
+       }
+        
+       System.out.println("Inside GHServer...where CmdArgs.read(args) = " + CmdArgs.read(args));*/
+        
         new GHServer(CmdArgs.read(args)).start();
+        
     }
 
     private final CmdArgs args;

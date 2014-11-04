@@ -30,9 +30,11 @@ public class GHServletModule extends ServletModule
 {
     protected Map<String, String> params = new HashMap<String, String>();
     private final CmdArgs args;
+   
 
     public GHServletModule( CmdArgs args )
     {
+       // System.out.println("args inside GHServletModule = "+ args.toString());
         this.args = args;
         params.put("mimeTypes", "text/html,"
                 + "text/plain,"

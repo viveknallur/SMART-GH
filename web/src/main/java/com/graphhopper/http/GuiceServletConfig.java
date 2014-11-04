@@ -39,6 +39,7 @@ public class GuiceServletConfig extends GuiceServletContextListener
         try
         {
             args = CmdArgs.readFromConfig("config.properties", "graphhopper.config");
+            System.out.println("args from GuiceServletConfig = "+ args);
         } catch (Exception ex)
         {
             throw new RuntimeException(ex);

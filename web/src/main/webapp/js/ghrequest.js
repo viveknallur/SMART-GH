@@ -281,6 +281,9 @@ GHRequest.prototype.doRequest = function(url, callback) {
     });
 };
 
+//@Amal Elgammal
+//TODO: Replace this call to the servlet to call the getInfo RestWS instead!
+
 GHRequest.prototype.getInfo = function() {
     var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
     console.log("url created inside getInfo" + url);

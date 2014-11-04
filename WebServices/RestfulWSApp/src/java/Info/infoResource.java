@@ -12,13 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
 
 import org.json.JSONObject;
 
 /**
  * REST Web Service
  *
- * @author elgammaa
+ * @author Amal Elgammal
  */
 @Path("info")
 public class infoResource {
@@ -38,18 +39,20 @@ public class infoResource {
      */
     @GET
     @Produces("application/json")
-    public String getJson(String osmPath) throws UnsupportedOperationException, Exception{
+    public String getJson(@QueryParam("osmPath") String osmPath) throws  Exception{
         //TODO return proper representation object
-        
-        
         JSONObject json = new JSONObject();
+     
         String [] vehicles = {"car", "bike", "foot" };
         json.put("vehicles", vehicles);
         json.put("city", "Dublin");
         String[] sensors = {"Least_Noisy", "Least_Air_Pollution"};
         json.put("sensors", sensors);
-        json.put("osmFile", osmPath);
-        return json.toString();
+        
+        String osm = osmPath;
+        json.put("osmFile", osm);
+        System.out.println(json.toString());
+         return json.toString();
         //throw new UnsupportedOperationException();
     }
 

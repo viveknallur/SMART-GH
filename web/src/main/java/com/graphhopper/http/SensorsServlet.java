@@ -16,8 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+
 import org.ini4j.Ini;
 import java.io.FileReader;
+import javax.ws.rs.client.WebTarget;
+import org.json.JSONObject;
+
 
 public class SensorsServlet extends GHBaseServlet
 {
@@ -43,6 +47,15 @@ public class SensorsServlet extends GHBaseServlet
     {
         String fileName = "./sensors-config-files/dublin.config";
         ArrayList sensorsTxt = new ArrayList();
+        
+        
+        
+        infoResource_JerseyClient jerseyclient = new infoResource_JerseyClient();
+        String wsReturnedValue = jerseyclient.getJson("./maps/dublin-m50.osm");
+        JSONObject json = new JSONObject(wsReturnedValue);
+        
+        System.out.println("Length of returned string=" + json.length());
+
 
         try
         {
@@ -68,5 +81,40 @@ public class SensorsServlet extends GHBaseServlet
         res.setHeader("Cache-Control", "no-cache");
         res.getWriter().write(sensorsTxt.toString());
 
+    }
+
+    
+    
+    static class infoResource_JerseyClient
+    {
+        private javax.ws.rs.client.WebTarget webTarget;
+        private javax.ws.rs.client.Client client;
+        private static final String BASE_URI = "http://localhost:8080/RestfulWSApp/webresources";
+
+        public infoResource_JerseyClient()
+        {
+            client = javax.ws.rs.client.ClientBuilder.newClient();
+            webTarget = client.target(BASE_URI).path("info");
+        }
+
+        public void putJson( Object requestEntity ) throws javax.ws.rs.ClientErrorException
+        {
+            webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
+        }
+
+        public String getJson( String osmPath ) throws javax.ws.rs.ClientErrorException
+        {
+            WebTarget resource = webTarget;
+            if (osmPath != null)
+            {
+                resource = resource.queryParam("osmPath", osmPath);
+            }
+            return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+        }
+
+        public void close()
+        {
+            client.close();
+        }
     }
 }

@@ -36,6 +36,7 @@ public class GHBaseServlet extends HttpServlet
 
     protected void writeJson( HttpServletRequest req, HttpServletResponse res, JSONObject json ) throws JSONException, IOException
     {
+       
         String type = getParam(req, "type", "json");
         res.setCharacterEncoding("UTF-8");
         boolean debug = getBooleanParam(req, "debug", false) || getBooleanParam(req, "pretty", false);
