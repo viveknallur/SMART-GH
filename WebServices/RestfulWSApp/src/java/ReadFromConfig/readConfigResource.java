@@ -49,7 +49,7 @@ public class readConfigResource {
         //TODO return proper representation object
         try{
             
-            args = CmdArgs.readFromConfig("C:/Users/elgammaa/SMART-GH/config.properties", systemProperty);
+            args = CmdArgs.readFromConfig("C:/Users/amola/SMART-GH/config.properties", systemProperty);
             //args = CmdArgs.readFromConfig("/../../../../config.properties", systemProperty);
         }catch(IOException e)
         { 

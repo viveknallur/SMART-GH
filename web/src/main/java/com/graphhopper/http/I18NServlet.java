@@ -44,6 +44,8 @@ public class I18NServlet extends GHBaseServlet
         {
             String locale = "";
             String path = req.getPathInfo();
+            System.out.println("req.getPathInfo() = "+ path);
+            
             if (!Helper.isEmpty(path) && path.startsWith("/"))
                 locale = path.substring(1);
 
@@ -51,6 +53,9 @@ public class I18NServlet extends GHBaseServlet
             {
                 // fall back to language specified in header e.g. via browser settings
                 String acceptLang = req.getHeader("Accept-Language");
+                
+                System.out.println("acceptLang = "+ acceptLang);
+                
                 if (!Helper.isEmpty(acceptLang))
                     locale = acceptLang.split(",")[0];
             }

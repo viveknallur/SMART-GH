@@ -59,6 +59,7 @@ var iconTo = L.icon({
     iconAnchor: [12, 40]
 });
 
+
 $(document).ready(function (e) {
     // fixing cross domain support e.g in Opera
     jQuery.support.cors = true;
@@ -112,13 +113,13 @@ $(document).ready(function (e) {
 
                 var json = arg2[0];
 
-                for (var key in json)
+                /*for (var key in json)
                 {
                     if (json.hasOwnProperty(key)) {
-                        console.log("main.js, values of (ghRequest.getInfo())[0]...of " + key + " = " + json[key]);
+                        console.log("main.js, values of (ghRequest.getInfo of " + key + " = " + json[key]);
                     }
 
-                }
+                }*/
 
                 // init bounding box from getInfo result
                 var tmp = json.bbox;
@@ -201,6 +202,9 @@ $(document).ready(function (e) {
                     $("#elevationCheck").prop('checked', true);
                 }
                 //--End
+                
+                //var msg = arg3[0];
+                //console.log("value of msg returned from the webservice call = "+ msg);
 
 
                 initMap();
@@ -1301,4 +1305,16 @@ function setVechile(request)
 {
 
 }
-;
+
+/*function callHelloRWS()
+{
+    var url = "http://localhost:8080/GHRestfulWS/webresources/helloVersailles";
+    console.log("url inside getMsg" + url);
+     return $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "plain",
+        timeout: 3000
+    });
+    
+}*/

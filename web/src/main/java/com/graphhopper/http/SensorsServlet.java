@@ -19,6 +19,8 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 import org.ini4j.Ini;
 import java.io.FileReader;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import org.json.JSONObject;
 
@@ -50,11 +52,11 @@ public class SensorsServlet extends GHBaseServlet
         
         
         
-        infoResource_JerseyClient jerseyclient = new infoResource_JerseyClient();
-        String wsReturnedValue = jerseyclient.getJson("./maps/dublin-m50.osm");
-        JSONObject json = new JSONObject(wsReturnedValue);
+        helloVersaillesResource_JerseyClient jerseyclient = new helloVersaillesResource_JerseyClient();
+        String wsReturnedValue = jerseyclient.getText();
+        //JSONObject json = new JSONObject(wsReturnedValue);
         
-        System.out.println("Length of returned string=" + json.length());
+        System.out.println("LwsReturnedValue=" + wsReturnedValue);
 
 
         try
@@ -83,33 +85,22 @@ public class SensorsServlet extends GHBaseServlet
 
     }
 
-    
-    
-    static class infoResource_JerseyClient
+    static class helloVersaillesResource_JerseyClient
     {
-        private javax.ws.rs.client.WebTarget webTarget;
-        private javax.ws.rs.client.Client client;
-        private static final String BASE_URI = "http://localhost:8080/RestfulWSApp/webresources";
+        private WebTarget webTarget;
+        private Client client;
+        private static final String BASE_URI = "http://localhost:8080/GHRestfulWS/webresources";
 
-        public infoResource_JerseyClient()
+        public helloVersaillesResource_JerseyClient()
         {
             client = javax.ws.rs.client.ClientBuilder.newClient();
-            webTarget = client.target(BASE_URI).path("info");
+            webTarget = client.target(BASE_URI).path("helloVersailles");
         }
 
-        public void putJson( Object requestEntity ) throws javax.ws.rs.ClientErrorException
-        {
-            webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
-        }
-
-        public String getJson( String osmPath ) throws javax.ws.rs.ClientErrorException
+        public String getText() throws ClientErrorException
         {
             WebTarget resource = webTarget;
-            if (osmPath != null)
-            {
-                resource = resource.queryParam("osmPath", osmPath);
-            }
-            return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+            return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).get(String.class);
         }
 
         public void close()
@@ -117,4 +108,8 @@ public class SensorsServlet extends GHBaseServlet
             client.close();
         }
     }
+
+    
+    
+
 }
