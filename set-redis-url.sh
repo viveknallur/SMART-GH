@@ -1,7 +1,13 @@
 #!/bin/bash
+
+#A quick way to set up the redis url for a partical city 
+#bash ./set-redis-url --city dublin --url 127.0.0.1:1234
+#will be used by cloudml to link the GH/sensors to a redis which is not in 
+#the same docker host
+
 city_flag=false
 url_flag=false
-city=''
+city='dublin'
 url=''
 for a;
 do 
