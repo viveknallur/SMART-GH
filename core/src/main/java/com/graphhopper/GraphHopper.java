@@ -54,6 +54,9 @@ public class GraphHopper implements GraphHopperAPI
 {
     public static void main( String[] strs ) throws Exception
     {
+        strs[1]= "maps/dublin-m50.osm";
+        
+        System.out.println("strs = " + strs.toString());
         CmdArgs args = CmdArgs.read(strs);
         GraphHopper hopper = new GraphHopper().init(args);
         hopper.importOrLoad();
