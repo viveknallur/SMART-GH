@@ -32,7 +32,7 @@
 				<version>3.1</version>
 				<configuration>
 					<goalPrefix>glassfish</goalPrefix>
-					<app>target/${project.artifactId}-${project.version}.${packaging}</app>
+					<app>target/${project.artifactId}-${project.version}.${project.packaging}</app>
 					<port>8080</port>
 					<contextRoot>${project.name}</contextRoot>
 					<name>${project.name}</name>
@@ -47,6 +47,34 @@
 					</execution>
 				</executions>
 			</plugin>
+                        <plugin>
+		           <groupId>org.apache.maven.plugins</groupId>
+		           <artifactId>maven-war-plugin</artifactId>
+		           <version>2.5</version>
+		           <configuration>
+		              <webResources>
+		              <resource>
+		              <!-- this is relative to the pom.xml directory -->
+		              <directory>../sensors-config-files</directory>
+                              <targetPath>WEB-INF/classes</targetPath>
+                                <!-- the list has a default value of ** -->
+                                <includes>
+                                   <include>**/*.config</include>
+                                </includes>
+		            </resource>
+                            <resource>
+		              <!-- this is relative to the pom.xml directory -->
+		              <directory>../maps</directory>
+                              <targetPath>WEB-INF/classes/maps</targetPath>
+                                <!-- the list has a default value of ** -->
+                                <includes>
+                                   <include>**/*.osm</include>
+                                </includes>
+		            </resource>
+
+		          </webResources>
+		        </configuration>
+		      </plugin>
 		</plugins>
 	</build>
 
@@ -62,6 +90,13 @@
 			<version>1.0.3.1</version>
 			<scope>compile</scope>
 		</dependency>
+                <!-- @Amal ELgammal: Added to enable parsing of sensor readings config files-->
+                <dependency>                                                           
+                   <groupId>org.ini4j</groupId>                                       
+                   <artifactId>ini4j</artifactId>                                     
+                   <version>0.3.3</version>                                           
+		   <scope>compile</scope>
+                </dependency> 
 		<!-- this is responsible for JAX-RS interface, but it is already included 
 			in jersey-server -->
 <!-- 		<dependency> -->

@@ -1,13 +1,23 @@
 package com.graphhopper.daemonservice;
 
+/* std-lib imports */
+import java.io.*;
+import java.util.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.PathParam;
 
+
+/* third-party imports*/
+import org.ini4j.*;
+
+
+/* our imports */
 import com.graphhopper.GraphHopper;
 
-@Path("/graphhopper")
+@Path("")
 @Produces("text/plain")
 public class RouteHandler {
    
@@ -38,5 +48,32 @@ public class RouteHandler {
 
       return stringBuilder.toString();
    }
+   @GET @Path("/config")
+   public String returnRoute(){
+      String city = "dublin";
+      String ext = ".config";
+      String config_file = city + ext;
+      String realPath = getClass().getResource("/").getPath();
+
+      StringBuilder stringBuilder = new StringBuilder("Hello! ");
+      stringBuilder.append("Sensor text options to be added: ");
+      
+      try{
+	      Ini iniReader = new Ini(new FileReader(realPath + "/" + config_file));
+	      Set<String> allSensors = iniReader.get("SensorsAvailable").keySet();
+	      for (String key: allSensors){
+	              String sensorName = iniReader.get("SensorsAvailable").fetch(key);
+	              String sensorText = iniReader.get(sensorName).fetch("text");
+	              stringBuilder.append(sensorText);
+	      }
+      }catch(Exception fe){
+              fe.printStackTrace();
+      }
+
+
+      return stringBuilder.toString();
+   }
+
+
 
 }
