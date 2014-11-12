@@ -46,7 +46,7 @@ public class ReadCityConfig
      public ArrayList getAvailableSensors(String osmFile) throws IOException {
      //we assume that names of the osm files should be in this format <city><optional '-'><any optional string><.*>
      String cityName = getCity(osmFile);
-        
+
      //sensors configuration files are named as cityname.config
      //Web services folder should be placed on the same level as sensors-config-files
      String fileName = "../sensors-config-files/" + cityName + ".config";

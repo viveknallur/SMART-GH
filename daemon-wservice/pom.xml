@@ -1,136 +1,141 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.graphhopper.daemonservice</groupId>
-        <artifactId>restful-graphhopper</artifactId>
-	<version>0.0.1</version>
-	<name>restful-daemon</name>
-	<packaging>war</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.graphhopper.daemonservice</groupId>
+    <artifactId>restful-graphhopper</artifactId>
+    <version>0.0.1</version>
+    <name>restful-daemon</name>
+    <packaging>war</packaging>
 
-        <parent>
-            <groupId>com.graphhopper</groupId>                                     
-            <artifactId>graphhopper-parent</artifactId>                            
-            <version>0.4-SNAPSHOT</version> 
-        </parent>
+    <parent>
+        <groupId>com.graphhopper</groupId>                                     
+        <artifactId>graphhopper-parent</artifactId>                            
+        <version>0.4-SNAPSHOT</version> 
+    </parent>
 
-	<build>
-		<plugins>
-			<!-- gets specified java version to compile -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<!-- glassfish container plugin -->
-			<plugin>
-				<groupId>org.glassfish</groupId>
-				<artifactId>maven-embedded-glassfish-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<goalPrefix>glassfish</goalPrefix>
-					<app>target/${project.artifactId}-${project.version}.${project.packaging}</app>
-					<port>8080</port>
-					<contextRoot>${project.name}</contextRoot>
-					<name>${project.name}</name>
-				</configuration>
-				<executions>
-					<!-- executes run goal from plugin durring install of project. -->
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-                        <plugin>
-		           <groupId>org.apache.maven.plugins</groupId>
-		           <artifactId>maven-war-plugin</artifactId>
-		           <version>2.5</version>
-		           <configuration>
-		              <webResources>
-		              <resource>
-		              <!-- this is relative to the pom.xml directory -->
-		              <directory>../sensors-config-files</directory>
-                              <targetPath>WEB-INF/classes</targetPath>
-                                <!-- the list has a default value of ** -->
-                                <includes>
-                                   <include>**/*.config</include>
-                                </includes>
-		            </resource>
-                            <resource>
-		              <!-- this is relative to the pom.xml directory -->
-		              <directory>../maps</directory>
-                              <targetPath>WEB-INF/classes/maps</targetPath>
-                                <!-- the list has a default value of ** -->
-                                <includes>
-                                   <include>**/*.osm</include>
-                                </includes>
-		            </resource>
+    <build>
+        <plugins>
+            <!-- gets specified java version to compile -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- glassfish container plugin -->
+            <plugin>
+                <groupId>org.glassfish</groupId>
+                <artifactId>maven-embedded-glassfish-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <goalPrefix>glassfish</goalPrefix>
+                    <app>target/${project.artifactId}-${project.version}.${project.packaging}</app>
+                    <port>8080</port>
+                    <contextRoot>${project.name}</contextRoot>
+                    <name>${project.name}</name>
+                </configuration>
+                <executions>
+                    <!-- executes run goal from plugin durring install of project. -->
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>../sensors-config-files</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                            <!-- the list has a default value of ** -->
+                            <includes>
+                                <include>**/*.config</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>../maps</directory>
+                            <targetPath>WEB-INF/classes/maps</targetPath>
+                            <!-- the list has a default value of ** -->
+                            <includes>
+                                <include>**/*.osm</include>
+                            </includes>
+                        </resource>
 
-		          </webResources>
-		        </configuration>
-		      </plugin>
-		</plugins>
-	</build>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-                <dependency>                                                           
-                   <groupId>com.graphhopper</groupId>                                 
-                   <artifactId>graphhopper</artifactId>                               
-                   <version>${project.parent.version}</version>                       
-                </dependency> 
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.0.3.1</version>
-			<scope>compile</scope>
-		</dependency>
-                <!-- @Amal ELgammal: Added to enable parsing of sensor readings config files-->
-                <dependency>                                                           
-                   <groupId>org.ini4j</groupId>                                       
-                   <artifactId>ini4j</artifactId>                                     
-                   <version>0.3.3</version>                                           
-		   <scope>compile</scope>
-                </dependency> 
-		<!-- this is responsible for JAX-RS interface, but it is already included 
-			in jersey-server -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.ws.rs</groupId> -->
-<!-- 			<artifactId>jsr311-api</artifactId> -->
-<!-- 			<version>1.0</version> -->
-<!-- 		</dependency> -->
-	</dependencies>
+    <dependencies>
+        <dependency>                                                           
+            <groupId>com.graphhopper</groupId>                                 
+            <artifactId>graphhopper</artifactId>                               
+            <version>${project.parent.version}</version>                       
+        </dependency> 
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>1.0.3.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>                                                           
+            <groupId>org.ini4j</groupId>                                       
+            <artifactId>ini4j</artifactId>                                     
+            <version>0.3.3</version>                                           
+            <scope>compile</scope>
+        </dependency> 
+                
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
+        <!-- this is responsible for JAX-RS interface, but it is already included 
+        in jersey-server -->
+        <!-- 		<dependency> -->
+        <!-- 			<groupId>javax.ws.rs</groupId> -->
+        <!-- 			<artifactId>jsr311-api</artifactId> -->
+        <!-- 			<version>1.0</version> -->
+        <!-- 		</dependency> -->
+    </dependencies>
 
-	<repositories>
-		<repository>
-			<id>maven2-repository.dev.java.net</id>
-			<name>Java.net Repository for Maven</name>
-			<url>http://download.java.net/maven/2/</url>
-		</repository>
-		<repository>
-			<id>glassfish-repository</id>
-			<name>Java.net Repository for Glassfish</name>
-			<url>http://download.java.net/maven/glassfish</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+        <repository>
+            <id>glassfish-repository</id>
+            <name>Java.net Repository for Glassfish</name>
+            <url>http://download.java.net/maven/glassfish</url>
+        </repository>
+    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>maven.java.net</id>
-			<name>Java.net Maven2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</pluginRepository>
-		<!-- you can find maven-embedded-glassfish-plugin in this repository -->
-		<pluginRepository>
-			<id>glassfish-repository</id>
-			<name>Java.net Repository for Glassfish</name>
-			<url>http://download.java.net/maven/glassfish</url>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven.java.net</id>
+            <name>Java.net Maven2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
+        </pluginRepository>
+        <!-- you can find maven-embedded-glassfish-plugin in this repository -->
+        <pluginRepository>
+            <id>glassfish-repository</id>
+            <name>Java.net Repository for Glassfish</name>
+            <url>http://download.java.net/maven/glassfish</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
