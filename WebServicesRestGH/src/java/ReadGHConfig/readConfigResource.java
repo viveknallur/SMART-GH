@@ -7,6 +7,7 @@ package ReadGHConfig;
 
 import com.graphhopper.util.CmdArgs;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -45,7 +46,6 @@ public class readConfigResource {
         if(systemProperty.equals(""))
             systemProperty = "graphhopper.config";
         try{
-            
             args = CmdArgs.readFromConfig("C:/Users/elgammaa/SMART-GH/config.properties", systemProperty);
             //args = CmdArgs.readFromConfig("/../../../../config.properties", systemProperty);
         }catch(IOException e)
