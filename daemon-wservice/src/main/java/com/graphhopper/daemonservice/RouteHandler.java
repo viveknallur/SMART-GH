@@ -7,7 +7,7 @@ import javax.ws.rs.PathParam;
 
 import com.graphhopper.GraphHopper;
 
-@Path("/route/{user}")
+@Path("/graphhopper")
 @Produces("text/plain")
 public class RouteHandler {
    
@@ -21,7 +21,7 @@ public class RouteHandler {
       hopper.forServer();
       hopper.setOSMFile(osmFilePath);
    }
-   @GET
+   @GET @Path("/info/{user}")
    public String sayHello(@PathParam("user") String username){
       StringBuilder stringBuilder = new StringBuilder("Hello, " + username);
       stringBuilder.append("!").append("There are 10 thousand routes from Tallaght to Dundrum");
@@ -30,4 +30,13 @@ public class RouteHandler {
 
       return stringBuilder.toString();
    }
+   @GET @Path("/route/{user}")
+   public String returnRoute(@PathParam("user") String username){
+      StringBuilder stringBuilder = new StringBuilder("Hello, " + username);
+      stringBuilder.append("!").append("We try and try to reach our destination");
+      stringBuilder.append(", but the road never ends ");
+
+      return stringBuilder.toString();
+   }
+
 }
