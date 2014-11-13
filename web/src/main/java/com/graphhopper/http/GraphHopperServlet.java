@@ -31,6 +31,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,7 +67,9 @@ public class GraphHopperServlet extends GHBaseServlet
 
     void writePath( HttpServletRequest req, HttpServletResponse res ) throws Exception
     {
-        List<GHPoint> infoPoints = getPoints(req);
+        
+        //TODO: Amal, Replace such that points are sent to our WS as lat1, lon1, lat2, lon2
+        //List<GHPoint> infoPoints = getPoints(req);
 
         // we can reduce the path length based on the maximum differences to the original coordinates
         double minPathPrecision = getDoubleParam(req, "min_path_precision", 1d);
@@ -76,46 +81,25 @@ public class GraphHopperServlet extends GHBaseServlet
         String weighting = getParam(req, "weighting", "fastest");
         String algoStr = getParam(req, "algorithm", "");
         String localeStr = getParam(req, "locale", "en");
-        //@Amal Elgammal
-        hopper.setElevation(elevation);
+       
 
-        StopWatch sw = new StopWatch().start();
-        GHResponse rsp;
-        if (!hopper.getEncodingManager().supports(vehicleStr))
-        {
-            rsp = new GHResponse().addError(new IllegalArgumentException("Vehicle not supported: " + vehicleStr));
-        } else if (elevation && !hopper.hasElevation())
-        {
-            rsp = new GHResponse().addError(new IllegalArgumentException("Elevation not supported!"));
-        } else
-        {
-            FlagEncoder algoVehicle = hopper.getEncodingManager().getEncoder(vehicleStr);
-            //Amal
-            System.out.println("algoVehicle="+ algoVehicle);
-            rsp = hopper.route(new GHRequest(infoPoints).
-                    setVehicle(algoVehicle.toString()).
-                    setWeighting(weighting).
-                    setAlgorithm(algoStr).
-                    setLocale(localeStr).
-                    putHint("calcPoints", calcPoints).
-                    putHint("instructions", enableInstructions).
-                    putHint("douglas.minprecision", minPathPrecision));
-        }
-
-        float took = sw.stop().getSeconds();
-        String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
+        RouteHandler_JerseyClient jerseyClient = new RouteHandler_JerseyClient();
+        //TODO: Pass parameters
+        String json = jerseyClient.returnRoute();
+    
+       /* String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
         PointList points = rsp.getPoints();
         String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
                 + ", distance: " + rsp.getDistance() + ", time:" + Math.round(rsp.getMillis() / 60000f)
                 + "min, points:" + points.getSize() + ", took:" + took
                 + ", debug - " + rsp.getDebugInfo() + ", " + algoStr + ", "
-                + weighting + ", " + vehicleStr;
+                + weighting + ", " + vehicleStr;*/
         
-
-        if (rsp.hasErrors())
+        
+        /*if (rsp.hasErrors())
             logger.error(logStr + ", errors:" + rsp.getErrors());
         else
-            logger.info(logStr);
+            logger.info(logStr);*/
 
         if (writeGPX)
             writeGPX(req, res, rsp);
@@ -220,5 +204,48 @@ public class GraphHopperServlet extends GHBaseServlet
         }
 
         return infoPoints;
+    }
+
+    static class RouteHandler_JerseyClient
+    {
+        private WebTarget webTarget;
+        private Client client;
+        private static final String BASE_URI = "http://localhost:8080/";
+
+        public RouteHandler_JerseyClient()
+        {
+            client = javax.ws.rs.client.ClientBuilder.newClient();
+            webTarget = client.target(BASE_URI);
+        }
+
+        public String sayHello( String name ) throws ClientErrorException
+        {
+            WebTarget resource = webTarget;
+            if (name != null)
+            {
+                resource = resource.queryParam("name", name);
+            }
+            resource = resource.path("info");
+            return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).get(String.class);
+        }
+
+        public String returnRoute() throws ClientErrorException
+        {
+            WebTarget resource = webTarget;
+            resource = resource.path("route");
+            return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+        }
+
+        public String returnConfig() throws ClientErrorException
+        {
+            WebTarget resource = webTarget;
+            resource = resource.path("config");
+            return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).get(String.class);
+        }
+
+        public void close()
+        {
+            client.close();
+        }
     }
 }

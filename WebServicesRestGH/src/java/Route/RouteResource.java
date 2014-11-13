@@ -68,7 +68,8 @@ public class RouteResource implements GraphHopperAPI {
 
         //online service
         gh.load("http://localhost:8989/route");
-        //offline
+        //gh.load("dublin-m50-gh");
+        //        //offline
         //gh.load("C:/Users/amola/SMART-GH");
 
         /*if (lat1.equals(""))

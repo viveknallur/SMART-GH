@@ -26,9 +26,9 @@ public class Tests {
          writer.println("The first line");
          writer.println("The second line");
          writer.close();*/
-        ReadCityConfig R = new ReadCityConfig();
+        /*ReadCityConfig R = new ReadCityConfig();
         ArrayList result = R.getAvailableSensors("dublin-m50.osm");
-        System.out.println("result = " + result);
+        System.out.println("result = " + result);*/
 
         /*File f = new File("../sensors-config-files/" + cityName + ".config");
          if (f.exists() && !f.isDirectory()) 

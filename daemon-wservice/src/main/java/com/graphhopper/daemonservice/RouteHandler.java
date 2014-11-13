@@ -22,6 +22,7 @@ import com.graphhopper.GHResponse;
 import com.graphhopper.routing.util.FlagEncoder;
 import com.graphhopper.util.*;
 import com.graphhopper.util.shapes.GHPoint;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,49 +31,51 @@ public class RouteHandler
 {
     private static GraphHopper hopper;
     private static String osmFilePath = "../maps/dublin-m50.osm";
-    
-
-    
+    private static CmdArgs args;
 
     static
     {
-        //hopper = new GraphHopper().init(args);
-      
+
         hopper = new GraphHopper();
+        hopper.setOSMFile(osmFilePath);
         hopper.setInMemory(true);
         hopper.setDoPrepare(false);
         hopper.forServer();
-        hopper.setOSMFile(osmFilePath);
-        //hopper.setGraph("../maps/dublin-m50.osm");
-        
-        //TODO replace with graphhopper folder
+        try
+        {
+            args = CmdArgs.readFromConfig("../config.properties", "graphhopper.config");
+            System.out.println("args= " + args);
+        } catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+
+        hopper.init(args);
+        hopper.importOrLoad();
 
     }
 
     @Context
     private UriInfo context;
 
+    //@Inject
+    //private GraphHopper hopper;
     //for route: setting the default values
-    boolean calcPoints = true;
-    boolean enableInstructions = true;
-    boolean pointsEncoded = true;
-
     //
-
     @GET
     @Path("/info")
     @Produces("text/plain")
-    public String sayHello( @QueryParam("name1") String name1,
-            @QueryParam("name2") String name2 )
+    public String sayHello( @QueryParam("name") String name )
     {
-
-        StringBuilder stringBuilder = new StringBuilder("Hello, " + name1 + " and " + name2);
+        StringBuilder stringBuilder = new StringBuilder("Hello, " + name);
         stringBuilder.append("!").append("There are 10 thousand routes from Tallaght to Dundrum");
         stringBuilder.append(". And graphy says 'hi!' from: ");
         stringBuilder.append(RouteHandler.hopper.getOSMFile());
 
         return stringBuilder.toString();
     }
+    
+     /****************************START OF ROUTE*********************************************************/
 
     @GET
     @Path("/route")
@@ -81,23 +84,26 @@ public class RouteHandler
             @QueryParam("lon1") double lon1,
             @QueryParam("lat2") double lat2,
             @QueryParam("lon2") double lon2,
-            @QueryParam("vehicleStr") String vehicleStr,
+            @QueryParam("vehicle") String vehicleStr,
             @QueryParam("weighting") String weighting,
             @QueryParam("algoStr") String algoStr,
             @QueryParam("elevation") boolean elevationValue ) throws JSONException, IOException
     {
+       
+       //TODO: Send localeStr as argument
+        //setting default values
+        boolean calcPoints = true;
+        boolean enableInstructions = true;
+        boolean pointsEncoded = true;
 
-        String[] strs ={osmFilePath};
-        CmdArgs args = CmdArgs.read(strs);
-        hopper.init(args);
-        hopper = hopper.importOrLoad();
+        //Set the defaults of non-relevant parameters
+        double minPathPrecision = 1d;
+        boolean writeGPX = false;
+        String localeStr = "en";
+        boolean elevation = elevationValue;
 
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
-
-        List<GHPoint> infoPoints = new ArrayList<GHPoint>();
-        infoPoints.add(source);
-        infoPoints.add(destination);
 
         if (!(vehicleStr.equals("")))
         {
@@ -106,44 +112,50 @@ public class RouteHandler
         {
             vehicleStr = "CAR";
         }
-
         if (weighting.equals(""))
             weighting = "fastest";
 
-        //Set the defaults of non-relevant parameters
-        double minPathPrecision = 1d;
-        boolean writeGPX = false;
-        String localeStr = "en";
-        boolean elevation = elevationValue;
+        List<GHPoint> infoPoints = new ArrayList<GHPoint>();
+        infoPoints.add(source);
+        infoPoints.add(destination);
+        //GHRequest request = new GHRequest(infoPoints);
+        //request.setVehicle(vehicleStr);
+        //request.setWeighting(weighting);
         hopper.setElevation(elevation);
 
         StopWatch sw = new StopWatch().start();
+
+        //GHResponse response = hopper.route(request);
         GHResponse rsp;
 
         FlagEncoder algoVehicle = hopper.getEncodingManager().getEncoder(vehicleStr);
 
-        rsp = hopper.route(new GHRequest(infoPoints).
-                setVehicle(algoVehicle.toString()).
-                setWeighting(weighting).
-                setAlgorithm(algoStr).
-                setLocale(localeStr).
-                putHint("calcPoints", calcPoints).
-                putHint("instructions", enableInstructions).
-                putHint("douglas.minprecision", minPathPrecision));
-       // }
+        if (!hopper.getEncodingManager().supports(vehicleStr))
+        {
+            rsp = new GHResponse().addError(new IllegalArgumentException("Vehicle not supported: " + vehicleStr));
+        } else if (elevation && !hopper.hasElevation())
+        {
+            rsp = new GHResponse().addError(new IllegalArgumentException("Elevation not supported!"));
+        } else
+        {
 
-        float took = sw.stop().getSeconds();
-        System.out.println(rsp);
-        //PointList points = rsp.getPoints();
-
-        //return rsp.toString();
-        JSONObject json = writeJson(rsp, elevation, took);
+            rsp = hopper.route(new GHRequest(infoPoints).
+                    setVehicle(algoVehicle.toString()).
+                    setWeighting(weighting).
+                    setAlgorithm(algoStr).
+                    setLocale(localeStr).
+                    putHint("calcPoints", calcPoints).
+                    putHint("instructions", enableInstructions).
+                    putHint("douglas.minprecision", minPathPrecision));
+        }
+        
+          float took = sw.stop().getSeconds();
+        JSONObject json = writeJson(rsp, elevation, calcPoints, pointsEncoded, enableInstructions, took);
         return json.toString();
 
-        //return lat1 + "and" + lon1;
     }
 
-    private JSONObject writeJson( GHResponse rsp, boolean elevation, float took ) throws JSONException, IOException
+    private JSONObject writeJson( GHResponse rsp, boolean elevation, boolean calcPoints, boolean pointsEncoded, boolean enableInstructions, float took ) throws JSONException, IOException
     {
         JSONObject json = new JSONObject();
         JSONObject jsonInfo = new JSONObject();
@@ -206,6 +218,7 @@ public class RouteHandler
         jsonPoints.put("coordinates", points.toGeoJson(includeElevation));
         return jsonPoints;
     }
+    /****************************END OF ROUTE*******************************************************************/
 
     @GET
     @Path("/config")
