@@ -58,10 +58,8 @@ public class RouteHandler
     @Context
     private UriInfo context;
 
-    //@Inject
-    //private GraphHopper hopper;
-    //for route: setting the default values
-    //
+   
+
     @GET
     @Path("/info")
     @Produces("text/plain")
@@ -75,6 +73,21 @@ public class RouteHandler
         return stringBuilder.toString();
     }
     
+    @GET
+    @Path("/hello")
+    @Produces("text/plain")
+    public String HelloHello()
+    {
+        StringBuilder stringBuilder = new StringBuilder("Hello, ");
+        stringBuilder.append("!").append("There are 10 thousand routes from Tallaght to Dundrum");
+        stringBuilder.append(". And graphy says 'hi!' from: ");
+        stringBuilder.append(RouteHandler.hopper.getOSMFile());
+
+        return stringBuilder.toString();
+    }
+    
+    
+    
      /****************************START OF ROUTE*********************************************************/
 
     @GET
@@ -87,23 +100,29 @@ public class RouteHandler
             @QueryParam("vehicle") String vehicleStr,
             @QueryParam("weighting") String weighting,
             @QueryParam("algoStr") String algoStr,
-            @QueryParam("elevation") boolean elevationValue ) throws JSONException, IOException
+            @QueryParam("elevation") boolean elevationValue,
+            @QueryParam("locale") String localeStr,
+	    @QueryParam("minPathPrecision") double minPathPrecision,
+	    @QueryParam("enableInstructions") boolean enableInstructions,
+	    @QueryParam("calcPoints") boolean calcPoints) throws JSONException, IOException
     {
        
-       //TODO: Send localeStr as argument
         //setting default values
-        boolean calcPoints = true;
-        boolean enableInstructions = true;
+        calcPoints = true;
+        enableInstructions = true;
         boolean pointsEncoded = true;
 
         //Set the defaults of non-relevant parameters
-        double minPathPrecision = 1d;
+        minPathPrecision = 1d;
         boolean writeGPX = false;
-        String localeStr = "en";
+        
         boolean elevation = elevationValue;
 
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
+        
+        if (localeStr.equals(""))
+            localeStr = "en";
 
         if (!(vehicleStr.equals("")))
         {

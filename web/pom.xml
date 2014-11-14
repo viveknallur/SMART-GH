@@ -102,6 +102,14 @@
             <version>0.3.3</version>
         </dependency>
         
+       <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-bundle</artifactId>
+            <version>1.11</version>
+        </dependency>
+
+
+        
         <!-- for integration tests of service -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
