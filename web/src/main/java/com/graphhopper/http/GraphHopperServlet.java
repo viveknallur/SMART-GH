@@ -105,6 +105,8 @@ public class GraphHopperServlet extends GHBaseServlet
          
          String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
          //PointList points = rsp.getPoints();
+         
+         //TODO: FIX the logStr
          String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
          + ", distance: " /*+ json.getString("distance")*/ + ", time:" /*+ Math.round(Double.parseDouble(json.getString("time"))/ 60000f)
          + "min, points:" /*+ points.getSize() + ", took:" + json.getString("info")*/
@@ -122,6 +124,8 @@ public class GraphHopperServlet extends GHBaseServlet
         //if (writeGPX)
         //    writeGPX(req, res, rsp);
         //else
+         //TODO: Handle the returned error
+         
             writeJson(req, res, json);
     }
 

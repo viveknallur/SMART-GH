@@ -295,18 +295,6 @@ GHRequest.prototype.getInfo = function() {
     });
 };
 
-//AE: experimenting with calling my WS inside JS code
-
-GHRequest.prototype.getMsg = function() {
-    var url = "http://localhost:8080/GHRestfulWS/webresources/helloVersailles";
-    console.log("url inside getMsg" + url);
-    return $.ajax({
-        "url": url,
-        "timeout": 3000,
-        "type": "GET",
-        "dataType": this.dataType
-    });
-};
 
 GHInput = function(str) {
     // either text or coordinates

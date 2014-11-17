@@ -20,7 +20,9 @@ import com.graphhopper.GraphHopper;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.routing.util.FlagEncoder;
+import com.graphhopper.storage.StorableProperties;
 import com.graphhopper.util.*;
+import com.graphhopper.util.shapes.BBox;
 import com.graphhopper.util.shapes.GHPoint;
 
 import org.json.JSONException;
@@ -30,17 +32,19 @@ import org.json.JSONObject;
 public class RouteHandler
 {
     private static GraphHopper hopper;
-    private static String osmFilePath = "../maps/dublin-m50.osm";
+    //private static String osmFilePath = "../maps/dublin-m50.osm";
     private static CmdArgs args;
+    private static TranslationMap map;
 
     static
     {
 
         hopper = new GraphHopper();
-        hopper.setOSMFile(osmFilePath);
+        //hopper.setOSMFile(osmFilePath);
         hopper.setInMemory(true);
         hopper.setDoPrepare(false);
         hopper.forServer();
+        map = hopper.getTranslationMap();
         try
         {
             args = CmdArgs.readFromConfig("../config.properties", "graphhopper.config");
@@ -58,10 +62,8 @@ public class RouteHandler
     @Context
     private UriInfo context;
 
-   
-
     @GET
-    @Path("/info")
+    @Path("/sayHello")
     @Produces("text/plain")
     public String sayHello( @QueryParam("name") String name )
     {
@@ -72,7 +74,7 @@ public class RouteHandler
 
         return stringBuilder.toString();
     }
-    
+
     @GET
     @Path("/hello")
     @Produces("text/plain")
@@ -85,11 +87,10 @@ public class RouteHandler
 
         return stringBuilder.toString();
     }
-    
-    
-    
-     /****************************START OF ROUTE*********************************************************/
 
+    /**
+     * **************************START OF ROUTE********************************************************
+     */
     @GET
     @Path("/route")
     @Produces("application/json")
@@ -102,11 +103,11 @@ public class RouteHandler
             @QueryParam("algoStr") String algoStr,
             @QueryParam("elevation") boolean elevationValue,
             @QueryParam("locale") String localeStr,
-	    @QueryParam("minPathPrecision") double minPathPrecision,
-	    @QueryParam("enableInstructions") boolean enableInstructions,
-	    @QueryParam("calcPoints") boolean calcPoints) throws JSONException, IOException
+            @QueryParam("minPathPrecision") double minPathPrecision,
+            @QueryParam("enableInstructions") boolean enableInstructions,
+            @QueryParam("calcPoints") boolean calcPoints ) throws JSONException, IOException
     {
-       
+
         //setting default values
         calcPoints = true;
         enableInstructions = true;
@@ -115,12 +116,12 @@ public class RouteHandler
         //Set the defaults of non-relevant parameters
         minPathPrecision = 1d;
         boolean writeGPX = false;
-        
+
         boolean elevation = elevationValue;
 
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
-        
+
         if (localeStr.equals(""))
             localeStr = "en";
 
@@ -167,8 +168,8 @@ public class RouteHandler
                     putHint("instructions", enableInstructions).
                     putHint("douglas.minprecision", minPathPrecision));
         }
-        
-          float took = sw.stop().getSeconds();
+
+        float took = sw.stop().getSeconds();
         JSONObject json = writeJson(rsp, elevation, calcPoints, pointsEncoded, enableInstructions, took);
         return json.toString();
 
@@ -237,8 +238,158 @@ public class RouteHandler
         jsonPoints.put("coordinates", points.toGeoJson(includeElevation));
         return jsonPoints;
     }
-    /****************************END OF ROUTE*******************************************************************/
 
+    /**
+     * **************************END OF ROUTE******************************************************************
+     */
+
+    /**
+     * **************************START OF INFO********************************************************
+     */
+    @GET
+    @Path("/info")
+    @Produces("application/json")
+    public String returnInfo() throws JSONException, IOException
+    {
+        JSONObject json = new JSONObject();
+        BBox bb = hopper.getGraph().getBounds();
+        List<Double> list = new ArrayList<Double>(4);
+        list.add(bb.minLon);
+        list.add(bb.minLat);
+        list.add(bb.maxLon);
+        list.add(bb.maxLat);
+
+        json.put("bbox", list);
+
+        String[] vehicles = hopper.getGraph().getEncodingManager().toString().split(",");
+        json.put("supported_vehicles", vehicles);
+
+        JSONObject features = new JSONObject();
+        for (String v : vehicles)
+        {
+            JSONObject perVehicleJson = new JSONObject();
+            perVehicleJson.put("elevation", hopper.hasElevation());
+            features.put(v, perVehicleJson);
+        }
+        json.put("features", features);
+
+        json.put("version", Constants.VERSION);
+        json.put("build_date", Constants.BUILD_DATE);
+
+        StorableProperties props = hopper.getGraph().getProperties();
+        json.put("import_date", props.get("osmreader.import.date"));
+
+        if (!Helper.isEmpty(props.get("prepare.date")))
+        {
+            json.put("prepare_date", props.get("prepare.date"));
+        }
+
+        String osmFile = hopper.getOSMFile();
+        ArrayList sensorsTxt = new ArrayList();
+
+        /*sensorsTxt = getAvailableSensors(osmFile);
+        json.put("osmFile", osmFile);
+        json.put("city", getCity(osmFile));
+        json.put("sensors", sensorsTxt);*/
+
+        return json.toString();
+    }
+    
+    //TODO: Unomment after packing dublin.config with the generated JAR/WAR file
+
+    /*ArrayList getAvailableSensors( String osmFile ) throws IOException
+    {
+        //we assume that names of the osm files should be in this format <city><optional '-'><any optional string><.*>
+        String cityName = getCity(osmFile);
+        String ext = ".config";
+
+        //sensors configuration files are named as cityname.config
+        String config_file = cityName + ext;
+        String realPath = getClass().getResource("/").getPath();
+        
+        //String fileName = "./sensors-config-files/" + cityName + ".config";
+        ArrayList sensorsTxt = new ArrayList();
+        try
+        {
+            Ini ini = new Ini(new FileReader(realPath + "/" + config_file));
+            Set<String> allSensors = ini.get("SensorsAvailable").keySet();
+            for (String key : allSensors)
+            {
+                String sensorName = ini.get("SensorsAvailable").fetch(key);
+                String text = ini.get(sensorName).fetch("text");
+                sensorsTxt.add(text);
+            }
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return sensorsTxt;
+    }
+
+    String getCity( String osmFile )
+    {
+        int num = osmFile.split("/").length;
+        String cityName = osmFile.split("/")[num - 1];
+
+        cityName = cityName.split("\\.")[0];
+        if (cityName.contains("-"))
+            cityName = cityName.split("-")[0];
+
+        return cityName;
+    }*/
+
+    /**
+     * **************************END OF INFO******************************************************************
+     */
+    
+     /***************************START OF I18N******************************************************************/
+    
+    @GET
+    @Path("/i18n")
+    @Produces("application/json")
+    public String returnI18N(@QueryParam("path") String path,
+                              @QueryParam("acceptLang") String acceptLang) throws JSONException
+    {
+            String locale = "";
+            
+            if (!Helper.isEmpty(path) && path.startsWith("/"))
+                locale = path.substring(1);
+
+            if (Helper.isEmpty(locale))
+            {
+                // fall back to language specified in header e.g. via browser settings
+                if (!Helper.isEmpty(acceptLang))
+                    locale = acceptLang.split(",")[0];
+            }
+
+            Translation tr = map.get(locale);
+            JSONObject json = new JSONObject();
+            if (tr != null && !Locale.US.equals(tr.getLocale()))
+                json.put("default", tr.asMap());
+
+            json.put("locale", locale.toString());
+            json.put("en", map.get("en").asMap());
+
+        return json.toString();
+    
+    }
+    
+      /* **************************END OF I18N******************************************************************/
+    
+     /***************************START OF GHConfig******************************************************************/
+    
+    @GET
+    @Path("/GHConfig")
+    @Produces("application/json")
+    public String returnGHConfig() throws JSONException
+    {
+        return args.toString();
+    
+    }
+    
+      /* **************************END OF GHConfig******************************************************************/
+    
     @GET
     @Path("/config")
     @Produces("text/plain")

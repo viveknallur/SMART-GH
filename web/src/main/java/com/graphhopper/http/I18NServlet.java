@@ -17,16 +17,18 @@
  */
 package com.graphhopper.http;
 
-import com.graphhopper.util.Helper;
-import com.graphhopper.util.TranslationMap;
-import com.graphhopper.util.Translation;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 import java.io.IOException;
-import java.util.Locale;
-import javax.inject.Inject;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import static javax.servlet.http.HttpServletResponse.*;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.json.JSONObject;
 
 /**
@@ -34,39 +36,25 @@ import org.json.JSONObject;
  */
 public class I18NServlet extends GHBaseServlet
 {
-    @Inject
-    private TranslationMap map;
 
     @Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
     {
         try
         {
-            String locale = "";
             String path = req.getPathInfo();
-            System.out.println("req.getPathInfo() = "+ path);
-            
-            if (!Helper.isEmpty(path) && path.startsWith("/"))
-                locale = path.substring(1);
+            String acceptLang = req.getHeader("Accept-Language");
 
-            if (Helper.isEmpty(locale))
-            {
-                // fall back to language specified in header e.g. via browser settings
-                String acceptLang = req.getHeader("Accept-Language");
-                
-                System.out.println("acceptLang = "+ acceptLang);
-                
-                if (!Helper.isEmpty(acceptLang))
-                    locale = acceptLang.split(",")[0];
-            }
+            Client client = Client.create();
+            WebResource webResource = client.resource("http://localhost:8080/restful-daemon/i18n");
 
-            Translation tr = map.get(locale);
-            JSONObject json = new JSONObject();
-            if (tr != null && !Locale.US.equals(tr.getLocale()))
-                json.put("default", tr.asMap());
+            MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+            queryParams.add("path", path);
+            queryParams.add("acceptLang", acceptLang);
 
-            json.put("locale", locale.toString());
-            json.put("en", map.get("en").asMap());
+            String wsResponse = webResource.queryParams(queryParams).get(String.class);
+            JSONObject json = new JSONObject(wsResponse);
+
             writeJson(req, res, json);
         } catch (Exception ex)
         {
