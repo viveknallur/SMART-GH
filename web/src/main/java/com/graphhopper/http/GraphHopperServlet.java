@@ -82,7 +82,7 @@ public class GraphHopperServlet extends GHBaseServlet
         String localeStr = getParam(req, "locale", "en");
 
         Client client = Client.create();
-        WebResource webResource = client.resource("http://localhost:8080/restful-daemon/route");
+        WebResource webResource = client.resource("http://localhost:8080/restful-graphhopper-1.0/route");
 
          MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
          queryParams.add("lat1", lat1);

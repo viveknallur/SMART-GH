@@ -46,7 +46,7 @@ public class I18NServlet extends GHBaseServlet
             String acceptLang = req.getHeader("Accept-Language");
 
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8080/restful-daemon/i18n");
+            WebResource webResource = client.resource("http://localhost:8080/restful-graphhopper-1.0/i18n");
 
             MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
             queryParams.add("path", path);

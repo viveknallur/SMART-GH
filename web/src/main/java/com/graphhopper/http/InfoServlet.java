@@ -57,17 +57,15 @@ public class InfoServlet extends GHBaseServlet
     {
 
         Client client = Client.create();
-        WebResource webResource = client.resource("http://localhost:8080/restful-daemon/info");
+        String webSvcHost = System.getenv("WS_CONFIG");
+        String svcName = "/restful-graphhopper-1.0/info";
+        System.out.println(webSvcHost + svcName);
+        WebResource webResource = client.resource(webSvcHost + svcName);
         String infoWSResponse = webResource.get(String.class);
         //System.out.println("infoWSResponse = " + infoWSResponse);
 
-        //TODO: To be removed after fixing the FileNotFound exception 
         ArrayList sensorsTxt = new ArrayList();
         JSONObject json = new JSONObject(infoWSResponse);
-        json.put("osmFile", "dublin.osm");
-        json.put("city", "dublin");
-        json.put("sensors", sensorsTxt);
-        //End of the TODO remove
 
         writeJson(req, res, json);
 

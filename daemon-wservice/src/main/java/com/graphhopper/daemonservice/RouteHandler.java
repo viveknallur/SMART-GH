@@ -32,22 +32,26 @@ import org.json.JSONObject;
 public class RouteHandler
 {
     private static GraphHopper hopper;
-    //private static String osmFilePath = "../maps/dublin-m50.osm";
+    private static String osmFilePath; 
     private static CmdArgs args;
     private static TranslationMap map;
+    private static String configFile;
 
     static
     {
 
+        osmFilePath = new Configuration().getOSMPath() + "dublin-m50.osm";
         hopper = new GraphHopper();
-        //hopper.setOSMFile(osmFilePath);
+        hopper.setOSMFile(osmFilePath);
         hopper.setInMemory(true);
         hopper.setDoPrepare(false);
         hopper.forServer();
         map = hopper.getTranslationMap();
         try
         {
-            args = CmdArgs.readFromConfig("../config.properties", "graphhopper.config");
+
+            configFile = new Configuration().getRealPath() + "/config.properties";
+            args = CmdArgs.readFromConfig(configFile, "graphhopper.config");
             System.out.println("args= " + args);
         } catch (Exception ex)
         {
@@ -287,17 +291,16 @@ public class RouteHandler
         String osmFile = hopper.getOSMFile();
         ArrayList sensorsTxt = new ArrayList();
 
-        /*sensorsTxt = getAvailableSensors(osmFile);
+        sensorsTxt = getAvailableSensors(osmFile);
         json.put("osmFile", osmFile);
         json.put("city", getCity(osmFile));
-        json.put("sensors", sensorsTxt);*/
+        json.put("sensors", sensorsTxt);
 
         return json.toString();
     }
     
-    //TODO: Unomment after packing dublin.config with the generated JAR/WAR file
 
-    /*ArrayList getAvailableSensors( String osmFile ) throws IOException
+    ArrayList getAvailableSensors( String osmFile ) throws IOException
     {
         //we assume that names of the osm files should be in this format <city><optional '-'><any optional string><.*>
         String cityName = getCity(osmFile);
@@ -337,7 +340,7 @@ public class RouteHandler
             cityName = cityName.split("-")[0];
 
         return cityName;
-    }*/
+    }
 
     /**
      * **************************END OF INFO******************************************************************
