@@ -41,7 +41,6 @@ import javax.ws.rs.core.MultivaluedMap;
 public class GraphHopperServlet extends GHBaseServlet
 {
 
-
     @Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
     {
@@ -82,66 +81,65 @@ public class GraphHopperServlet extends GHBaseServlet
         String localeStr = getParam(req, "locale", "en");
 
         Client client = Client.create();
-        WebResource webResource = client.resource("http://localhost:8080/restful-graphhopper-1.0/route");
+        String webSvcHost = System.getenv("WS_CONFIG");
+        String svcName = "/restful-graphhopper-1.0/route";
+        System.out.println(webSvcHost + svcName);
+        WebResource webResource = client.resource(webSvcHost + svcName);
+        //WebResource webResource = client.resource("http://localhost:8080/restful-graphhopper-1.0/route");
 
-         MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-         queryParams.add("lat1", lat1);
-         queryParams.add("lon1", lon1);
-         queryParams.add("lat2", lat2);
-         queryParams.add("lon2", lon2);
-         queryParams.add("minPathPrecision", String.valueOf(minPathPrecision));
-         queryParams.add("enableInstructions",String.valueOf(enableInstructions));
-         queryParams.add("calcPoints",String.valueOf(calcPoints));
-         queryParams.add("elevation",String.valueOf(elevation));
-         queryParams.add("locale",localeStr);
-         queryParams.add("vehicle",vehicleStr);
-         queryParams.add("weighting",weighting);
-         queryParams.add("algoStr",algoStr);
-         
-         String wsResponse = webResource.queryParams(queryParams).get(String.class);
-         //System.out.println("ghResponse = " + wsResponse);
-         JSONObject json = new JSONObject(wsResponse);
-         //System.out.println("json = " + json);
-         
-         String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
-         //PointList points = rsp.getPoints();
-         
-         //TODO: FIX the logStr
-         String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
-         + ", distance: " /*+ json.getString("distance")*/ + ", time:" /*+ Math.round(Double.parseDouble(json.getString("time"))/ 60000f)
-         + "min, points:" /*+ points.getSize() + ", took:" + json.getString("info")*/
-         + ", debug - " /*+ rsp.getDebugInfo()*/ + ", " + algoStr + ", "
-         + weighting + ", " + vehicleStr;
-         
-         logger.info(logStr);
-         
-        /*if (rsp.hasErrors())
-         logger.error(logStr + ", errors:" + rsp.getErrors());
-         else
-         logger.info(logStr);*/
-       
+        MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+        queryParams.add("lat1", lat1);
+        queryParams.add("lon1", lon1);
+        queryParams.add("lat2", lat2);
+        queryParams.add("lon2", lon2);
+        queryParams.add("minPathPrecision", String.valueOf(minPathPrecision));
+        queryParams.add("enableInstructions", String.valueOf(enableInstructions));
+        queryParams.add("calcPoints", String.valueOf(calcPoints));
+        queryParams.add("elevation", String.valueOf(elevation));
+        queryParams.add("locale", localeStr);
+        queryParams.add("vehicle", vehicleStr);
+        queryParams.add("weighting", weighting);
+        queryParams.add("algoStr", algoStr);
 
+        String wsResponse = webResource.queryParams(queryParams).get(String.class);
+        JSONObject json = new JSONObject(wsResponse);
+
+        String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
+        //PointList points = rsp.getPoints();
+
+        JSONObject jsonInfo = (JSONObject) json.get("info");
+        //TODO: FIX the logStr
+        String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
+                + ", distance: " + json.get("distance") + ", time:" + Math.round(Double.parseDouble(json.get("time").toString()) / 60000f)
+                /*+ "min, points:"+ points.getSize() */ + ", took:" + jsonInfo.get("took")
+                + ", debug - " + json.getString("debugInfo") + ", " + algoStr + ", "
+                + weighting + ", " + vehicleStr;
+
+        logger.info(logStr);
+
+        if (json.getBoolean("hasErrors"))
+            logger.error(logStr + ", errors:" + jsonInfo.get("errors"));
+        else
+            logger.info(logStr);
+        
         //if (writeGPX)
         //    writeGPX(req, res, rsp);
         //else
-         //TODO: Handle the returned error
-         
-            writeJson(req, res, json);
+        //TODO: Handle the returned error
+        writeJson(req, res, json);
     }
 
-   /* private void writeGPX( HttpServletRequest req, HttpServletResponse res, GHResponse rsp )
-    {
-        boolean includeElevation = getBooleanParam(req, "elevation", false);
-        res.setCharacterEncoding("UTF-8");
-        res.setContentType("application/xml");
-        String trackName = getParam(req, "track", "GraphHopper Track");
-        res.setHeader("Content-Disposition", "attachment;filename=" + "GraphHopper.gpx");
-        String timeZone = getParam(req, "timezone", "GMT");
-        long time = getLongParam(req, "millis", System.currentTimeMillis());
-        writeResponse(res, rsp.getInstructions().createGPX(trackName, time, timeZone, includeElevation));
-    }*/
-
-
+    /* private void writeGPX( HttpServletRequest req, HttpServletResponse res, GHResponse rsp )
+     {
+     boolean includeElevation = getBooleanParam(req, "elevation", false);
+     res.setCharacterEncoding("UTF-8");
+     res.setContentType("application/xml");
+     String trackName = getParam(req, "track", "GraphHopper Track");
+     res.setHeader("Content-Disposition", "attachment;filename=" + "GraphHopper.gpx");
+     String timeZone = getParam(req, "timezone", "GMT");
+     long time = getLongParam(req, "millis", System.currentTimeMillis());
+     writeResponse(res, rsp.getInstructions().createGPX(trackName, time, timeZone, includeElevation));
+     }*/
     private List<StringPoint> getPoints( HttpServletRequest req ) throws IOException
     {
         String[] pointsAsStr = getParams(req, "point");

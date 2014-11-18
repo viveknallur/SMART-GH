@@ -32,7 +32,7 @@ import org.json.JSONObject;
 public class RouteHandler
 {
     private static GraphHopper hopper;
-    private static String osmFilePath; 
+    private static String osmFilePath;
     private static CmdArgs args;
     private static TranslationMap map;
     private static String configFile;
@@ -93,7 +93,8 @@ public class RouteHandler
     }
 
     /**
-     * **************************START OF ROUTE********************************************************
+     * **************************START OF
+     * ROUTE********************************************************
      */
     @GET
     @Path("/route")
@@ -112,21 +113,15 @@ public class RouteHandler
             @QueryParam("calcPoints") boolean calcPoints ) throws JSONException, IOException
     {
 
-        //setting default values
-        calcPoints = true;
-        enableInstructions = true;
-        boolean pointsEncoded = true;
-
-        //Set the defaults of non-relevant parameters
-        minPathPrecision = 1d;
-        boolean writeGPX = false;
-
-        boolean elevation = elevationValue;
-
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
-
-        if (localeStr.equals(""))
+        
+        //setting default values
+        if (!calcPoints)
+            calcPoints = true;
+        if (!enableInstructions)
+            enableInstructions = true;
+         if (localeStr.equals(""))
             localeStr = "en";
 
         if (!(vehicleStr.equals("")))
@@ -138,13 +133,17 @@ public class RouteHandler
         }
         if (weighting.equals(""))
             weighting = "fastest";
+        
+        
+        //Set the defaults of non-relevant parameters
+        minPathPrecision = 1d;
+        boolean writeGPX = false;
+        boolean elevation = elevationValue;
+        boolean pointsEncoded = true;
 
         List<GHPoint> infoPoints = new ArrayList<GHPoint>();
         infoPoints.add(source);
         infoPoints.add(destination);
-        //GHRequest request = new GHRequest(infoPoints);
-        //request.setVehicle(vehicleStr);
-        //request.setWeighting(weighting);
         hopper.setElevation(elevation);
 
         StopWatch sw = new StopWatch().start();
@@ -184,9 +183,14 @@ public class RouteHandler
         JSONObject json = new JSONObject();
         JSONObject jsonInfo = new JSONObject();
         json.put("info", jsonInfo);
-
+        json.put("distance", rsp.getDistance());
+        json.put("time", rsp.getMillis());
+        json.put("debugInfo", rsp.getDebugInfo());
+        
+        
         if (rsp.hasErrors())
         {
+            json.put("hasErrors", "true");   
             List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             for (Throwable t : rsp.getErrors())
             {
@@ -198,12 +202,14 @@ public class RouteHandler
             jsonInfo.put("errors", list);
         } else if (!rsp.isFound())
         {
+            json.put("hasErrors", "true");  
             Map<String, String> map = new HashMap<String, String>();
             map.put("message", "Not found");
             map.put("details", "");
             jsonInfo.put("errors", Collections.singletonList(map));
         } else
         {
+            json.put("hasErrors", "false");   
             jsonInfo.put("took", Math.round(took * 1000));
             JSONObject jsonPath = new JSONObject();
             jsonPath.put("distance", Helper.round(rsp.getDistance(), 3));
@@ -244,11 +250,12 @@ public class RouteHandler
     }
 
     /**
-     * **************************END OF ROUTE******************************************************************
+     * **************************END OF
+     * ROUTE******************************************************************
      */
-
     /**
-     * **************************START OF INFO********************************************************
+     * **************************START OF
+     * INFO********************************************************
      */
     @GET
     @Path("/info")
@@ -298,7 +305,6 @@ public class RouteHandler
 
         return json.toString();
     }
-    
 
     ArrayList getAvailableSensors( String osmFile ) throws IOException
     {
@@ -309,7 +315,7 @@ public class RouteHandler
         //sensors configuration files are named as cityname.config
         String config_file = cityName + ext;
         String realPath = getClass().getResource("/").getPath();
-        
+
         //String fileName = "./sensors-config-files/" + cityName + ".config";
         ArrayList sensorsTxt = new ArrayList();
         try
@@ -343,56 +349,58 @@ public class RouteHandler
     }
 
     /**
-     * **************************END OF INFO******************************************************************
+     * **************************END OF
+     * INFO******************************************************************
      */
-    
-     /***************************START OF I18N******************************************************************/
-    
+    /**
+     * *************************START OF
+     * I18N*****************************************************************
+     */
     @GET
     @Path("/i18n")
     @Produces("application/json")
-    public String returnI18N(@QueryParam("path") String path,
-                              @QueryParam("acceptLang") String acceptLang) throws JSONException
+    public String returnI18N( @QueryParam("path") String path,
+            @QueryParam("acceptLang") String acceptLang ) throws JSONException
     {
-            String locale = "";
-            
-            if (!Helper.isEmpty(path) && path.startsWith("/"))
-                locale = path.substring(1);
+        String locale = "";
 
-            if (Helper.isEmpty(locale))
-            {
-                // fall back to language specified in header e.g. via browser settings
-                if (!Helper.isEmpty(acceptLang))
-                    locale = acceptLang.split(",")[0];
-            }
+        if (!Helper.isEmpty(path) && path.startsWith("/"))
+            locale = path.substring(1);
 
-            Translation tr = map.get(locale);
-            JSONObject json = new JSONObject();
-            if (tr != null && !Locale.US.equals(tr.getLocale()))
-                json.put("default", tr.asMap());
+        if (Helper.isEmpty(locale))
+        {
+            // fall back to language specified in header e.g. via browser settings
+            if (!Helper.isEmpty(acceptLang))
+                locale = acceptLang.split(",")[0];
+        }
 
-            json.put("locale", locale.toString());
-            json.put("en", map.get("en").asMap());
+        Translation tr = map.get(locale);
+        JSONObject json = new JSONObject();
+        if (tr != null && !Locale.US.equals(tr.getLocale()))
+            json.put("default", tr.asMap());
+
+        json.put("locale", locale.toString());
+        json.put("en", map.get("en").asMap());
 
         return json.toString();
-    
+
     }
-    
-      /* **************************END OF I18N******************************************************************/
-    
-     /***************************START OF GHConfig******************************************************************/
-    
+
+    /* **************************END OF I18N******************************************************************/
+    /**
+     * *************************START OF
+     * GHConfig*****************************************************************
+     */
     @GET
     @Path("/GHConfig")
     @Produces("application/json")
     public String returnGHConfig() throws JSONException
     {
         return args.toString();
-    
+
     }
-    
-      /* **************************END OF GHConfig******************************************************************/
-    
+
+    /* **************************END OF GHConfig******************************************************************/
     @GET
     @Path("/config")
     @Produces("text/plain")
