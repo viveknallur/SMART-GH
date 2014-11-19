@@ -18,10 +18,10 @@
 package com.graphhopper.http;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,9 +62,15 @@ public class InfoServlet extends GHBaseServlet
         System.out.println(webSvcHost + svcName);
         WebResource webResource = client.resource(webSvcHost + svcName);
         String infoWSResponse = webResource.get(String.class);
-        //System.out.println("infoWSResponse = " + infoWSResponse);
 
-        ArrayList sensorsTxt = new ArrayList();
+        ClientResponse response = webResource.get(ClientResponse.class);
+        int status = response.getStatus();
+        String entity = response.getEntity(String.class);
+        logger.info("Invoking info WS, HTTP Status: " + status);
+        
+        //TODO: Decide with Vivek what needs to be logged
+        //logger.info(entity);
+        
         JSONObject json = new JSONObject(infoWSResponse);
 
         writeJson(req, res, json);

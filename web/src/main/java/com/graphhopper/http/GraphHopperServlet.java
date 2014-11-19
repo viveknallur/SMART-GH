@@ -27,6 +27,7 @@ import static javax.servlet.http.HttpServletResponse.*;
 import org.json.JSONObject;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import javax.ws.rs.core.MultivaluedMap;
@@ -106,6 +107,13 @@ public class GraphHopperServlet extends GHBaseServlet
 
         String infoStr = req.getRemoteAddr() + " " + req.getLocale() + " " + req.getHeader("User-Agent");
         //PointList points = rsp.getPoints();
+        
+        ClientResponse response = webResource.get(ClientResponse.class);
+        int status = response.getStatus();
+        String entity = response.getEntity(String.class);
+        logger.info("Invoking route WS, HTTP Status: " + status);
+        //TODO: Decide with Vivek what needs to be logged
+        //logger.info(entity);
 
         JSONObject jsonInfo = (JSONObject) json.get("info");
         //TODO: FIX the logStr
@@ -121,7 +129,7 @@ public class GraphHopperServlet extends GHBaseServlet
             logger.error(logStr + ", errors:" + jsonInfo.get("errors"));
         else
             logger.info(logStr);
-        
+
         //if (writeGPX)
         //    writeGPX(req, res, rsp);
         //else

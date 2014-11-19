@@ -18,6 +18,7 @@
 package com.graphhopper.http;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
@@ -30,6 +31,8 @@ import static javax.servlet.http.HttpServletResponse.*;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Karich
@@ -37,6 +40,8 @@ import org.json.JSONObject;
 public class I18NServlet extends GHBaseServlet
 {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     @Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
     {
@@ -46,19 +51,30 @@ public class I18NServlet extends GHBaseServlet
             String acceptLang = req.getHeader("Accept-Language");
 
             Client client = Client.create();
+          
 
             String webSvcHost = System.getenv("WS_CONFIG");
             String svcName = "/restful-graphhopper-1.0/i18n";
             System.out.println(webSvcHost + svcName);
             WebResource webResource = client.resource(webSvcHost + svcName);
             //WebResource webResource = client.resource("http://localhost:8080/restful-graphhopper-1.0/i18n");
-
+           
             MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
             queryParams.add("path", path);
             queryParams.add("acceptLang", acceptLang);
-
             String wsResponse = webResource.queryParams(queryParams).get(String.class);
+            
+            ClientResponse response = webResource.get(ClientResponse.class);
+            int status = response.getStatus();
+            String entity = response.getEntity(String.class);
+            logger.info("Invoking i18n WS, HTTP Status: " + status);
+            
+            //TODO: Decide with Vivek what needs to be logged
+            //logger.info(entity);
+        
             JSONObject json = new JSONObject(wsResponse);
+            //String myResource = wsResponse.getEntity(String.class);
+            //logger.info("Sending a request to i18n WS, HTTP status: " + wsResponse.);
 
             writeJson(req, res, json);
         } catch (Exception ex)

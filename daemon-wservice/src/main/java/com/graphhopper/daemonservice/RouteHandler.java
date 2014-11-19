@@ -68,8 +68,7 @@ public class RouteHandler
 
     @Context
     private UriInfo context;
-    
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+
 
     @GET
     @Path("/sayHello")
