@@ -27,6 +27,9 @@ import com.graphhopper.util.shapes.GHPoint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Path("")
 public class RouteHandler
@@ -65,6 +68,8 @@ public class RouteHandler
 
     @Context
     private UriInfo context;
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @GET
     @Path("/sayHello")
