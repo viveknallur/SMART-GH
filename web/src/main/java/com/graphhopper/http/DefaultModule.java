@@ -41,6 +41,7 @@ public class DefaultModule extends AbstractModule
     @Override
     protected void configure()
     {
+        /*
         try
         {
             System.out.println("Value of args coming from the config file  and user's parameters= "+ args);
@@ -60,5 +61,6 @@ public class DefaultModule extends AbstractModule
         {
             throw new IllegalStateException("Couldn't load graph", ex);
         }
+        */
     }
 }
