@@ -30,7 +30,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Path("")
 public class RouteHandler
 {
@@ -39,28 +38,30 @@ public class RouteHandler
     private static CmdArgs args;
     private static TranslationMap map;
     private static String configFile;
+    private static String requestedMap;
 
     static
     {
 
-        osmFilePath = new Configuration().getOSMPath() + "dublin-m50.osm";
         hopper = new GraphHopper();
-        hopper.setOSMFile(osmFilePath);
         hopper.setInMemory(true);
         hopper.setDoPrepare(false);
         hopper.forServer();
-        map = hopper.getTranslationMap();
+      
         try
         {
 
             configFile = new Configuration().getRealPath() + "/config.properties";
             args = CmdArgs.readFromConfig(configFile, "graphhopper.config");
-            System.out.println("args= " + args);
         } catch (Exception ex)
         {
             throw new RuntimeException(ex);
         }
-
+        //if no osmMap attribute is specified in config.properties, dublin-m50.osm will be taken as the default map
+        requestedMap = args.get("osmMap", "dublin-m50.osm");
+        osmFilePath = new Configuration().getOSMPath() + requestedMap;
+        hopper.setOSMFile(osmFilePath);
+        map = hopper.getTranslationMap();
         hopper.init(args);
         hopper.importOrLoad();
 
@@ -68,7 +69,6 @@ public class RouteHandler
 
     @Context
     private UriInfo context;
-
 
     @GET
     @Path("/sayHello")
@@ -92,7 +92,7 @@ public class RouteHandler
         stringBuilder.append("!").append("There are 10 thousand routes from Tallaght to Dundrum");
         stringBuilder.append(". And graphy says 'hi!' from: ");
         stringBuilder.append(RouteHandler.hopper.getOSMFile());
-
+        stringBuilder.append(", requestedMap taken config.properties = " + requestedMap);
         return stringBuilder.toString();
     }
 
@@ -119,13 +119,13 @@ public class RouteHandler
 
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
-        
+
         //setting default values
         if (!calcPoints)
             calcPoints = true;
         if (!enableInstructions)
             enableInstructions = true;
-         if (localeStr.equals(""))
+        if (localeStr.equals(""))
             localeStr = "en";
 
         if (!(vehicleStr.equals("")))
@@ -137,8 +137,7 @@ public class RouteHandler
         }
         if (weighting.equals(""))
             weighting = "fastest";
-        
-        
+
         //Set the defaults of non-relevant parameters
         minPathPrecision = 1d;
         boolean writeGPX = false;
@@ -190,11 +189,10 @@ public class RouteHandler
         json.put("distance", rsp.getDistance());
         json.put("time", rsp.getMillis());
         json.put("debugInfo", rsp.getDebugInfo());
-        
-        
+
         if (rsp.hasErrors())
         {
-            json.put("hasErrors", "true");   
+            json.put("hasErrors", "true");
             List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             for (Throwable t : rsp.getErrors())
             {
@@ -206,14 +204,14 @@ public class RouteHandler
             jsonInfo.put("errors", list);
         } else if (!rsp.isFound())
         {
-            json.put("hasErrors", "true");  
+            json.put("hasErrors", "true");
             Map<String, String> map = new HashMap<String, String>();
             map.put("message", "Not found");
             map.put("details", "");
             jsonInfo.put("errors", Collections.singletonList(map));
         } else
         {
-            json.put("hasErrors", "false");   
+            json.put("hasErrors", "false");
             jsonInfo.put("took", Math.round(took * 1000));
             JSONObject jsonPath = new JSONObject();
             jsonPath.put("distance", Helper.round(rsp.getDistance(), 3));
