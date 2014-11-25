@@ -77,8 +77,9 @@ public class RouteHandler
     {
         StringBuilder stringBuilder = new StringBuilder("Hello, " + name);
         stringBuilder.append("!").append("There are 10 thousand routes from Tallaght to Dundrum");
-        stringBuilder.append(". And graphy says 'hi!' from: ");
+        stringBuilder.append(". And graphy says 'hi!' from:[");
         stringBuilder.append(RouteHandler.hopper.getOSMFile());
+	stringBuilder.append("]");
 
         return stringBuilder.toString();
     }
