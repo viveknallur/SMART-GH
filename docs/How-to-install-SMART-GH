@@ -16,6 +16,9 @@ SMART-GH Pre-requisites:
 	- Linux: (http://redis.io/download)
 	- Windows: One click Redis install as a Windows service(https://github.com/rgl/redis/downloads)
  * Windows user must install Cygwin: https://www.cygwin.com/
+ * Tomcat is a J2EE-compliant server that can be used to serve RESTful webservices 
+        - Linux: (sudo apt-get install tomcat7  or equivalent for your flavour of linux)
+        - Windows: Use the official packaged installer from Tomcat (http://tomcat.apache.org/)
  * Sensor data: To download, reverse-geocode and transform sensor data into a format usable by SMART-GH, python is required. Any version >2.6 will do (but not version 3). 
    Having installed python, install the required libraries using the `pip' command. 
 	- (sudo, if required) pip install -r requirements.txt
@@ -36,7 +39,20 @@ Get Started with SMART-GH
 	- Go to SMART-GH/sensor_processing
 	- run "python process_sensor_data_daemon.py"
  5. Run "mvn -DskipTests package" (use Cygwin if you are using Windows)
- 6. Run "./graphhopper.sh web ./maps/dublin-m50.osm" (use Cygwin if you are using Windows)
+ 6. SMART-GH's core routing is split into two parts: Web services, and the web-interface
+        # Install the SMART-GH Web services
+                * Change into the daemon-wservice directory ("cd daemon-wservice")
+                * Create & install the 'war' file, using the following commands:
+                        - "mvn clean"
+                        - "mvn package" (This creates a 'war' file)
+                        - "sudo cp target/restful-graphhopper-1.0.war /var/lib/tomcat7/webapps/"
+                        - If not already started, start tomcat. 
+                        - Note the IP/url of the machine that is hosting the webservice and the port where tomcat is running
+        # Install the SMART-GH Website
+                * From SMART-GH root directory, issue the following commands:
+                        - "export WS_CONFIG=http://<IP/Url:port>" where IP/Url and port are values noted from the previous step
+                        - "./smartghweb.sh web"
+
 
 Using the Sensors' Data
 -----------------------
