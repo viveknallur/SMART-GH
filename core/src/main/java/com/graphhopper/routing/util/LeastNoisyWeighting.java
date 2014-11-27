@@ -49,7 +49,9 @@ public class LeastNoisyWeighting implements Weighting
     {
         this.currentCity = city;
         String host = "";
-        String fileName = "./sensors-config-files/" + this.currentCity + ".config";
+        String realPath = getClass().getResource("/").getPath();
+        //String fileName = "./sensors-config-files/" + this.currentCity + ".config";
+        String fileName = realPath+this.currentCity+".config";
         System.out.println("fileName = " + fileName);
         try
         {
