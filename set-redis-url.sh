@@ -28,4 +28,5 @@ do
   fi
 done
 
-sed -i "s/REDIS_URL= localhost/REDIS_URL=$url/g" sensors-config-files/$city.config
+sed -i "s/REDIS_URL=.*/REDIS_URL=$url/g" sensors-config-files/$city.config
+#sed -i "s/REDIS_URL= localhost/REDIS_URL=$url/g" sensors-config-files/$city.config
