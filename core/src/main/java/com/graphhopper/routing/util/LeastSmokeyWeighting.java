@@ -49,7 +49,9 @@ public class LeastSmokeyWeighting implements Weighting
         this.currentCity = city;
 
         String host = "";
-        String fileName = "./sensors-config-files/" + this.currentCity + ".config";
+        String realPath = getClass().getResource("/").getPath();
+        //String fileName = "./sensors-config-files/" + this.currentCity + ".config";
+        String fileName = realPath + this.currentCity + ".config";
         System.out.println("fileName = " + fileName);
         try
         {
@@ -104,14 +106,14 @@ public class LeastSmokeyWeighting implements Weighting
                 return medianSmokeValue;
             } else
             {
-                medianSmokeValue = (Double.parseDouble(jedis.hget(array.get(middle-1), "value")) + 
-                        Double.parseDouble(jedis.hget(array.get(middle-1), "value")))/2;
+                medianSmokeValue = (Double.parseDouble(jedis.hget(array.get(middle - 1), "value"))
+                        + Double.parseDouble(jedis.hget(array.get(middle - 1), "value"))) / 2;
                 return medianSmokeValue;
             }
 
         } else
         {
-            System.out.print("medianSmokeValue if no smoke data is available = "+ medianSmokeValue);
+            System.out.print("medianSmokeValue if no smoke data is available = " + medianSmokeValue);
             return medianSmokeValue;
         }
     }
