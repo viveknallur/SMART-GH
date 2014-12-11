@@ -116,19 +116,21 @@ public class GraphHopperServlet extends GHBaseServlet
         //logger.info(entity);
 
         JSONObject jsonInfo = (JSONObject) json.get("info");
-        //TODO: FIX the logStr
-        String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
+        
+        if (json.getBoolean("hasErrors"))
+        {
+            logger.error("errors:" + jsonInfo.get("errors"));
+        }
+        else
+        {
+            String logStr = req.getQueryString() + " " + infoStr + " " + infoPoints
                 + ", distance: " + json.get("distance") + ", time:" + Math.round(Double.parseDouble(json.get("time").toString()) / 60000f)
                 /*+ "min, points:"+ points.getSize() */ + ", took:" + jsonInfo.get("took")
                 + ", debug - " + json.getString("debugInfo") + ", " + algoStr + ", "
                 + weighting + ", " + vehicleStr;
-
+           
         logger.info(logStr);
-
-        if (json.getBoolean("hasErrors"))
-            logger.error(logStr + ", errors:" + jsonInfo.get("errors"));
-        else
-            logger.info(logStr);
+        }
 
         //if (writeGPX)
         //    writeGPX(req, res, rsp);
