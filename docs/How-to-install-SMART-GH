@@ -38,7 +38,7 @@ Get Started with SMART-GH
  4. Run Sensor parsing Daemon:
 	- Go to SMART-GH/sensor_processing
 	- run "python process_sensor_data_daemon.py"
- 5. Run "mvn -DskipTests package" (use Cygwin if you are using Windows)
+ 5. Run "mvn -DskipTests install" (use Cygwin if you are using Windows)
  6. SMART-GH's core routing is split into two parts: webservices, and the web-interface
         # Install the SMART-GH webservices
                 * Change into the daemon-wservice directory ("cd daemon-wservice")
