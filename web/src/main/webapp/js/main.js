@@ -558,6 +558,7 @@ function createAmbiguityList(locCoord) {
         });
     } else {
         return doGeoCoding(locCoord.input, 10, timeout).pipe(function (jsonArgs) {
+            console.log("value returned to doGeoCoding = "+ jsonArgs[0]);
             if (!jsonArgs || jsonArgs.length == 0) {
                 locCoord.error = "No area description found";
                 return [locCoord];
@@ -657,6 +658,8 @@ function doGeoCoding(input, limit, timeout) {
     if (!limit)
         limit = 10;
     var url = nominatim + "?format=json&addressdetails=1&q=" + encodeURIComponent(input) + "&limit=" + limit;
+    
+    console.log("Value of nominatim url = "+ url);
     if (bounds.initialized) {
         // minLon, minLat, maxLon, maxLat => left, top, right, bottom
         url += "&bounded=1&viewbox=" + bounds.minLon + "," + bounds.maxLat + "," + bounds.maxLon + "," + bounds.minLat;
