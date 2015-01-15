@@ -63,8 +63,10 @@ def normalize(data):
     for key,val in data.iteritems():
         collected_ema.append(val)
 
-    min_ema = min(collected_ema)
-    max_ema = max(collected_ema)
+    #min_ema = min(collected_ema)
+    #max_ema = max(collected_ema)
+	min_ema = 55
+	max_ema = 95
     ema_diff = max_ema - min_ema
 
     for key, val in data.iteritems():

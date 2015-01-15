@@ -39,6 +39,14 @@ var nominatim = "http://nominatim.openstreetmap.org/search";
 var nominatim_reverse = "http://nominatim.openstreetmap.org/reverse";
 var routingLayer;
 var map;
+
+/*@Amal Elgammal: Add to handle the visualization of heatmap based on the selected weighing.
+ * If the selected weighting is Least Noisy or Least Air Polluted, the heatmap layer will appear based on 
+ * the noise readings, air pollution readings, respectively. If fastest or shortest, the heat layer will be
+ * removed if it's on
+ */
+var heat;
+
 var browserTitle = "GraphHopper Maps - Driving Directions";
 var defaultTranslationMap = null;
 var enTranslationMap = null;
@@ -341,7 +349,12 @@ function initMap() {
     });
 
 
-    //@Amal Elgammal: try with leaflet-heat
+    /*@Amal Elgammal: adding leaflet-heat layer to visualize noise and air pollution data on the map
+     * We use leaflet-heat library, which assumes that the day exists in this format [[lat, lag, value], [lat, lag, value], ...]
+     * leaflet-heat requires data to be normalized (takes a value from zero to 1). Alternalively, _max variable could be
+     * changed inside leaflet-heat.js.
+     * For convenience purposes, data are maintained in heatmapData2.js, using the variable testData for noise readings
+     */
    
     map = L.map('map', {
         layers: [lyrk],
@@ -369,15 +382,15 @@ function initMap() {
             }]
     });
     
-    var heat = L.heatLayer(testData,{
-            radius: 20,
-            blur: 15, 
-            maxZoom: 17
+    heat = L.heatLayer(testData,{
+            radius: 10,
+            blur: 15,
+            maxZoom: 17,
+            gradient: {0.4: 'blue', 0.6: ' magenta', 1: 'red'}
         }).addTo(map);
         
-        console.log("Value of length of heat = " + heat.toString());
    
-    
+   //Commenting the other layers options
    /* var baseMaps = {
         "Lyrk": [lyrk],
         "MapQuest": mapquest,
