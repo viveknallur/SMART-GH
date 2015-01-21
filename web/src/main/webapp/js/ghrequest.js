@@ -1,20 +1,20 @@
 // IE fix
 if (!window.console) {
     var console = {
-        log: function() {
+        log: function () {
         },
-        warn: function() {
+        warn: function () {
         },
-        error: function() {
+        error: function () {
         },
-        time: function() {
+        time: function () {
         },
-        timeEnd: function() {
+        timeEnd: function () {
         }
     };
 }
 
-GHRequest = function(host) {
+GHRequest = function (host) {
     this.min_path_precision = 1;
     this.host = host;
     this.from = new GHInput("");
@@ -33,7 +33,7 @@ GHRequest = function(host) {
     this.key = "K1KVyGYve5choCJAbyejstj5Ho0dEa6RbBnwHbSw";
 };
 
-GHRequest.prototype.init = function(params) {
+GHRequest.prototype.init = function (params) {
     //    for(var key in params) {
     //        var val = params[key];
     //        if(val === "false")
@@ -113,7 +113,7 @@ GHRequest.prototype.init = function(params) {
     }
 };
 
-GHRequest.prototype.initVehicle = function(vehicle) {
+GHRequest.prototype.initVehicle = function (vehicle) {
     this.vehicle = vehicle;
     var featureSet = this.features[this.vehicle];
     if (featureSet && featureSet.elevation)
@@ -122,34 +122,34 @@ GHRequest.prototype.initVehicle = function(vehicle) {
         this.elevation = false;
 };
 
-GHRequest.prototype.hasElevation = function() {
+GHRequest.prototype.hasElevation = function () {
     console.log("hasEleveation function returns this.elevation = " + this.elevation);
     return this.elevation;
 };
 
-GHRequest.prototype.createGeocodeURL = function(host) {
+GHRequest.prototype.createGeocodeURL = function (host) {
     var tmpHost = this.host;
     if (host)
         tmpHost = host;
     return this.createPath(tmpHost + "/geocode?limit=8&type=" + this.dataType + "&key=" + this.key);
 };
 
-GHRequest.prototype.createURL = function(demoUrl) {
+GHRequest.prototype.createURL = function (demoUrl) {
     return this.createPath(this.host + "/route?" + demoUrl + "&type=" + this.dataType + "&key=" + this.key);
 };
 
-GHRequest.prototype.createGPXURL = function() {
+GHRequest.prototype.createGPXURL = function () {
     // use points instead of strings
     var str = "point=" + encodeURIComponent(this.from.toString()) + "&point=" + encodeURIComponent(this.to.toString());
     return this.createPath(this.host + "/route?" + str + "&type=gpx&key=" + this.key);
 };
 
-GHRequest.prototype.createFullURL = function() {
+GHRequest.prototype.createFullURL = function () {
     var str = "?point=" + encodeURIComponent(this.from.input) + "&point=" + encodeURIComponent(this.to.input);
     return this.createPath(str);
 };
 
-GHRequest.prototype.createPath = function(url) {
+GHRequest.prototype.createPath = function (url) {
 
     //@Amal ELgammal: commented to include vechile in the URl anyway
     if (this.vehicle/* && this.vehicle !== "car"*/)
@@ -234,14 +234,14 @@ function decodePath(encoded, is3D) {
     return array;
 }
 
-GHRequest.prototype.doRequest = function(url, callback) {
+GHRequest.prototype.doRequest = function (url, callback) {
     var that = this;
     $.ajax({
         //@Amal Elgammal: commented to increarse the timeout as leastnoisy calculations takes longer
         //"timeout": 30000,
         "timeout": 60000,
         "url": url,
-        "success": function(json) {
+        "success": function (json) {
             if (json.paths) {
                 for (var i = 0; i < json.paths.length; i++) {
                     var path = json.paths[i];
@@ -257,7 +257,7 @@ GHRequest.prototype.doRequest = function(url, callback) {
             }
             callback(json);
         },
-        "error": function(err) {
+        "error": function (err) {
             // problematic: this callback is not invoked when using JSONP!
             // http://stackoverflow.com/questions/19035557/jsonp-request-error-handling
             var msg = "API did not respond! ";
@@ -284,7 +284,7 @@ GHRequest.prototype.doRequest = function(url, callback) {
 //@Amal Elgammal
 //TODO: Replace this call to the servlet to call the getInfo RestWS instead!
 
-GHRequest.prototype.getInfo = function() {
+GHRequest.prototype.getInfo = function () {
     var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
     console.log("url created inside getInfo" + url);
     return $.ajax({
@@ -295,8 +295,22 @@ GHRequest.prototype.getInfo = function() {
     });
 };
 
+GHRequest.prototype.getNoiseAirData = function () {
 
-GHInput = function(str) {
+    var url = this.host + "/sensordata?type=" + this.dataType + "&key=" + this.key;
+
+    console.log("getNoiseAirData url = " + url);
+
+    return $.ajax({
+        "url": url,
+        "timeout": 3000,
+        "type": "GET",
+        "dataType": this.dataType
+    });
+};
+
+
+GHInput = function (str) {
     // either text or coordinates
     this.input = str;
     try {
@@ -315,28 +329,28 @@ GHInput = function(str) {
     }
 };
 
-GHInput.prototype.isResolved = function() {
+GHInput.prototype.isResolved = function () {
     return this.lat && this.lng;
 };
 
-GHInput.prototype.setCoord = function(lat, lng) {
+GHInput.prototype.setCoord = function (lat, lng) {
     this.lat = round(lat);
     this.lng = round(lng);
     this.input = this.lat + "," + this.lng;
 };
 
-GHInput.prototype.toString = function() {
+GHInput.prototype.toString = function () {
     if (this.lat !== undefined && this.lng !== undefined)
         return this.lat + "," + this.lng;
     return undefined;
 };
 
-GHRequest.prototype.setLocale = function(locale) {
+GHRequest.prototype.setLocale = function (locale) {
     if (locale)
         this.locale = locale;
 };
 
-GHRequest.prototype.fetchTranslationMap = function(urlLocaleParam) {
+GHRequest.prototype.fetchTranslationMap = function (urlLocaleParam) {
     if (!urlLocaleParam)
         // let servlet figure out the locale from the Accept-Language header
         urlLocaleParam = "";

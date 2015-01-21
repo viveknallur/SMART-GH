@@ -47,6 +47,9 @@ var map;
  */
 var heat;
 var heatAir;
+var noiseAirData;
+var noiseData;
+var airData;
 var noiseLayerFlag = 0;
 var AirLayerFlag = 0;
 
@@ -106,8 +109,8 @@ $(document).ready(function (e) {
 
     var urlParams = parseUrlWithHisto();
 
-    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo())
-            .then(function (arg1, arg2) {
+    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo(), ghRequest.getNoiseAirData())
+            .then(function (arg1, arg2, arg3) {
                 // init translation retrieved from first call (fetchTranslationMap)
                 var translations = arg1[0];
 
@@ -214,9 +217,12 @@ $(document).ready(function (e) {
                 }
                 //--End
 
-                //var msg = arg3[0];
-                //console.log("value of msg returned from the webservice call = "+ msg);
 
+                noiseAirData = arg3[0];
+                noiseData = noiseAirData["noise"];
+                airData = noiseAirData["air"];
+                //console.log("noiseData =  " + noiseData.substring(1, 50));
+                //console.log("airData =  " + airData.substring(1, 100));
 
                 initMap();
 
@@ -383,25 +389,29 @@ function initMap() {
             }
             //@Amal Elgammal: Add two options in the context menu to visualize noise and air pollution data on the map
             /*,{
-                separator: true,
-                index: 1
-            }, {
-                text: 'Show noise',
-                callback: visualizeNoiseHeatLayer
-            }, {
-                text: 'Show air pollution',
-                callback: visualizeAirHeatLayer
-            }
-            
-            , {
-                text: 'Clear',
-                callback: clearHeatLayers
-            }*/
+             separator: true,
+             index: 1
+             }, {
+             text: 'Show noise',
+             callback: visualizeNoiseHeatLayer
+             }, {
+             text: 'Show air pollution',
+             callback: visualizeAirHeatLayer
+             }
+             
+             , {
+             text: 'Clear',
+             callback: clearHeatLayers
+             }*/
 
         ]
     });
-    
+
+
+   
     //Initialize noise heat layer
+   
+   //TODO: check why data returned from ajax is causing an error; i.e., RangeError: Maximum call stack size exceeded   
     heat = L.heatLayer(testData, {
         radius: 10,
         //blur: 10,
@@ -409,9 +419,9 @@ function initMap() {
         minOpacity: 0.4,
         gradient: {0.4: 'blue', 0.6: ' magenta', 1: 'red'}
     });
-    
+
     //Initialize air pollution heat layer
-     heatAir = L.heatLayer(testData, {
+    heatAir = L.heatLayer(testData, {
         radius: 10,
         //blur: 10,
         maxZoom: 17,
@@ -422,20 +432,20 @@ function initMap() {
 
     //Commenting the other layers options
     var baseMaps = {
-     "Lyrk": lyrk,
-     //"MapQuest": mapquest,
-     //"MapQuest Aerial": mapquestAerial,
-     "TF Transport": thunderTransport,
-     "TF Cycle": thunderCycle,
-     //"TF Outdoors": thunderOutdoors,
-     //"WanderReitKarte": wrk,
-     //"OpenStreetMap": osm,
-     //"OpenStreetMap.de": osmde
-     };
-     
-     var overlays = {"Noise": heat,
-            "Air Pollution": heatAir
-       };
+        "Lyrk": lyrk,
+        //"MapQuest": mapquest,
+        //"MapQuest Aerial": mapquestAerial,
+        "TF Transport": thunderTransport,
+        "TF Cycle": thunderCycle,
+        //"TF Outdoors": thunderOutdoors,
+        //"WanderReitKarte": wrk,
+        //"OpenStreetMap": osm,
+        //"OpenStreetMap.de": osmde
+    };
+
+    var overlays = {"Noise": heat,
+        "Air Pollution": heatAir
+    };
 
 
     L.control.layers(baseMaps, overlays).addTo(map);
@@ -473,8 +483,10 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color:"#00cc33", "weight": 5, "opacity": 1}};
+    routingLayer.options = {style: {color: "#00cc33", "weight": 5, "opacity": 1}};
 }
+
+
 
 function visualizeNoiseHeatLayer(e) {
     console.log("Please show noise layer");
@@ -484,7 +496,7 @@ function visualizeNoiseHeatLayer(e) {
         map.removeLayer(heatAir);
         AirLayerFlag = 0;
     }
-    
+
     map.addLayer(heat);
     noiseLayerFlag = 1;
 }
@@ -496,7 +508,7 @@ function visualizeAirHeatLayer(e) {
         map.removeLayer(heat);
         noiseLayerFlag = 0;
     }
-    
+
     map.addLayer(heatAir);
     AirLayerFlag = 1;
 }
@@ -507,14 +519,14 @@ function clearHeatLayers(e) {
         map.removeLayer(heat);
         noiseLayerFlag = 0;
     }
-    
+
     if (AirLayerFlag === 1)
     {
         map.removeLayer(heatAir);
         AirLayerFlag = 0;
     }
-    
-    
+
+
 }
 
 function setStartCoord(e) {
@@ -1409,16 +1421,3 @@ function setVechile(request)
 {
 
 }
-
-/*function callHelloRWS()
- {
- var url = "http://localhost:8080/GHRestfulWS/webresources/helloVersailles";
- console.log("url inside getMsg" + url);
- return $.ajax({
- url: url,
- type: "GET",
- dataType: "plain",
- timeout: 3000
- });
- 
- }*/
