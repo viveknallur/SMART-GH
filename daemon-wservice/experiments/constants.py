@@ -48,7 +48,9 @@ APP_PARAMS = {
         'host_and_port' : 'http://localhost:8080/',
         'service' : 'restful-graphhopper-1.0/',
         'endpoint': 'route',
-        'locale': 'en-US'
+        'locale': 'en',
+        'vehicle': 'car',
+        'weighting': 'fastest'
         }
 def getAppParams(constant):
     return APP_PARAMS.get(constant, False)

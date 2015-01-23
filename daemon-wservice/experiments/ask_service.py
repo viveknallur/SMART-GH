@@ -1,4 +1,5 @@
 # import std libraries
+import json
 import logging
 
 
@@ -8,6 +9,7 @@ from plumbum import cli
 
 # import our modules
 import constants
+import utils
 import TripGenerator
 import AlgorithmSelector
 
@@ -126,15 +128,19 @@ class MyRouteFinder(cli.Application):
                                 self._service_name, \
                                 self._endpoint])
         logger.info("Will connect to service at: %s"%(wsurl))
-        origin_lat = trip[0][0]
-        origin_lng = trip[0][1]
-        dest_lat = trip[1][0]
-        dest_lng = trip[1][1]
+        origin_lat = str(trip[0][0])
+        origin_lng = str(trip[0][1])
+        dest_lat = str(trip[1][0])
+        dest_lng = str(trip[1][1])
         locale = constants.getAppParams('locale')
-        trip = {'lat1': origin_lat, 'lon1': origin_lng,
-                'lat2': dest_lat, 'lon2': dest_lng,
-                'algoStr': algo, 'locale': locale}
-        return [wsurl, trip]
+        vehicle = constants.getAppParams('vehicle')
+        weighting = constants.getAppParams('weighting')
+        trip_params = {'lat1': origin_lat, 'lon1': origin_lng,
+                        'lat2': dest_lat, 'lon2': dest_lng,
+                        'weighting': weighting, 'vehicle': vehicle,
+                        'locale': locale, 'algoStr': algo}
+
+        return [wsurl, trip_params]
 
 
     def ask_service(self, trip):
@@ -147,9 +153,21 @@ class MyRouteFinder(cli.Application):
         req = requests.get(full_url[0], params=full_url[1])
         logger.info("Full url used for connection is: ")
         logger.info(req.url)
-        graphy_route = req.text
-        logger.info("The route returned by the webservice is")
-        logger.info(graphy_route)
+        try:
+            graphy_json = req.json()
+            logger.info("The route returned by the webservice is")
+            logger.debug(graphy_json)
+            graphy_directions = utils.byteify(graphy_json)
+            logger.info("Distance of returned route: \
+                    %s"%(graphy_directions['distance']))
+            trip_time_in_milliseconds = graphy_directions['time']
+            logger.debug("Estimated time of trip in ms: \
+                    %s"%(trip_time_in_milliseconds))
+            trip_time_in_mins = ((trip_time_in_milliseconds / 1000 )/ 60)
+            logger.info("Estimated trip time: %s"%(trip_time_in_mins))
+        except Exception as e:
+            logger.warn("Could not retrieve data from the webservice")              
+            logger.warn("Reason: %s"%(e.str()))
 
 
     def main(self):
