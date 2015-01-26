@@ -126,17 +126,18 @@ public class RouteHandler
             calcPoints = true;
         if (!enableInstructions)
             enableInstructions = true;
-        if (localeStr.equals(""))
-            localeStr = "en";
 
-        if (!(vehicleStr.equals("")))
+        if(localeStr != null && localeStr.equals("")){
+                localeStr = "en";
+        }
+        if (vehicleStr != null && !(vehicleStr.equals("")))
         {
             vehicleStr = vehicleStr.toUpperCase();
         } else
         {
             vehicleStr = "CAR";
         }
-        if (weighting.equals(""))
+        if (weighting != null && weighting.equals(""))
             weighting = "fastest";
 
         //Set the defaults of non-relevant parameters

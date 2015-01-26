@@ -163,7 +163,7 @@ public class LeastSmokeyWeighting implements Weighting
     @Override
     public String toString()
     {
-        return "LEAST_AIR_POLLUTION";
+        return "LEAST_SMOKEY";
     }
 
 }
