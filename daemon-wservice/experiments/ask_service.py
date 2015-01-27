@@ -1,3 +1,5 @@
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+
 # import std libraries
 import json
 import logging
@@ -127,7 +129,7 @@ class MyRouteFinder(cli.Application):
         wsurl = ''.join([self._host_and_port, \
                                 self._service_name, \
                                 self._endpoint])
-        logger.info("Will connect to service at: %s"%(wsurl))
+        logger.debug("Will connect to service at: %s"%(wsurl))
         origin_lat = str(trip[0][0])
         origin_lng = str(trip[0][1])
         dest_lat = str(trip[1][0])
@@ -151,30 +153,32 @@ class MyRouteFinder(cli.Application):
         chosenAlgo = AlgorithmSelector.pickFirst()
         full_url = self.create_url(trip, chosenAlgo)
         req = requests.get(full_url[0], params=full_url[1])
-        logger.info("Full url used for connection is: ")
-        logger.info(req.url)
+        logger.debug("Full url used for connection is: ")
+        logger.debug(req.url)
         try:
             graphy_json = req.json()
-            logger.info("The route returned by the webservice is")
-            logger.debug(graphy_json)
-            graphy_directions = utils.byteify(graphy_json)
-            logger.info("Distance of returned route: \
-                    %s"%(graphy_directions['distance']))
-            trip_time_in_milliseconds = graphy_directions['time']
-            logger.debug("Estimated time of trip in ms: \
-                    %s"%(trip_time_in_milliseconds))
-            trip_time_in_mins = ((trip_time_in_milliseconds / 1000 )/ 60)
-            logger.info("Estimated trip time: %s"%(trip_time_in_mins))
         except Exception as e:
-            logger.warn("Could not retrieve data from the webservice")              
+            logger.warn("Could not retrieve data from the webservice")
             logger.warn("Reason: %s"%(e.str()))
+        logger.debug("The route returned by the webservice is")
+        logger.debug(graphy_json)
+        graphy_directions = utils.byteify(graphy_json)
+        logger.info("Distance of returned route: \
+%s metres"%(graphy_directions['distance']))
+        trip_time_in_milliseconds = graphy_directions['time']
+        logger.debug("Estimated time of trip in ms: \
+%s"%(trip_time_in_milliseconds))
+        trip_time_in_mins = ((trip_time_in_milliseconds / 1000 )/ 60)
+        logger.info("Estimated trip time: %s mins"%(trip_time_in_mins))
+        #num_steps = len(graphy_directions['paths']['instructions'])
+        #logger.info("Number of steps in path: %d"%(num_steps))
 
 
     def main(self):
         if not self._is_logging:
             ch = logging.StreamHandler()
             logger.addHandler(ch)
-            logger.setLevel(logging.DEBUG)
+            logger.setLevel(logging.INFO)
             logger.info("No logger defined. Logging to console...")
             
         if self._preconfig:
@@ -183,9 +187,9 @@ class MyRouteFinder(cli.Application):
         if self._batchmode:
             logger.debug("Running in batch mode")
 
-        for trip in TripGenerator.randomTrip(self._od_points):
+        for trip in TripGenerator.allPossibleTrips(self._od_points):
             data = self.ask_service(trip)
-            logger.info(data)
+            logger.debug(data)
 
 
 
