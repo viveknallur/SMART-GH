@@ -41,17 +41,16 @@ var routingLayer;
 var map;
 
 /*@Amal Elgammal: Add to handle the visualization of heatmap based on the selected weighing.
- * If the selected weighting is Least Noisy or Least Air Polluted, the heatmap layer will appear based on 
- * the noise readings, air pollution readings, respectively. If fastest or shortest, the heat layer will be
- * removed if it's on
+ * noiseData and airData are read from corresponding noise and air data files "./sensor_processing/sensor_readings/noise/noise_heatmap.dat"
+ * and "./sensor_processing/sensor_readings/noise/air_heatmap.dat and then an ajax call is made to 
+ * the new created SensorDataServlet to return this data
  */
 var heat;
 var heatAir;
 var noiseAirData;
 var noiseData;
 var airData;
-var noiseLayerFlag = 0;
-var AirLayerFlag = 0;
+
 
 var browserTitle = "GraphHopper Maps - Driving Directions";
 var defaultTranslationMap = null;
@@ -220,9 +219,11 @@ $(document).ready(function (e) {
 
                 noiseAirData = arg3[0];
                 noiseData = noiseAirData["noise"];
+                noiseData = noiseData.concat(";");
                 airData = noiseAirData["air"];
-                //console.log("noiseData =  " + noiseData.substring(1, 50));
-                //console.log("airData =  " + airData.substring(1, 100));
+                airData = airData.concat(";");
+                console.log("noiseData =  " + noiseData.substring(1, 50));
+                console.log("airData =  " + airData.substring(1, 100));
 
                 initMap();
 
@@ -412,7 +413,7 @@ function initMap() {
     //Initialize noise heat layer
    
    //TODO: check why data returned from ajax is causing an error; i.e., RangeError: Maximum call stack size exceeded   
-    heat = L.heatLayer(testData, {
+    heat = L.heatLayer(noiseData, {
         radius: 10,
         //blur: 10,
         maxZoom: 17,
@@ -421,7 +422,7 @@ function initMap() {
     });
 
     //Initialize air pollution heat layer
-    heatAir = L.heatLayer(testData, {
+    heatAir = L.heatLayer(airData, {
         radius: 10,
         //blur: 10,
         maxZoom: 17,
@@ -489,44 +490,18 @@ function initMap() {
 
 
 function visualizeNoiseHeatLayer(e) {
-    console.log("Please show noise layer");
-
-    if (AirLayerFlag === 1)
-    {
-        map.removeLayer(heatAir);
-        AirLayerFlag = 0;
-    }
-
     map.addLayer(heat);
     noiseLayerFlag = 1;
 }
 
 function visualizeAirHeatLayer(e) {
-    console.log("Now remove noise layer");
-    if (noiseLayerFlag === 1)
-    {
-        map.removeLayer(heat);
-        noiseLayerFlag = 0;
-    }
-
     map.addLayer(heatAir);
     AirLayerFlag = 1;
 }
 
 function clearHeatLayers(e) {
-    if (noiseLayerFlag === 1)
-    {
         map.removeLayer(heat);
-        noiseLayerFlag = 0;
-    }
-
-    if (AirLayerFlag === 1)
-    {
-        map.removeLayer(heatAir);
-        AirLayerFlag = 0;
-    }
-
-
+        map.removeLayer(heatAir);   
 }
 
 function setStartCoord(e) {
