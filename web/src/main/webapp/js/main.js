@@ -219,10 +219,8 @@ $(document).ready(function (e) {
 
                 noiseAirData = arg3[0];
                 noiseData = noiseAirData["noise"];
-                noiseData = noiseData.concat(";");
                 airData = noiseAirData["air"];
-                airData = airData.concat(";");
-                console.log("noiseData =  " + noiseData.substring(1, 50));
+                console.log("noiseData =  " + noiseData.substring(1, 150));
                 console.log("airData =  " + airData.substring(1, 100));
 
                 initMap();
@@ -409,20 +407,19 @@ function initMap() {
     });
 
 
-   
+
     //Initialize noise heat layer
-   
-   //TODO: check why data returned from ajax is causing an error; i.e., RangeError: Maximum call stack size exceeded   
-    heat = L.heatLayer(noiseData, {
-        radius: 10,
+
+    heat = L.heatLayer(testData, {
+        radius: 8,
         //blur: 10,
         maxZoom: 17,
         minOpacity: 0.4,
-        gradient: {0.4: 'blue', 0.6: ' magenta', 1: 'red'}
+        gradient: {.4:"yellow",.6:"lime",.7:"orange",.8:"green",1:"red"}
     });
 
     //Initialize air pollution heat layer
-    heatAir = L.heatLayer(airData, {
+    heatAir = L.heatLayer(testData, {
         radius: 10,
         //blur: 10,
         maxZoom: 17,
@@ -437,11 +434,11 @@ function initMap() {
         //"MapQuest": mapquest,
         //"MapQuest Aerial": mapquestAerial,
         "TF Transport": thunderTransport,
-        "TF Cycle": thunderCycle,
-        //"TF Outdoors": thunderOutdoors,
-        //"WanderReitKarte": wrk,
-        //"OpenStreetMap": osm,
-        //"OpenStreetMap.de": osmde
+        "TF Cycle": thunderCycle
+                //,"TF Outdoors": thunderOutdoors,
+                //"WanderReitKarte": wrk,
+                //"OpenStreetMap": osm,
+                //"OpenStreetMap.de": osmde
     };
 
     var overlays = {"Noise": heat,
@@ -500,8 +497,8 @@ function visualizeAirHeatLayer(e) {
 }
 
 function clearHeatLayers(e) {
-        map.removeLayer(heat);
-        map.removeLayer(heatAir);   
+    map.removeLayer(heat);
+    map.removeLayer(heatAir);
 }
 
 function setStartCoord(e) {
