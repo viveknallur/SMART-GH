@@ -46,10 +46,8 @@ var map;
  * the new created SensorDataServlet to return this data
  */
 var heat;
-var heatAir;
-var noiseAirData;
-var noiseData;
-var airData;
+var noiseDataJson;
+var airDataJson;
 
 
 var browserTitle = "GraphHopper Maps - Driving Directions";
@@ -217,9 +215,12 @@ $(document).ready(function (e) {
                 //--End
 
 
-                noiseAirData = arg3[0];
-                noiseData = noiseAirData["noise"];
-                airData = noiseAirData["air"];
+                var noiseAirData = arg3[0];
+                var noiseData = noiseAirData["noise"];
+                noiseDataJson = JSON.parse(noiseData);
+
+                var airData = noiseAirData["air"];
+                airDataJson = JSON.parse(airData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
                 console.log("airData =  " + airData.substring(1, 100));
 
@@ -356,10 +357,11 @@ function initMap() {
 
 
     /*@Amal Elgammal: adding leaflet-heat layer to visualize noise and air pollution data on the map
-     * We use leaflet-heat library, which assumes that the day exists in this format [[lat, lag, value], [lat, lag, value], ...]
+     * We use leaflet-heat library, which assumes that the readings exist in this format [[lat, lag, value], [lat, lag, value], ...]
      * leaflet-heat requires data to be normalized (takes a value from zero to 1). Alternalively, _max variable could be
      * changed inside leaflet-heat.js.
-     * For convenience purposes, data are maintained in heatmapData2.js, using the variable testData for noise readings
+     *  Data is read from external files; i.e., "./sensor_processing/sensor_readings/noise/noise_heatmap.dat" and 
+     *  "./sensor_processing/sensor_readings/noise/air_heatmap.dat" through sensorDataServlet via an ajax call when the pages loads;
      */
 
     map = L.map('map', {
@@ -410,21 +412,21 @@ function initMap() {
 
     //Initialize noise heat layer
 
-    heat = L.heatLayer(testData, {
-        radius: 8,
+    heat = L.heatLayer(noiseDataJson, {
+        radius: 10,
         //blur: 10,
-        maxZoom: 17,
-        minOpacity: 0.4,
-        gradient: {.4:"yellow",.6:"lime",.7:"orange",.8:"green",1:"red"}
+        //maxZoom: 17,
+        //minOpacity: 0.4,
+        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "green", 1: "red"}
     });
 
     //Initialize air pollution heat layer
-    heatAir = L.heatLayer(testData, {
+    heatAir = L.heatLayer(airDataJson, {
         radius: 10,
         //blur: 10,
-        maxZoom: 17,
-        minOpacity: 0.4,
-        gradient: {0.4: 'yellow', 0.6: 'purple', 1: 'black'}
+        //maxZoom: 17,
+        //minOpacity: 0.4,
+        gradient: {.4: 'yellow', .6: 'magenta', .7: 'violet', .8: 'purple', 1: 'black'}
     });
 
 
@@ -481,7 +483,7 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color: "#00cc33", "weight": 5, "opacity": 1}};
+    routingLayer.options = {style: {color: "#2B65EC"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
 }
 
 
