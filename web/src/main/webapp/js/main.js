@@ -41,17 +41,14 @@ var routingLayer;
 var map;
 
 /*@Amal Elgammal: Add to handle the visualization of heatmap based on the selected weighing.
- * If the selected weighting is Least Noisy or Least Air Polluted, the heatmap layer will appear based on 
- * the noise readings, air pollution readings, respectively. If fastest or shortest, the heat layer will be
- * removed if it's on
+ * noiseData and airData are read from corresponding noise and air data files "./sensor_processing/sensor_readings/noise/noise_heatmap.dat"
+ * and "./sensor_processing/sensor_readings/noise/air_heatmap.dat and then an ajax call is made to 
+ * the new created SensorDataServlet to return this data
  */
 var heat;
-var heatAir;
-var noiseAirData;
-var noiseData;
-var airData;
-var noiseLayerFlag = 0;
-var AirLayerFlag = 0;
+var noiseDataJson;
+var airDataJson;
+
 
 var browserTitle = "GraphHopper Maps - Driving Directions";
 var defaultTranslationMap = null;
@@ -218,11 +215,14 @@ $(document).ready(function (e) {
                 //--End
 
 
-                noiseAirData = arg3[0];
-                noiseData = noiseAirData["noise"];
-                airData = noiseAirData["air"];
-                //console.log("noiseData =  " + noiseData.substring(1, 50));
-                //console.log("airData =  " + airData.substring(1, 100));
+                var noiseAirData = arg3[0];
+                var noiseData = noiseAirData["noise"];
+                noiseDataJson = JSON.parse(noiseData);
+
+                var airData = noiseAirData["air"];
+                airDataJson = JSON.parse(airData);
+                console.log("noiseData =  " + noiseData.substring(1, 150));
+                console.log("airData =  " + airData.substring(1, 100));
 
                 initMap();
 
@@ -357,10 +357,11 @@ function initMap() {
 
 
     /*@Amal Elgammal: adding leaflet-heat layer to visualize noise and air pollution data on the map
-     * We use leaflet-heat library, which assumes that the day exists in this format [[lat, lag, value], [lat, lag, value], ...]
+     * We use leaflet-heat library, which assumes that the readings exist in this format [[lat, lag, value], [lat, lag, value], ...]
      * leaflet-heat requires data to be normalized (takes a value from zero to 1). Alternalively, _max variable could be
      * changed inside leaflet-heat.js.
-     * For convenience purposes, data are maintained in heatmapData2.js, using the variable testData for noise readings
+     *  Data is read from external files; i.e., "./sensor_processing/sensor_readings/noise/noise_heatmap.dat" and 
+     *  "./sensor_processing/sensor_readings/noise/air_heatmap.dat" through sensorDataServlet via an ajax call when the pages loads;
      */
 
     map = L.map('map', {
@@ -408,25 +409,24 @@ function initMap() {
     });
 
 
-   
+
     //Initialize noise heat layer
-   
-   //TODO: check why data returned from ajax is causing an error; i.e., RangeError: Maximum call stack size exceeded   
-    heat = L.heatLayer(testData, {
+
+    heat = L.heatLayer(noiseDataJson, {
         radius: 10,
         //blur: 10,
-        maxZoom: 17,
-        minOpacity: 0.4,
-        gradient: {0.4: 'blue', 0.6: ' magenta', 1: 'red'}
+        //maxZoom: 17,
+        //minOpacity: 0.4,
+        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "green", 1: "red"}
     });
 
     //Initialize air pollution heat layer
-    heatAir = L.heatLayer(testData, {
+    heatAir = L.heatLayer(airDataJson, {
         radius: 10,
         //blur: 10,
-        maxZoom: 17,
-        minOpacity: 0.4,
-        gradient: {0.4: 'yellow', 0.6: 'purple', 1: 'black'}
+        //maxZoom: 17,
+        //minOpacity: 0.4,
+        gradient: {.4: 'yellow', .6: 'magenta', .7: 'violet', .8: 'purple', 1: 'black'}
     });
 
 
@@ -436,11 +436,11 @@ function initMap() {
         //"MapQuest": mapquest,
         //"MapQuest Aerial": mapquestAerial,
         "TF Transport": thunderTransport,
-        "TF Cycle": thunderCycle,
-        //"TF Outdoors": thunderOutdoors,
-        //"WanderReitKarte": wrk,
-        //"OpenStreetMap": osm,
-        //"OpenStreetMap.de": osmde
+        "TF Cycle": thunderCycle
+                //,"TF Outdoors": thunderOutdoors,
+                //"WanderReitKarte": wrk,
+                //"OpenStreetMap": osm,
+                //"OpenStreetMap.de": osmde
     };
 
     var overlays = {"Noise": heat,
@@ -483,50 +483,24 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color: "#00cc33", "weight": 5, "opacity": 1}};
+    routingLayer.options = {style: {color: "#2B65EC"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
 }
 
 
 
 function visualizeNoiseHeatLayer(e) {
-    console.log("Please show noise layer");
-
-    if (AirLayerFlag === 1)
-    {
-        map.removeLayer(heatAir);
-        AirLayerFlag = 0;
-    }
-
     map.addLayer(heat);
     noiseLayerFlag = 1;
 }
 
 function visualizeAirHeatLayer(e) {
-    console.log("Now remove noise layer");
-    if (noiseLayerFlag === 1)
-    {
-        map.removeLayer(heat);
-        noiseLayerFlag = 0;
-    }
-
     map.addLayer(heatAir);
     AirLayerFlag = 1;
 }
 
 function clearHeatLayers(e) {
-    if (noiseLayerFlag === 1)
-    {
-        map.removeLayer(heat);
-        noiseLayerFlag = 0;
-    }
-
-    if (AirLayerFlag === 1)
-    {
-        map.removeLayer(heatAir);
-        AirLayerFlag = 0;
-    }
-
-
+    map.removeLayer(heat);
+    map.removeLayer(heatAir);
 }
 
 function setStartCoord(e) {
