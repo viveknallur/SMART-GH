@@ -97,6 +97,18 @@ public class RouteHandler
         return stringBuilder.toString();
     }
 
+    @GET
+    @Path("/freemem")
+    @Produces("text/plain")
+    public String getFreeMem()
+    {
+        StringBuilder stringBuilder = new StringBuilder("Free bytes left: ");
+        Runtime runtime = Runtime.getRuntime();
+        stringBuilder.append(runtime.freeMemory());
+        stringBuilder.append(" bytes");
+        return stringBuilder.toString();
+    }
+
     /**
      * **************************START OF
      * ROUTE********************************************************
