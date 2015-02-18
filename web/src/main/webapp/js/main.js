@@ -40,7 +40,7 @@ var nominatim_reverse = "http://nominatim.openstreetmap.org/reverse";
 var routingLayer;
 var map;
 
-/*@Amal Elgammal: Add to handle the visualization of heatmap based on the selected weighing.
+/*@Amal Elgammal: Add to handle the visualization of heatmap as Layers overlay.
  * noiseData and airData are read from corresponding noise and air data files "./sensor_processing/sensor_readings/noise/noise_heatmap.dat"
  * and "./sensor_processing/sensor_readings/noise/air_heatmap.dat and then an ajax call is made to 
  * the new created SensorDataServlet to return this data
@@ -222,7 +222,7 @@ $(document).ready(function (e) {
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData.substring(1, 100));
+                console.log("airData =  " + airData);
 
                 initMap();
 
@@ -422,11 +422,11 @@ function initMap() {
 
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
-        radius: 10,
+        radius: 50,
         //blur: 10,
         //maxZoom: 17,
-        //minOpacity: 0.4,
-        gradient: {.4: 'yellow', .6: 'magenta', .7: 'violet', .8: 'purple', 1: 'black'}
+        minOpacity: 0.5,
+        gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
     });
 
 
