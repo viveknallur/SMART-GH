@@ -135,7 +135,10 @@ GHRequest.prototype.createGeocodeURL = function (host) {
 };
 
 GHRequest.prototype.createURL = function (demoUrl) {
-    return this.createPath(this.host + "/route?" + demoUrl + "&type=" + this.dataType + "&key=" + this.key);
+	//@Amal Elgammal: direct the call to INRIA deployment instead!
+    //return this.createPath(this.host + "/route?" + demoUrl + "&type=" + this.dataType + "&key=" + this.key);
+    
+    return this.createPath("http://sgh.barais.fr" + "/route?" + demoUrl + "&type=" + this.dataType + "&key=" + this.key);
 };
 
 GHRequest.prototype.createGPXURL = function () {
@@ -285,7 +288,8 @@ GHRequest.prototype.doRequest = function (url, callback) {
 //TODO: Replace this call to the servlet to call the getInfo RestWS instead!
 
 GHRequest.prototype.getInfo = function () {
-    var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
+    //var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
+	var url = "http://sgh.barais.fr" + "/info?type=" + this.dataType + "&key=" + this.key;
     console.log("url created inside getInfo" + url);
     return $.ajax({
         "url": url,
@@ -297,7 +301,8 @@ GHRequest.prototype.getInfo = function () {
 
 GHRequest.prototype.getNoiseAirData = function () {
 
-    var url = this.host + "/sensordata?type=" + this.dataType + "&key=" + this.key;
+    //var url = this.host + "/sensordata?type=" + this.dataType + "&key=" + this.key;
+    var url = "http://sgh.barais.fr" + "/sensordata?type=" + this.dataType + "&key=" + this.key;
 
     console.log("getNoiseAirData url = " + url);
 
@@ -354,7 +359,8 @@ GHRequest.prototype.fetchTranslationMap = function (urlLocaleParam) {
     if (!urlLocaleParam)
         // let servlet figure out the locale from the Accept-Language header
         urlLocaleParam = "";
-    var url = this.host + "/i18n/" + urlLocaleParam + "?type=" + this.dataType + "&key=" + this.key;
+    //var url = this.host + "/i18n/" + urlLocaleParam + "?type=" + this.dataType + "&key=" + this.key;
+    var url = "http://sgh.barais.fr" + "/i18n/" + urlLocaleParam + "?type=" + this.dataType + "&key=" + this.key;
     console.log("URL created inside fetchTranslationMap =" + url);
     return $.ajax({
         "url": url,

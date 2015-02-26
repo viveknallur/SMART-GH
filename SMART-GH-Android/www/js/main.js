@@ -106,7 +106,7 @@ $(document).ready(function (e) {
 
     var urlParams = parseUrlWithHisto();
 
-    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo(), ghRequest.getNoiseAirData())
+    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo()/*, ghRequest.getNoiseAirData()*/)
             .then(function (arg1, arg2, arg3) {
                 // init translation retrieved from first call (fetchTranslationMap)
                 var translations = arg1[0];
@@ -215,14 +215,14 @@ $(document).ready(function (e) {
                 //--End
 
 
-                var noiseAirData = arg3[0];
+               /* var noiseAirData = arg3[0];
                 var noiseData = noiseAirData["noise"];
                 noiseDataJson = JSON.parse(noiseData);
 
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData.substring(1, 100));
+                console.log("airData =  " + airData.substring(1, 100));*/
 
                 initMap();
 
@@ -443,12 +443,12 @@ function initMap() {
                 //"OpenStreetMap.de": osmde
     };
 
-    var overlays = {"Noise": heat,
-        "Air Pollution": heatAir
-    };
+    //var overlays = {"Noise": heat,
+    //    "Air Pollution": heatAir
+    //};
 
 
-    L.control.layers(baseMaps, overlays).addTo(map);
+    L.control.layers(baseMaps /*, overlays*/).addTo(map);
     L.control.scale().addTo(map);
 
     map.fitBounds(new L.LatLngBounds(new L.LatLng(bounds.minLat, bounds.minLon),
@@ -488,7 +488,7 @@ function initMap() {
 
 
 
-function visualizeNoiseHeatLayer(e) {
+/*function visualizeNoiseHeatLayer(e) {
     map.addLayer(heat);
     noiseLayerFlag = 1;
 }
@@ -501,7 +501,7 @@ function visualizeAirHeatLayer(e) {
 function clearHeatLayers(e) {
     map.removeLayer(heat);
     map.removeLayer(heatAir);
-}
+}*/
 
 function setStartCoord(e) {
     ghRequest.from.setCoord(e.latlng.lat, e.latlng.lng);
