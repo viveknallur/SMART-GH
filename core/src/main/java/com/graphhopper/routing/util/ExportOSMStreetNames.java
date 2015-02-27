@@ -38,7 +38,7 @@ public class ExportOSMStreetNames
         SAXParserFactory parserFactor = SAXParserFactory.newInstance();
         SAXParser parser = parserFactor.newSAXParser();
         SAXHandler1 handler = new SAXHandler1();
-        parser.parse("../maps/output.xml", handler);
+        parser.parse("../maps/output17.xml", handler);
         System.out.println("Number of ways = " + handler.waysIDs.size());
 
         //ArrayList<String> waysNames = new ArrayList<String>();
