@@ -1,0 +1,9 @@
+You have to make sure that you have all the required tools installed and cofigured properly (as decsribed at the begining of the page), as well as the enviroment variables
+
+I used Genymotion emulator as a plugin to Eclipse
+
+Follow the steps starting from 'Build the Project':
+http://cordova.apache.org/docs/en/4.0.0/guide_platforms_android_index.md.html
+
+
+The created apk will be located at SMART-GH-Android->platforms->android->ant-build->CordovaApp-release-unsigned.apk
