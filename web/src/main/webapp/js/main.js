@@ -416,17 +416,16 @@ function initMap() {
 	
     heat = L.heatLayer(noiseDataJson, {
         radius: 10,
-        //blur: 10,
+        blur: 20,
         //maxZoom: 17,
-        //minOpacity: 0.4,
+        minOpacity: 0.3,
         gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
     });
 	
 	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
         radius: 50,
-        //blur: 10,
+        blur: 100,
         //maxZoom: 17,
-        //minOpacity: 0.4,
         gradient: {.7:'#B30622'}
     });
 	
@@ -512,12 +511,12 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color: "white"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
+    routingLayer.options = {style: {color: "blue"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
 
 	map.on('overlayadd', function (eventLayer) {
 	    console.log("Layer added " + eventLayer.name);
 	    if (eventLayer.name === 'Noise') {
-			ifnoiseLegend.addTo(map);
+			noiseLegend.addTo(map);
 	    } 
 	});
 	
