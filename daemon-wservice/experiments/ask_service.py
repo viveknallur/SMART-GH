@@ -114,6 +114,28 @@ class MyRouteFinder(cli.Application):
         self._preconfig = True
         self._app_config = constants.getAppConfig()
 
+    def get_free_mem(self):
+        """
+            Retrieves the free memory left for the webservice container, 
+            wherever the webservice is hosted
+        """
+        if self._preconfig:
+            logger.debug("Using host, service and endpoint values from \
+                    constants file")
+            self._host_and_port = self._app_config['host_and_port']
+            self._service_name = self._app_config['service']
+
+        self._endpoint = 'freemem'
+        wsurl = ''.join([self._host_and_port, \
+                                self._service_name, \
+                                self._endpoint])
+        logger.debug("Will connect to service at: %s"%(wsurl))
+        req = requests.get(wsurl)
+        logger.debug(req.status_code)
+        logger.debug(str(req.headers))
+        return req.text
+
+
     def create_url(self, trip, algo):
         """
             Uses _app_config to create the url for the webservice to be queried.
@@ -145,40 +167,41 @@ class MyRouteFinder(cli.Application):
         return [wsurl, trip_params]
 
 
-    def ask_service(self, trip):
+    def get_route(self, trip):
         """
             Makes a request to the webservice, and returns the result
         """
         logger.debug("Trip going from %s To %s"%(str(trip[0]),str(trip[1]))) 
-        chosenAlgo = AlgorithmSelector.pickFirst()
+        chosenAlgo = AlgorithmSelector.pickDijkstra()
+        logger.info("Using algorithm: %s"%(chosenAlgo))
         full_url = self.create_url(trip, chosenAlgo)
         req = requests.get(full_url[0], params=full_url[1])
         logger.debug("Full url used for connection is: ")
         logger.debug(req.url)
         try:
             graphy_json = req.json()
+            logger.debug("The route returned by the webservice is")
+            logger.debug(graphy_json)
+            graphy_directions = utils.byteify(graphy_json)
+            route_distance_in_metres = graphy_directions['distance'] 
+            logger.debug("Distance of returned route: \
+%s metres"%(route_distance_in_metres))
+            trip_time_in_milliseconds = graphy_directions['time']
+            logger.debug("Estimated time of trip in ms: \
+%s"%(trip_time_in_milliseconds))
+            trip_time_in_mins = ((trip_time_in_milliseconds / 1000 )/ 60)
+            logger.debug("Estimated trip time: %s mins"%(trip_time_in_mins))
+            return [route_distance_in_metres, trip_time_in_mins]
         except Exception as e:
             logger.warn("Could not retrieve data from the webservice")
-            logger.warn("Reason: %s"%(e.str()))
-        logger.debug("The route returned by the webservice is")
-        logger.debug(graphy_json)
-        graphy_directions = utils.byteify(graphy_json)
-        logger.info("Distance of returned route: \
-%s metres"%(graphy_directions['distance']))
-        trip_time_in_milliseconds = graphy_directions['time']
-        logger.debug("Estimated time of trip in ms: \
-%s"%(trip_time_in_milliseconds))
-        trip_time_in_mins = ((trip_time_in_milliseconds / 1000 )/ 60)
-        logger.info("Estimated trip time: %s mins"%(trip_time_in_mins))
-        #num_steps = len(graphy_directions['paths']['instructions'])
-        #logger.info("Number of steps in path: %d"%(num_steps))
-
+            logger.warn("Reason: %s"%(str(e)))
+        
 
     def main(self):
         if not self._is_logging:
             ch = logging.StreamHandler()
             logger.addHandler(ch)
-            logger.setLevel(logging.INFO)
+            logger.setLevel(logging.DEBUG)
             logger.info("No logger defined. Logging to console...")
             
         if self._preconfig:
@@ -187,9 +210,12 @@ class MyRouteFinder(cli.Application):
         if self._batchmode:
             logger.debug("Running in batch mode")
 
-        for trip in TripGenerator.allPossibleTrips(self._od_points):
-            data = self.ask_service(trip)
-            logger.debug(data)
+        iterations = 100
+        for iter in xrange(iterations):
+            for trip in TripGenerator.allPossibleTrips(self._od_points):
+                data = self.get_route(trip)
+                logger.info(str(data))
+            #logger.info(self.get_free_mem())
 
 
 

@@ -1,0 +1,579 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>Monitoring JavaMelody on /restful-graphhopper-1.0_vivekpc</title>
+<link rel="stylesheet" href="Dijkstra100Iter_files/monitoring.css" type="text/css">
+<link rel="stylesheet" href="Dijkstra100Iter_files/monitoring_002.css" type="text/css">
+<link type="image/png" rel="shortcut icon" href="Dijkstra100Iter_files/monitoring_020.png">
+<script type="text/javascript" src="Dijkstra100Iter_files/monitoring_005.js"></script>
+<script type="text/javascript" src="Dijkstra100Iter_files/monitoring_003.js"></script>
+<script type="text/javascript" src="Dijkstra100Iter_files/monitoring_002.js"></script>
+<script type="text/javascript" src="Dijkstra100Iter_files/monitoring.js"></script>
+<script type="text/javascript" src="Dijkstra100Iter_files/monitoring_004.js"></script>
+<script type="text/javascript">
+function showHide(id){
+  if (document.getElementById(id).style.display=='none') {
+    if (document.getElementById(id + 'Img') != null) {
+      document.getElementById(id + 'Img').src='?resource=bullets/minus.png';
+    }
+    try {
+      Effect.SlideDown(id, { duration: 0.5 });
+    } catch (e) {
+      document.getElementById(id).style.display='inline';
+    }
+  } else {
+    if (document.getElementById(id + 'Img') != null) {
+      document.getElementById(id + 'Img').src='?resource=bullets/plus.png';
+    }
+    try {
+      Effect.SlideUp(id, { duration: 0.5 });
+    } catch (e) {
+      document.getElementById(id).style.display='none';
+    }
+  }
+}
+</script>
+<script>try {  for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){    var lastpass_f = document.forms[lastpass_iter];    if(typeof(lastpass_f.lpsubmitorig)=="undefined"){      if (typeof(lastpass_f.submit) == "function") {        lastpass_f.lpsubmitorig = lastpass_f.submit;        lastpass_f.submit = function(){          var form = this;          try {            if (document.documentElement && 'createEvent' in document)            {              var forms = document.getElementsByTagName('form');              for (var i=0 ; i<forms.length ; ++i)                if (forms[i]==form)                {                  var element = document.createElement('lpformsubmitdataelement');                  element.setAttribute('formnum',i);                  element.setAttribute('from','submithook');                  document.documentElement.appendChild(element);                  var evt = document.createEvent('Events');                  evt.initEvent('lpformsubmit',true,false);                  element.dispatchEvent(evt);                  break;                }            }          } catch (e) {}          try {            form.lpsubmitorig();          } catch (e) {}        }      }    }  }} catch (e) {}</script></head><body>
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_020.png" alt="Stats">
+<a name="top"></a>Statistics of <a href="http://javamelody.googlecode.com/" target="_blank">JavaMelody</a> monitoring taken at 2/17/15 12:22 PM on /restful-graphhopper-1.0_vivekpc (com.graphhopper.daemonservice)
+</h3>
+<a href="http://code.google.com/p/javamelody/wiki/Donate"><img class="noPrint" style="position: absolute; top: 15px; right: 10px; border: 0;" src="Dijkstra100Iter_files/monitoring.gif" alt="Donate"></a>
+<div align="center">
+<div class="noPrint">
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?" title="Refresh this page"><img src="Dijkstra100Iter_files/monitoring_054.png" alt="Update"> Update</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?format=pdf" title="Display report in PDF format"><img src="Dijkstra100Iter_files/monitoring_017.png" alt="PDF"> PDF</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?resource=help/help.html" target="_blank" title="Display online help in a new page"><img src="Dijkstra100Iter_files/monitoring_036.png" alt="Online help"> Online help</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=jnlp" title="Monitoring with a Rich Desktop Application"><img src="Dijkstra100Iter_files/monitoring_020.png" alt="Monitoring with a Rich Desktop Application" width="16" height="16"> Desktop</a>&nbsp;&nbsp;&nbsp;&nbsp;
+Choice of period :&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?period=jour" title="Choice of period Day for charts and requests statistics"><img src="Dijkstra100Iter_files/monitoring_008.png" alt="Day"> Day</a>&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?period=semaine" title="Choice of period Week for charts and requests statistics"><img src="Dijkstra100Iter_files/monitoring_057.png" alt="Week"> Week</a>&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?period=mois" title="Choice of period Month for charts and requests statistics"><img src="Dijkstra100Iter_files/monitoring_009.png" alt="Month"> Month</a>&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?period=annee" title="Choice of period Year for charts and requests statistics"><img src="Dijkstra100Iter_files/monitoring_051.png" alt="Year"> Year</a>&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?period=tout" title="Choice of period All for charts and requests statistics"><img src="Dijkstra100Iter_files/monitoring_051.png" alt="All"> All</a>&nbsp;
+<a href="javascript:showHide('customPeriod');document.customPeriodForm.startDate.focus();" title="Choice of period Customized for charts and requests statistics">
+<img src="Dijkstra100Iter_files/monitoring_051.png" alt="Customized"> Customized</a>
+<div id="customPeriod" style="display: none;">
+<script type="text/javascript">
+function validateCustomPeriodForm() {
+   periodForm = document.customPeriodForm;
+   if (periodForm.startDate.value.length == 0) {
+      alert('Dates are mandatory');
+      periodForm.startDate.focus();
+      return false;
+   }
+   if (periodForm.endDate.value.length == 0) {
+      alert('Dates are mandatory');
+      periodForm.endDate.focus();
+      return false;
+   }
+   periodForm.period.value=periodForm.startDate.value + '|' + periodForm.endDate.value;
+   return true;
+}
+</script>
+<br>
+<form name="customPeriodForm" method="get" action="" onsubmit="return validateCustomPeriodForm();">
+<br><b>From</b>&nbsp;&nbsp;<input size="10" name="startDate" type="text">&nbsp;&nbsp;<b>to</b>&nbsp;&nbsp;<input size="10" name="endDate" type="text">&nbsp;&nbsp;
+(m/d/yy)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input value="OK" type="submit"><br><br>
+<input name="period" value="" type="hidden">
+</form><br>
+</div>
+</div>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedMemory"><img class="synthese" src="Dijkstra100Iter_files/monitoring_012.png" alt="Used memory" title="Used memory"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=cpu"><img class="synthese" src="Dijkstra100Iter_files/monitoring_044.png" alt="% CPU" title="% CPU"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpSessions"><img class="synthese" src="Dijkstra100Iter_files/monitoring_042.png" alt="Http sessions" title="Http sessions"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=activeThreads"><img class="synthese" src="Dijkstra100Iter_files/monitoring_015.png" alt="Active threads" title="Active threads"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=activeConnections"><img class="synthese" src="Dijkstra100Iter_files/monitoring_030.png" alt="Active jdbc connections" title="Active jdbc connections"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedConnections"><img class="synthese" src="Dijkstra100Iter_files/monitoring_056.png" alt="Used jdbc connections" title="Used jdbc connections"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpHitsRate"><img class="synthese" src="Dijkstra100Iter_files/monitoring_049.png" alt="Http hits per minute" title="Http hits per minute"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpMeanTimes"><img class="synthese" src="Dijkstra100Iter_files/monitoring_010.png" alt="Http mean times (ms)" title="Http mean times (ms)"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpSystemErrors"><img class="synthese" src="Dijkstra100Iter_files/monitoring_016.png" alt="% of http errors" title="% of http errors"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=sqlHitsRate"><img class="synthese" src="Dijkstra100Iter_files/monitoring_024.png" alt="Sql hits per minute" title="Sql hits per minute"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=sqlMeanTimes"><img class="synthese" src="Dijkstra100Iter_files/monitoring_043.png" alt="Sql mean times (ms)" title="Sql mean times (ms)"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=sqlSystemErrors"><img class="synthese" src="Dijkstra100Iter_files/monitoring_053.png" alt="% of sql errors" title="% of sql errors"></a>
+<br>
+<div align="right">
+<a href="javascript:showHide('detailsGraphs');" class="noPrint"><img id="detailsGraphsImg" src="Dijkstra100Iter_files/monitoring_055.png" alt=""> Other charts</a>
+</div>
+<div id="detailsGraphs" style="display: none;"><div>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=gc"><img class="synthese" src="Dijkstra100Iter_files/monitoring_013.png" alt="% Garbage Collector time" title="% Garbage Collector time"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=threadCount"><img class="synthese" src="Dijkstra100Iter_files/monitoring_052.png" alt="Threads count" title="Threads count"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=loadedClassesCount"><img class="synthese" src="Dijkstra100Iter_files/monitoring_003.png" alt="Loaded classes count" title="Loaded classes count"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedNonHeapMemory"><img class="synthese" src="Dijkstra100Iter_files/monitoring_019.png" alt="Used non heap memory" title="Used non heap memory"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedPhysicalMemorySize"><img class="synthese" src="Dijkstra100Iter_files/monitoring_006.png" alt="Used physical memory" title="Used physical memory"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedSwapSpaceSize"><img class="synthese" src="Dijkstra100Iter_files/monitoring_048.png" alt="Used swap space" title="Used swap space"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=systemLoad"><img class="synthese" src="Dijkstra100Iter_files/monitoring_038.png" alt="System load" title="System load"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpSessionsMeanAge"><img class="synthese" src="Dijkstra100Iter_files/monitoring_027.png" alt="Mean age of http sessions (min)" title="Mean age of http sessions (min)"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=transactionsRate"><img class="synthese" src="Dijkstra100Iter_files/monitoring_021.png" alt="Transactions per minute" title="Transactions per minute"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=Free_disk_space"><img class="synthese" src="Dijkstra100Iter_files/monitoring_040.png" alt="Free disk space" title="Free disk space"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBusyThreads"><img class="synthese" src="Dijkstra100Iter_files/monitoring_037.png" alt="Tomcat busy threads" title="Tomcat busy threads"></a>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBytesReceived"><img class="synthese" src="Dijkstra100Iter_files/monitoring_028.png" alt="Bytes received per minute" title="Bytes received per minute"></a>
+<br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBytesSent"><img class="synthese" src="Dijkstra100Iter_files/monitoring_002.png" alt="Bytes sent per minute" title="Bytes sent per minute"></a>
+</div></div>
+</div>
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_029.png" alt="http">
+<a name="http"></a>Statistics http - 1 day</h3>
+None
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_045.png" alt="sql">
+<a name="sql"></a>Statistics sql - 1 day</h3>
+None
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_023.png" alt="error">
+<a name="error"></a>Statistics http system errors - 1 day</h3>
+None
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_041.png" alt="log">
+<a name="log"></a>Statistics system errors logs - 1 day</h3>
+None
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_050.png" alt="Current requests">
+<a name="currentRequests"></a>Current requests</h3>
+None
+<h3 class="chapterTitle"><img src="Dijkstra100Iter_files/monitoring_018.png" alt="System information">
+<a name="systeminfo"></a>System information</h3>
+<div class="noPrint" align="center">
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=gc" onclick="javascript:return confirm('Do you confirm execution of the garbage collector (GC) ?\n(this can take some seconds)');"><img src="Dijkstra100Iter_files/monitoring_047.png" alt="Execute the garbage collector" width="20" height="20"> Execute the garbage collector</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=heap_dump" onclick="javascript:return confirm('Do you confirm the generation of a heap dump of the server ?\n(this can take some minutes)');"><img src="Dijkstra100Iter_files/monitoring_014.png" alt="Generate a heap dump" width="20" height="20"> Generate a heap dump</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=heaphisto"><img src="Dijkstra100Iter_files/monitoring_025.png" alt="View memory histogram" width="20" height="20"> View memory histogram</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=invalidate_sessions" onclick="javascript:return confirm('Do you confirm the invalidation of http sessions ?\n(users will have to reconnect)');"><img src="Dijkstra100Iter_files/monitoring_046.png" alt="Invalidate http sessions" width="18" height="18"> Invalidate http sessions</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=sessions"><img src="Dijkstra100Iter_files/monitoring_031.png" alt="View http sessions" width="20" height="20"> View http sessions</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=web.xml"><img src="Dijkstra100Iter_files/monitoring_033.png" alt="View deployment descriptor" width="20" height="20"> View deployment descriptor</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=mbeans"><img src="Dijkstra100Iter_files/monitoring_011.png" alt="MBeans" width="20" height="20"> MBeans</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=processes"><img src="Dijkstra100Iter_files/monitoring_022.png" alt="View OS processes" width="20" height="20"> View OS processes</a>&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=jndi"><img src="Dijkstra100Iter_files/monitoring_034.png" alt="JNDI tree" width="20" height="20"> JNDI tree</a><br></div>
+<table summary="System information" align="left" border="0">
+<tbody><tr><td>Host: </td><td><b>vivekpc@127.0.1.1</b></td> </tr>
+<tr><td>Java memory used: </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedMemory" onmouseover="document.getElementById('idusedMemory').src='?graph=usedMemory&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idusedMemory" alt="graph"></em>58</a> Mb / 494 Mb&nbsp;&nbsp;&nbsp;</td><td>
+<img src="Dijkstra100Iter_files/monitoring_004.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_007.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="11.89%"><img src="Dijkstra100Iter_files/monitoring_003.gif" alt="+" title="11.89%">
+</td> </tr>
+<tr><td>Nb of http sessions: </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpSessions" onmouseover="document.getElementById('idhttpSessions').src='?graph=httpSessions&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idhttpSessions" alt="graph"></em>0</a></td><td></td> </tr>
+<tr><td>Nb of active threads<br>(current http requests): </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=activeThreads" onmouseover="document.getElementById('idactiveThreads').src='?graph=activeThreads&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idactiveThreads" alt="graph"></em>0</a></td><td></td> </tr>
+<tr><td>Nb of active jdbc connections: </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=activeConnections" onmouseover="document.getElementById('idactiveConnections').src='?graph=activeConnections&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idactiveConnections" alt="graph"></em>0</a></td><td></td> </tr>
+<tr><td>Nb of used jdbc connections<br>(opened if no datasource): </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=usedConnections" onmouseover="document.getElementById('idusedConnections').src='?graph=usedConnections&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idusedConnections" alt="graph"></em>0</a></td> </tr>
+<tr><td>System load</td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=systemLoad" onmouseover="document.getElementById('idsystemLoad').src='?graph=systemLoad&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idsystemLoad" alt="graph"></em>0.05</a></td><td></td> </tr>
+</tbody></table>
+<br><br><br><br><br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="javascript:showHide('detailsJava');" class="noPrint"><img id="detailsJavaImg" src="Dijkstra100Iter_files/monitoring_055.png" alt=""> Details</a>
+<br><br><br>
+<div id="detailsJava" style="display: none;"><div>
+<table summary="System details" align="left" border="0">
+<tbody><tr><td>OS: </td><td>
+<img src="Dijkstra100Iter_files/monitoring_005.png" alt="OS">
+Linux, 3.10.40-1-MANJARO , i386/32 (8 cores)</td></tr>
+<tr><td>Java: </td><td>OpenJDK Runtime Environment, 1.7.0_55-b14</td></tr>
+<tr><td>JVM: </td><td>OpenJDK Client VM, 24.51-b03, mixed mode&nbsp;&nbsp;&nbsp;<img src="Dijkstra100Iter_files/monitoring_059.png" alt="The server mode has much better performance than the client mode, you should consider using the server mode if your are not in development" title="The server mode has much better performance than the client mode, you should consider using the server mode if your are not in development"></td></tr>
+<tr><td>PID of process: </td><td>28152</td></tr>
+<tr><td>Server: </td><td>
+<img src="Dijkstra100Iter_files/monitoring_026.png" alt="Server">
+Apache Tomcat/7.0.54 </td></tr>
+<tr><td>Webapp context: </td><td>/restful-graphhopper-1.0 </td></tr>
+<tr><td>Start: </td><td>2/16/15 6:40 PM</td></tr>
+<tr><td valign="top">JVM arguments: </td><td>-Dcatalina.home=/usr/share/tomcat7<br>-Dcatalina.base=/usr/share/tomcat7<br>-Djava.io.tmpdir=/var/tmp/tomcat7/temp<br>-Dcommons.daemon.process.id=28152<br>-Dcommons.daemon.process.parent=28150<br>-Dcommons.daemon.version=1.0.15-dev<br>abort</td></tr>
+<tr><td>Mean age of http sessions (min): </td><td><a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=httpSessionsMeanAge" onmouseover="document.getElementById('idhttpSessionsMeanAge').src='?graph=httpSessionsMeanAge&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idhttpSessionsMeanAge" alt="graph"></em>-1</a></td></tr>
+<tr><td valign="top">Tomcat "http-bio-8080": </td><td>Busy threads = 
+<a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBusyThreads" onmouseover="document.getElementById('idtomcatBusyThreads').src='?graph=tomcatBusyThreads&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idtomcatBusyThreads" alt="graph"></em>1</a> /  200
+&nbsp;&nbsp;&nbsp;
+<img src="Dijkstra100Iter_files/monitoring_002.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="0.50%"><img src="Dijkstra100Iter_files/monitoring_003.gif" alt="+" title="0.50%">
+<br>Bytes received = 
+<a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBytesReceived" onmouseover="document.getElementById('idtomcatBytesReceived').src='?graph=tomcatBytesReceived&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idtomcatBytesReceived" alt="graph"></em>0</a><br>Bytes sent = 
+<a class="tooltip" href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=graph&amp;graph=tomcatBytesSent" onmouseover="document.getElementById('idtomcatBytesSent').src='?graph=tomcatBytesSent&amp;width=100&amp;height=50'; this.onmouseover=null;"><em><img src="Dijkstra100Iter_files/monitoring_018.png" id="idtomcatBytesSent" alt="graph"></em>406,498,033</a><br>Request count = 
+99,200
+<br>Error count = 
+0
+<br>Sum of processing times (ms) = 
+1,343,373
+<br>Max processing time (ms) = 
+1,239
+</td> </tr>
+<tr><td valign="top">Memory: </td><td>Non heap memory = 21 Mb (Perm Gen, Code Cache),<br>Loaded classes = 4,013,<br>Garbage collection time = 15,677 ms,<br>Process cpu time = 1,406,070 ms,<br>Committed virtual memory = 683 Mb,<br>Free physical memory = 642 Mb,<br>Total physical memory = 3,454 Mb,<br>Free swap space = 0 Mb,<br>Total swap space = 3 Mb</td></tr>
+<tr><td>Perm Gen memory: </td><td>14 Mb
+ / 64 Mb&nbsp;&nbsp;&nbsp;
+<img src="Dijkstra100Iter_files/monitoring_004.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_007.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_007.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_006.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_005.gif" alt="+" title="22.92%"><img src="Dijkstra100Iter_files/monitoring_003.gif" alt="+" title="22.92%">
+</td></tr>
+<tr><td>Free disk space: </td><td>328,947 Mb </td></tr>
+<tr><td valign="top">Dependencies: </td><td>
+33 dependencies
+ ; &nbsp;&nbsp;&nbsp;
+<a href="javascript:showHide('detailsDependencies1');" class="noPrint"><img id="detailsDependencies1Img" src="Dijkstra100Iter_files/monitoring_055.png" alt=""> Details</a>
+&nbsp;&nbsp;&nbsp;<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=pom.xml" class="noPrint">
+<img src="Dijkstra100Iter_files/monitoring_033.png" alt="View Maven's pom" width="14" height="14"> View Maven's pom</a>
+<br>
+<div id="detailsDependencies1" style="display: none;"><div>
+asm-3.1.jar,<br>commons-codec-1.7.jar,<br>commons-compress-1.4.1.jar,<br>commons-io-1.3.1.jar,<br>commons-logging-1.0.4.jar,<br>commons-pool-1.5.5.jar,<br>graphhopper-0.4-SNAPSHOT.jar,<br>ini4j-0.3.3.jar,<br>itext-2.1.7.jar,<br>javamelody-core-1.55.0.jar,<br>jedis-2.1.0.jar,<br>jersey-core-1.0.3.1.jar,<br>jersey-server-1.0.3.1.jar,<br>jpf-1.5.jar,<br>jrobin-1.5.9.jar,<br>json-20090211.jar,<br>jsr311-api-1.0.jar,<br>log4j-1.2.17.jar,<br>osmosis-core-0.43-RELEASE.jar,<br>osmosis-osm-binary-0.43.1.jar,<br>osmosis-xml-0.43-RELEASE.jar,<br>protobuf-java-2.5.0.jar,<br>slf4j-api-1.7.7.jar,<br>slf4j-log4j12-1.7.7.jar,<br>stax2-api-3.1.1.jar,<br>trove4j-3.0.3.jar,<br>woodstox-core-lgpl-4.1.4.jar,<br>xercesImpl-2.9.1.jar,<br>xmlgraphics-commons-1.5.jar,<br>xmlpull-1.1.3.1.jar,<br>xpp3_min-1.1.4c.jar,<br>xstream-1.4.2.jar,<br>xz-1.0.jar
+</div></div>
+</td></tr>
+</tbody></table>
+</div></div>
+<h3 class="chapterTitle" style="clear:both;"><img src="Dijkstra100Iter_files/monitoring_039.png" alt="Threads">
+<a name="threads"></a>Threads</h3>
+<b>Threads on vivekpc@127.0.1.1: </b>Number = 21, Maximum = 31, Total started = 33
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="javascript:showHide('threads_0');" class="noPrint"><img id="threads_0Img" src="Dijkstra100Iter_files/monitoring_055.png" alt=""> Details</a>
+<br><br><div id="threads_0" style="display: none;">
+<table id="table3" class="sortable" summary="Threads" border="1" width="100%">
+<thead><tr><th><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Thread</div></th><th><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Daemon ?</div></th><th class="sorttable_numeric"><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Priority</div></th><th><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>State</div></th><th><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Executed method</div></th><th class="sorttable_numeric"><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Cpu time (ms)</div></th><th class="sorttable_numeric"><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>User time (ms)</div></th><th class="noPrint"><div style="position:relative;height:100%;width:100%"><div style="position:absolute;height:100%;width:5px;margin-right:-5px;left:100%;top:0px;cursor:w-resize;z-index:10;"></div>Kill</div></th>
+</tr></thead><tbody>
+<tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+ajp-bio-8009-Acceptor-0<br>
+java.net.PlainSocketImpl.socketAccept(Native&nbsp;Method)<br>
+java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)<br>
+java.net.ServerSocket.implAccept(ServerSocket.java:530)<br>
+java.net.ServerSocket.accept(ServerSocket.java:498)<br>
+org.apache.tomcat.util.net.DefaultServerSocketFactory.acceptSocket(DefaultServerSocketFactory.java:60)<br>
+org.apache.tomcat.util.net.JIoEndpoint$Acceptor.run(JIoEndpoint.java:220)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+ajp-bio-8009-Acceptor-0</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_032.png" alt="RUNNABLE">RUNNABLE</td> <td>java.net.PlainSocketImpl.socketAccept(Native&nbsp;Method)</td> <td align="right">0</td> <td align="right">0</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_15" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread ajp-bio-8009-Acceptor-0 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;ajp-bio-8009-Acceptor-0" title="Kill&nbsp;the&nbsp;thread&nbsp;ajp-bio-8009-Acceptor-0" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+ajp-bio-8009-AsyncTimeout<br>
+java.lang.Thread.sleep(Native&nbsp;Method)<br>
+org.apache.tomcat.util.net.JIoEndpoint$AsyncTimeout.run(JIoEndpoint.java:152)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+ajp-bio-8009-AsyncTimeout</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_058.png" alt="TIMED_WAITING">TIMED_WAITING</td> <td>java.lang.Thread.sleep(Native&nbsp;Method)</td> <td align="right">1,832</td> <td align="right">1,040</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_16" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread ajp-bio-8009-AsyncTimeout ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;ajp-bio-8009-AsyncTimeout" title="Kill&nbsp;the&nbsp;thread&nbsp;ajp-bio-8009-AsyncTimeout" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+ContainerBackgroundProcessor[StandardEngine[Catalina]]<br>
+java.lang.Thread.sleep(Native&nbsp;Method)<br>
+org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1508)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+ContainerBackgroundProcessor[StandardEngine[Catalina]]</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_058.png" alt="TIMED_WAITING">TIMED_WAITING</td> <td>java.lang.Thread.sleep(Native&nbsp;Method)</td> <td align="right">3,387</td> <td align="right">2,460</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_12" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread ContainerBackgroundProcessor[StandardEngine[Catalina]] ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;ContainerBackgroundProcessor[StandardEngine[Catalina]]" title="Kill&nbsp;the&nbsp;thread&nbsp;ContainerBackgroundProcessor[StandardEngine[Catalina]]" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+Finalizer<br>
+java.lang.Object.wait(Native&nbsp;Method)<br>
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:135)<br>
+java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:151)<br>
+java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:189)<br>
+</em>
+Finalizer</a>
+</td> <td align="center">yes</td> <td align="right">8</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>java.lang.Object.wait(Native&nbsp;Method)</td> <td align="right">687</td> <td align="right">580</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_3" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread Finalizer ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;Finalizer" title="Kill&nbsp;the&nbsp;thread&nbsp;Finalizer" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+GC&nbsp;Daemon<br>
+java.lang.Object.wait(Native&nbsp;Method)<br>
+sun.misc.GC$Daemon.run(GC.java:117)<br>
+</em>
+GC&nbsp;Daemon</a>
+</td> <td align="center">yes</td> <td align="right">2</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="TIMED_WAITING">TIMED_WAITING</td> <td>java.lang.Object.wait(Native&nbsp;Method)</td> <td align="right">0</td> <td align="right">0</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_8" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread GC Daemon ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;GC&nbsp;Daemon" title="Kill&nbsp;the&nbsp;thread&nbsp;GC&nbsp;Daemon" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-Acceptor-0<br>
+java.net.PlainSocketImpl.socketAccept(Native&nbsp;Method)<br>
+java.net.AbstractPlainSocketImpl.accept(AbstractPlainSocketImpl.java:398)<br>
+java.net.ServerSocket.implAccept(ServerSocket.java:530)<br>
+java.net.ServerSocket.accept(ServerSocket.java:498)<br>
+org.apache.tomcat.util.net.DefaultServerSocketFactory.acceptSocket(DefaultServerSocketFactory.java:60)<br>
+org.apache.tomcat.util.net.JIoEndpoint$Acceptor.run(JIoEndpoint.java:220)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-Acceptor-0</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_032.png" alt="RUNNABLE">RUNNABLE</td> <td>java.net.PlainSocketImpl.socketAccept(Native&nbsp;Method)</td> <td align="right">6,030</td> <td align="right">3,950</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_13" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-Acceptor-0 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-Acceptor-0" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-Acceptor-0" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-AsyncTimeout<br>
+java.lang.Thread.sleep(Native&nbsp;Method)<br>
+org.apache.tomcat.util.net.JIoEndpoint$AsyncTimeout.run(JIoEndpoint.java:152)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-AsyncTimeout</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_058.png" alt="TIMED_WAITING">TIMED_WAITING</td> <td>java.lang.Thread.sleep(Native&nbsp;Method)</td> <td align="right">1,811</td> <td align="right">910</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_14" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-AsyncTimeout ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-AsyncTimeout" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-AsyncTimeout" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-10<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-10</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">123,898</td> <td align="right">122,650</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_27" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-10 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-10" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-10" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-13<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-13</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">8,328</td> <td align="right">8,270</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_33" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-13 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-13" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-13" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-15<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-15</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">8,272</td> <td align="right">8,200</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_30" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-15 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-15" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-15" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-16<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-16</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">8,211</td> <td align="right">8,150</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_31" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-16 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-16" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-16" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-2<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-2</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">124,034</td> <td align="right">122,920</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_19" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-2 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-2" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-2" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-20<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-20</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">8,276</td> <td align="right">8,150</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_34" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-20 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-20" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-20" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-3<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-3</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">124,091</td> <td align="right">122,900</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_20" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-3 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-3" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-3" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-4<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-4</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">124,030</td> <td align="right">122,930</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_21" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-4 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-4" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-4" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-5<br>
+sun.misc.Unsafe.park(Native&nbsp;Method)<br>
+java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)<br>
+java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2043)<br>
+java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:104)<br>
+org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:32)<br>
+java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1068)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-5</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>sun.misc.Unsafe.park(Native&nbsp;Method)</td> <td align="right">124,260</td> <td align="right">123,030</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_22" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-5 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-5" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-5" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td><a class="tooltip">
+<em>
+http-bio-8080-exec-9<br>
+java.lang.Thread.dumpThreads(Native&nbsp;Method)<br>
+java.lang.Thread.getAllStackTraces(Thread.java:1639)<br>
+net.bull.javamelody.JavaInformations.buildThreadInformationsList(JavaInformations.java:295)<br>
+net.bull.javamelody.JavaInformations.&lt;init&gt;(JavaInformations.java:176)<br>
+net.bull.javamelody.MonitoringController.doActionIfNeededAndReport(MonitoringController.java:142)<br>
+net.bull.javamelody.MonitoringFilter.doMonitoring(MonitoringFilter.java:340)<br>
+net.bull.javamelody.MonitoringFilter.doFilter(MonitoringFilter.java:167)<br>
+org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)<br>
+org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)<br>
+org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:220)<br>
+org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:122)<br>
+org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:501)<br>
+org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)<br>
+org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)<br>
+org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:950)<br>
+org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:116)<br>
+org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:408)<br>
+org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1040)<br>
+org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:607)<br>
+org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:314)<br>
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)<br>
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)<br>
+org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)<br>
+java.lang.Thread.run(Thread.java:744)<br>
+</em>
+http-bio-8080-exec-9</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_032.png" alt="RUNNABLE">RUNNABLE</td> <td>java.lang.Thread.dumpThreads(Native&nbsp;Method)</td> <td align="right">124,477</td> <td align="right">123,270</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_26" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread http-bio-8080-exec-9 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-9" title="Kill&nbsp;the&nbsp;thread&nbsp;http-bio-8080-exec-9" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+javamelody&nbsp;restful-graphhopper-1.0<br>
+java.lang.Object.wait(Native&nbsp;Method)<br>
+java.util.TimerThread.mainLoop(Timer.java:552)<br>
+java.util.TimerThread.run(Timer.java:505)<br>
+</em>
+javamelody&nbsp;restful-graphhopper-1.0</a>
+</td> <td align="center">yes</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="TIMED_WAITING">TIMED_WAITING</td> <td>java.lang.Object.wait(Native&nbsp;Method)</td> <td align="right">8,814</td> <td align="right">5,550</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_11" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread javamelody restful-graphhopper-1.0 ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;javamelody&nbsp;restful-graphhopper-1.0" title="Kill&nbsp;the&nbsp;thread&nbsp;javamelody&nbsp;restful-graphhopper-1.0" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td>main</td> <td align="center">no</td> <td align="right">5</td> <td><img src="Dijkstra100Iter_files/monitoring_032.png" alt="RUNNABLE">RUNNABLE</td> <td>&nbsp;</td> <td align="right">531</td> <td align="right">470</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_1" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread main ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;main" title="Kill&nbsp;the&nbsp;thread&nbsp;main" width="16" height="16"></a></td></tr><tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
+<td><a class="tooltip">
+<em>
+Reference&nbsp;Handler<br>
+java.lang.Object.wait(Native&nbsp;Method)<br>
+java.lang.Object.wait(Object.java:503)<br>
+java.lang.ref.Reference$ReferenceHandler.run(Reference.java:133)<br>
+</em>
+Reference&nbsp;Handler</a>
+</td> <td align="center">yes</td> <td align="right">10</td> <td><img src="Dijkstra100Iter_files/monitoring_004.png" alt="WAITING">WAITING</td> <td>java.lang.Object.wait(Native&nbsp;Method)</td> <td align="right">598</td> <td align="right">400</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_2" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread Reference Handler ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;Reference&nbsp;Handler" title="Kill&nbsp;the&nbsp;thread&nbsp;Reference&nbsp;Handler" width="16" height="16"></a></td></tr><tr onmouseover="this.className='highlight'" onmouseout="this.className=''">
+<td>Signal&nbsp;Dispatcher</td> <td align="center">yes</td> <td align="right">9</td> <td><img src="Dijkstra100Iter_files/monitoring_032.png" alt="RUNNABLE">RUNNABLE</td> <td>&nbsp;</td> <td align="right">0</td> <td align="right">0</td> <td class="noPrint" align="center"><a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=kill_thread&amp;threadId=28152_127.0.1.1_4" onclick="javascript:return confirm('Killing a Java thread is not recommended and unsafe.\nDo you really want to kill the thread Signal Dispatcher ?');"><img src="Dijkstra100Iter_files/monitoring_007.png" alt="Kill&nbsp;the&nbsp;thread&nbsp;Signal&nbsp;Dispatcher" title="Kill&nbsp;the&nbsp;thread&nbsp;Signal&nbsp;Dispatcher" width="16" height="16"></a></td></tr></tbody><tfoot></tfoot></table>
+<div align="right">
+The cpu times and user times of these threads are measured from the start of the server
+</div>
+<div class="noPrint" align="right"><br>
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=threadsDump"><img src="Dijkstra100Iter_files/monitoring.png" alt="Dump threads as text">&nbsp;Dump threads as text</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?part=threads"><img src="Dijkstra100Iter_files/monitoring_039.png" alt="Threads" width="16" height="16">&nbsp;View in a new page</a>
+</div>
+</div><br>
+<script type="text/javascript">
+function toggle(id) {
+var el = document.getElementById(id);
+if (el.getAttribute('class') == 'menuHide') {
+  el.setAttribute('class', 'menuShow');
+} else {
+  el.setAttribute('class', 'menuHide');
+} }
+</script>
+<div class="noPrint"> 
+<div id="menuBox" class="menuHide">
+  <ul id="menuTab"><li><a href='javascript:toggle("menuBox");'><img id="menuToggle" src="Dijkstra100Iter_files/monitoring_035.png" alt="menu"></a></li></ul>
+  <div id="menuLinks"><div id="menuDeco">
+    <div class="menuButton"><a href="#top">Stats</a></div>
+    <div class="menuButton"><a href="#http">Stats http</a></div>
+    <div class="menuButton"><a href="#sql">Stats sql</a></div>
+    <div class="menuButton"><a href="#error">Stats error</a></div>
+    <div class="menuButton"><a href="#log">Stats log</a></div>
+    <div class="menuButton"><a href="#currentRequests">Current requests</a></div>
+    <div class="menuButton"><a href="#systeminfo">System information</a></div>
+    <div class="menuButton"><a href="#threads">Threads</a></div>
+  </div></div>
+</div></div>
+<a name="bottom"></a>
+<br><div style="font-size: 11px;">
+Last collect time: 850 ms<br>
+Display time: 76 ms<br>
+Memory overhead estimate: &lt; 1 Mb
+<br>Disk usage: 1 Mb
+&nbsp;&nbsp;&nbsp;<a href="http://localhost:8080/restful-graphhopper-1.0/monitoring?action=purge_obsolete_files" class="noPrint">
+<img src="Dijkstra100Iter_files/monitoring_046.png" alt="Purge the obsolete files" title="Purge the obsolete files" width="14" height="14"></a>
+<br><br>JavaMelody 1.55.0
+<br>
+<a href="javascript:showHide('debuggingLogs');" class="noPrint"><img id="debuggingLogsImg" src="Dijkstra100Iter_files/monitoring_055.png" alt=""> Debugging logs</a>
+<br><br>
+<div id="debuggingLogs" style="display: none;">
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody listener init started<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;datasources found in JNDI: []<br>
+Mon Feb 16 18:40:25 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody
+ listener init done in 28 ms<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody filter init started<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OS: Linux unknown, i386/32<br>
+Mon Feb 16 18:40:25 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Java:
+ OpenJDK Runtime Environment, 1.7.0_55-b14<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Server: Apache Tomcat/7.0.54<br>
+Mon Feb 16 18:40:25 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Webapp
+ context: /restful-graphhopper-1.0<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody version: 1.55.0<br>
+Mon Feb 16 18:40:25 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody
+ classes loaded from: 
+file:/var/lib/tomcat7/webapps/restful-graphhopper-1.0/WEB-INF/lib/javamelody-core-1.55.0.jar<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Host: vivekpc@127.0.1.1<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parameter defined: log=true<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log listeners initialized<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;datasources found in JNDI: []<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;counters initialized<br>
+Mon Feb 16 18:40:25 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;counters
+ data read from files in 
+/var/tmp/tomcat7/temp/javamelody/restful-graphhopper-1.0_vivekpc<br>
+Mon Feb 16 18:40:25 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collect task scheduled every 60s<br>
+Mon Feb 16 18:40:27 GMT 2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first collect of data done<br>
+Mon Feb 16 18:40:27 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JavaMelody
+ filter init done in 1626 ms<br>
+Tue Feb 17 00:00:26 GMT 
+2015&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obsolete
+ files deleted. JavaMelody disk usage: 873 KB<br>
+</div>
+</div>
+
+</body></html>
