@@ -516,15 +516,15 @@ function initMap() {
 
 	map.on('overlayadd', function (eventLayer) {
 	    console.log("Layer added " + eventLayer.name);
-	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
-	        noiseLegend.addTo(map);
+	    if (eventLayer.name === 'Noise') {
+			ifnoiseLegend.addTo(map);
 	    } 
 	});
 	
 	map.on('overlayremove', function (eventLayer) {
 	    console.log("Layer added " + eventLayer.name);
 	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
-	        this.removeControl(noiseLayer);
+	        this.removeControl(noiseLegend);
 	    } 
 	});
 }
