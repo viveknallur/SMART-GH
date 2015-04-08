@@ -124,7 +124,7 @@ $(document).ready(function (e) {
                 initI18N();
 
                 var json = arg2[0];
-
+				console.log("JSON OBJECT " + JSON.stringify(json, null, 2));
                 /*for (var key in json)
                  {
                  if (json.hasOwnProperty(key)) {
@@ -174,7 +174,7 @@ $(document).ready(function (e) {
 
                 //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
                 var sensorsTxt = json.sensors;
-
+				console.log("Sensors received info " + sensorsTxt);
                 for (var i = 0; i < sensorsTxt.length; i++)
                 {
                     var wsensor = sensorsTxt[i];
@@ -255,7 +255,6 @@ $(document).ready(function (e) {
     setAutoCompleteList("from");
     setAutoCompleteList("to");
 });
-
 
 
 function initFromParams(params, doQuery) {
@@ -403,7 +402,6 @@ function initMap() {
              text: 'Show air pollution',
              callback: visualizeAirHeatLayer
              }
-             
              , {
              text: 'Clear',
              callback: clearHeatLayers
@@ -421,16 +419,34 @@ function initMap() {
         //blur: 10,
         //maxZoom: 17,
         //minOpacity: 0.4,
-        gradient: {.4: "yellow", .6: "pink", .7: "purple", .8: "green", 1: "red"}
+        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
     });
 	
 	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
-        radius: 40,
+        radius: 50,
         //blur: 10,
         //maxZoom: 17,
         //minOpacity: 0.4,
-        gradient: {.7: "purple"}
+        gradient: {.7:'#B30622'}
     });
+	
+	//LEGEND
+	var noiseLegend = L.control({position: 'bottomright'});
+
+	noiseLegend.onAdd = function (map) {
+	    var div = L.DomUtil.create('div', 'Noise legend'),
+	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
+			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
+	        labels = [];
+
+	    // loop through the noise levels and generate a label with a colored square for each interval
+	    for (var i = 0; i < grades.length; i++) {
+	        div.innerHTML +=
+	            '<i style="background:' + colors[i] + '"></i> ' +
+	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
+	    }
+	    return div;
+	};
 	
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
@@ -496,10 +512,22 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color: "#2B65EC"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
+    routingLayer.options = {style: {color: "white"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
+
+	map.on('overlayadd', function (eventLayer) {
+	    console.log("Layer added " + eventLayer.name);
+	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
+	        noiseLegend.addTo(map);
+	    } 
+	});
+	
+	map.on('overlayremove', function (eventLayer) {
+	    console.log("Layer added " + eventLayer.name);
+	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
+	        this.removeControl(noiseLayer);
+	    } 
+	});
 }
-
-
 
 function visualizeNoiseHeatLayer(e) {
     map.addLayer(heat);
@@ -1385,20 +1413,15 @@ function setWeighting(request) {
 //Gets the value of elevation and  passes it to be appended in the request
 function setElevation(request) {
     //@Amal Elgammal: to add the selected Elevation to the request
-    if ($("#elevationCheck").prop('checked'))
-    {
+    if ($("#elevationCheck").prop('checked')) {
         request.elevation = true;
-    }
-    else
-    {
+    } else {
         request.elevation = false;
     }
     console.log("request.elevation vale in setElevation function is: " + request.elevation);
-
 }
 
-function toTitleCase(str)
-{
+function toTitleCase(str) {
     return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
