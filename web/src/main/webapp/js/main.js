@@ -47,6 +47,7 @@ var map;
  */
 var heat;
 var noiseDataJson;
+var backgroundNoiseJson;
 var airDataJson;
 
 
@@ -218,6 +219,9 @@ $(document).ready(function (e) {
                 var noiseAirData = arg3[0];
                 var noiseData = noiseAirData["noise"];
                 noiseDataJson = JSON.parse(noiseData);
+				
+				var backgroundNoiseData = noiseAirData["backgroundNoise"];
+				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
 
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
@@ -411,15 +415,23 @@ function initMap() {
 
 
     //Initialize noise heat layer
-
+	
     heat = L.heatLayer(noiseDataJson, {
         radius: 10,
         //blur: 10,
         //maxZoom: 17,
         //minOpacity: 0.4,
-        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "green", 1: "red"}
+        gradient: {.4: "yellow", .6: "pink", .7: "purple", .8: "green", 1: "red"}
     });
-
+	
+	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
+        radius: 40,
+        //blur: 10,
+        //maxZoom: 17,
+        //minOpacity: 0.4,
+        gradient: {.7: "purple"}
+    });
+	
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
         radius: 50,
@@ -436,7 +448,7 @@ function initMap() {
         //"MapQuest": mapquest,
         //"MapQuest Aerial": mapquestAerial,
         "TF Transport": thunderTransport,
-        "TF Cycle": thunderCycle
+//        "TF Cycle": thunderCycle
                 //,"TF Outdoors": thunderOutdoors,
                 //"WanderReitKarte": wrk,
                 //"OpenStreetMap": osm,
@@ -444,7 +456,8 @@ function initMap() {
     };
 
     var overlays = {"Noise": heat,
-        "Air Pollution": heatAir
+        "Air Pollution": heatAir,
+		"Median Noise": heatBackgroundNoise
     };
 
 
