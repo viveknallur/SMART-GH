@@ -47,12 +47,20 @@ public class SensorDataServlet extends GHBaseServlet
         JSONObject json = new JSONObject();
        
         String noiseDataFile = "./sensor_processing/sensor_readings/noise/noise_heatmap.dat";
+		String noiseFakeDataFile = "./sensor_processing/sensor_readings/noise/noise_heatmap2.dat";
         String airDataFile = "./sensor_processing/sensor_readings/noise/air_heatmap.dat";
         
         String noiseContent = new Scanner(new File(noiseDataFile)).useDelimiter("\\Z").next();
-        String airContent = new Scanner(new File(airDataFile)).useDelimiter("\\Z").next();
+		String moreNoiseContent = new Scanner(new File(noiseFakeDataFile)).useDelimiter("\\Z").next();
+/*		noiseContent.substring(0, noiseContent.length()-1);
+		noiseContent += ", ";
+		noiseContent +=  moreNoiseContent.substring(1, moreNoiseContent.length()); 
+//		noiseContent += new Scanner(new File(noiseFakeDataFile)).useDelimiter("\\Z").next();
+      */
+  		String airContent = new Scanner(new File(airDataFile)).useDelimiter("\\Z").next();
         json.put("noise",noiseContent);
         json.put("air",airContent);
+		json.put("backgroundNoise", moreNoiseContent);
         writeJson(req, res, json);
 
     }

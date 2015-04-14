@@ -413,11 +413,11 @@ function initMap() {
     //Initialize noise heat layer
 
     heat = L.heatLayer(noiseDataJson, {
-        radius: 10,
+        radius: 5,
         //blur: 10,
         //maxZoom: 17,
         //minOpacity: 0.4,
-        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "green", 1: "red"}
+        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "pink", 1: "white"}
     });
 
     //Initialize air pollution heat layer
