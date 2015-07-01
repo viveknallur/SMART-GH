@@ -18,7 +18,7 @@ public class requestRoute{
 	
 	public requestRoute(double fromLong, double fromLat, double toLong, double toLat, String weighting, String vehicle)
 	{		
-		url = "http://172.16.160.130:8989/route/";
+		url = "http://localhost:8989/route/";
 		url += "?point=" + fromLong + "%2C" + fromLat; 
 		url += "&point=" + toLong + "%2C" + toLat; 
 		url += "&vehicle=" + vehicle;

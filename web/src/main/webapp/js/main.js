@@ -174,7 +174,7 @@ $(document).ready(function (e) {
 
                 //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
                 var sensorsTxt = json.sensors;
-				console.log("Sensors received info " + sensorsTxt);
+				
                 for (var i = 0; i < sensorsTxt.length; i++)
                 {
                     var wsensor = sensorsTxt[i];
@@ -450,7 +450,7 @@ function initMap() {
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
         radius: 50,
-        //blur: 10,
+        blur: 20,
         //maxZoom: 17,
         minOpacity: 0.5,
         gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
@@ -823,6 +823,7 @@ function focus(coord, zoom, isFrom) {
         setFlag(coord, isFrom);
     }
 }
+
 function routeLatLng(request, doQuery) {
     // do_zoom should not show up in the URL but in the request object to avoid zooming for history change
     var doZoom = request.do_zoom;
@@ -1193,8 +1194,6 @@ function mySubmit() {
     }
     // route!
     resolveCoords(fromStr, toStr);
-
-
 }
 
 function floor(val, precision) {

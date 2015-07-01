@@ -48,3 +48,11 @@ cgiarprovider/
 /WebServicesRestGH/dist/
 /WebServicesRestGH/build/
 /WebServicesRestGH/nbproject/private/
+/core/src/main/java/com/graphhopper/routing/util/.DS_Store
+
+/SMART-GH-Android/platforms/.DS_Store
+
+/SMART-GH-Android/bin/classes.dex
+/SMART-GH-Android/platforms/android/CordovaLib/.settings/org.eclipse.jdt.core.prefs
+/SMART-GH-Android/platforms/android/settings.gradle
+/SMART-GH-Android/platforms/android/src/com/coolappz/smartghAndroid/CordovaApp.java

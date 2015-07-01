@@ -3,15 +3,17 @@
  * &host=http://localhost:9000/
  * to the URL or overwrite the 'host' variable.*/
 
+const cop = require('./context-traits.js');
+
 var tmpArgs = parseUrlWithHisto();
 
-for (var key in tmpArgs)
-{
+for(var key in tmpArgs) {
     if (tmpArgs.hasOwnProperty(key)) {
         console.log("main.js..." + key + " = " + tmpArgs[key]);
     }
 
 }
+
 var host = tmpArgs["host"];
 // var host = "http://graphhopper.com/api/1";
 if (!host) {
@@ -47,6 +49,7 @@ var map;
  */
 var heat;
 var noiseDataJson;
+var backgroundNoiseJson;
 var airDataJson;
 
 
@@ -215,14 +218,17 @@ $(document).ready(function (e) {
                 //--End
 
 
-               /* var noiseAirData = arg3[0];
+                var noiseAirData = arg3[0];
                 var noiseData = noiseAirData["noise"];
                 noiseDataJson = JSON.parse(noiseData);
+                
+                var backgroundNoiseData = noiseAirData = noiseAirData["backgroundNoise"];
+                backgroundNoiseJson = JSON.parse(backgroundNoiseData);
 
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData.substring(1, 100));*/
+                console.log("airData =  " + airData.substring(1, 100));
 
                 initMap();
 
@@ -413,20 +419,45 @@ function initMap() {
     //Initialize noise heat layer
 
     heat = L.heatLayer(noiseDataJson, {
-        radius: 5,
-        //blur: 10,
+        radius: 10,
+        blur: 20,
         //maxZoom: 17,
-        //minOpacity: 0.4,
-        gradient: {.4: "yellow", .6: "lime", .7: "orange", .8: "pink", 1: "white"}
+        minOpacity: 0.3,
+        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
     });
+
+	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
+        radius: 50,
+        blur: 100,
+        //maxZoom: 17,
+        gradient: {.7:'#B30622'}
+    });
+	
+	//LEGEND
+	var noiseLegend = L.control({position: 'bottomright'});
+
+	noiseLegend.onAdd = function (map) {
+	    var div = L.DomUtil.create('div', 'Noise legend'),
+	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
+			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
+	        labels = [];
+
+	    // loop through the noise levels and generate a label with a colored square for each interval
+	    for (var i = 0; i < grades.length; i++) {
+	        div.innerHTML +=
+	            '<i style="background:' + colors[i] + '"></i> ' +
+	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
+	    }
+	    return div;
+	};
 
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
-        radius: 10,
-        //blur: 10,
+        radius: 50,
+        blur: 20,
         //maxZoom: 17,
-        //minOpacity: 0.4,
-        gradient: {.4: 'yellow', .6: 'magenta', .7: 'violet', .8: 'purple', 1: 'black'}
+        minOpacity: 0.5,
+        gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
     });
 
 
@@ -436,19 +467,20 @@ function initMap() {
         //"MapQuest": mapquest,
         //"MapQuest Aerial": mapquestAerial,
         "TF Transport": thunderTransport,
-        "TF Cycle": thunderCycle
+//        "TF Cycle": thunderCycle
                 //,"TF Outdoors": thunderOutdoors,
                 //"WanderReitKarte": wrk,
                 //"OpenStreetMap": osm,
                 //"OpenStreetMap.de": osmde
     };
 
-    //var overlays = {"Noise": heat,
-    //    "Air Pollution": heatAir
-    //};
+    var overlays = {"Noise": heat,
+        "Air Pollution": heatAir,
+        "Median Noise": heatBackgroundNoise
+    };
 
 
-    L.control.layers(baseMaps /*, overlays*/).addTo(map);
+    L.control.layers(baseMaps, overlays).addTo(map);
     L.control.scale().addTo(map);
 
     map.fitBounds(new L.LatLngBounds(new L.LatLng(bounds.minLat, bounds.minLon),
@@ -484,11 +516,25 @@ function initMap() {
     routingLayer = L.geoJson().addTo(map);
 
     routingLayer.options = {style: {color: "#2B65EC"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
+    
+    map.on('overlayadd', function (eventLayer) {
+	    console.log("Layer added " + eventLayer.name);
+	    if (eventLayer.name === 'Noise') {
+			noiseLegend.addTo(map);
+	    } 
+	});
+	
+	map.on('overlayremove', function (eventLayer) {
+	    console.log("Layer added " + eventLayer.name);
+	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
+	        this.removeControl(noiseLegend);
+	    } 
+	});
 }
 
 
 
-/*function visualizeNoiseHeatLayer(e) {
+function visualizeNoiseHeatLayer(e) {
     map.addLayer(heat);
     noiseLayerFlag = 1;
 }
@@ -501,7 +547,7 @@ function visualizeAirHeatLayer(e) {
 function clearHeatLayers(e) {
     map.removeLayer(heat);
     map.removeLayer(heatAir);
-}*/
+}
 
 function setStartCoord(e) {
     ghRequest.from.setCoord(e.latlng.lat, e.latlng.lng);
@@ -663,8 +709,8 @@ function createAmbiguityList(locCoord) {
                 //    continue;
 
                 // if no different properties => skip!
-                if (address && JSON.stringify(address) === JSON.stringify(json.address))
-                    continue;
+              //  if (address && JSON.stringify(address) === JSON.stringify(json.address))
+               //     continue;
 
                 address = json.address;
                 prevImportance = json.importance;
@@ -783,6 +829,7 @@ function focus(coord, zoom, isFrom) {
         setFlag(coord, isFrom);
     }
 }
+
 function routeLatLng(request, doQuery) {
     // do_zoom should not show up in the URL but in the request object to avoid zooming for history change
     var doZoom = request.do_zoom;
@@ -1153,8 +1200,6 @@ function mySubmit() {
     }
     // route!
     resolveCoords(fromStr, toStr);
-
-
 }
 
 function floor(val, precision) {
