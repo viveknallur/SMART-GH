@@ -803,7 +803,7 @@ public class GraphHopper implements GraphHopperAPI
             Weighting leastSmokeyWeighting = new PollutionSensorWeighting(cityName);
             
             return leastSmokeyWeighting;
-        } else if("least_pollinated".equals(weighting)) {
+        } else if("Least_pollinated".equals(weighting)) {
         	System.out.println("LeastPollinatedWeighting object is created");
         	String cityName = getCityName();
         	System.out.println("current city " + cityName);
