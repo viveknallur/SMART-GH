@@ -775,42 +775,50 @@ public class GraphHopper implements GraphHopperAPI
      * @param encoder
      * @return the weighting to be used for route calculation
      */
-    public Weighting createWeighting( String weighting, FlagEncoder encoder )
-    {
+    public Weighting createWeighting( String weighting, FlagEncoder encoder ) {
         // ignore case
         weighting = weighting.toLowerCase();
-        if ("fastest".equals(weighting))
-        {
+        if ("fastest".equals(weighting)) {
             if (encoder instanceof BikeCommonFlagEncoder)
                 return new PriorityWeighting((BikeCommonFlagEncoder) encoder);
             else
                 return new FastestWeighting(encoder);
         }
-        else if("least_noisy".equals(weighting))
-        { 
+        else if("least_noisy".equals(weighting)) { 
             System.out.println("LeastNoisyWeighting object is created...Huurrraaayyyy");
             
             //@Amal: send the City name to be used when quering Redis
             String cityName = getCityName();
             System.out.println("current city = " +cityName);
            
-            Weighting leastNoisyWeighting = new LeastNoisyWeighting(cityName);
+            Weighting leastNoisyWeighting = new NoiseSensorWeighting(cityName);
             
             return leastNoisyWeighting;
             
-        }
-        else if ("least_air_pollution".equals(weighting))
-        {
+        } else if ("least_air_pollution".equals(weighting)) {
             System.out.println("LeastSmokeyWeighting object is created...Huurrraaayyyy");
             String cityName = getCityName();
             System.out.println("current city = " +cityName);
            
-            Weighting leastSmokeyWeighting = new LeastSmokeyWeighting(cityName);
+            Weighting leastSmokeyWeighting = new PollutionSensorWeighting(cityName);
             
             return leastSmokeyWeighting;
-            
+        } else if("least_pollinated".equals(weighting)) {
+        	System.out.println("LeastPollinatedWeighting object is created");
+        	String cityName = getCityName();
+        	System.out.println("current city " + cityName);
+        	Weighting leastPollinatedWeighting = new PollenSensorWeighting(cityName);
+        	
+        	return leastPollinatedWeighting;
+        } else if("least_ozone".equals(weighting)) {
+        	System.out.println("LeastOzoneWeighting object is created");
+        	String cityName = getCityName();
+        	System.out.println("current city " + cityName);
+        	Weighting leastOzoneWeighting = new OzoneSensorWeighting(cityName);
+        	
+        	return leastOzoneWeighting;
         }
-        else{
+        else {
             return new ShortestWeighting();
         }
     }
