@@ -1,0 +1,10 @@
+# if you want to reduce storage size and you don't need instructions for a path uncomment this
+# osmreader.instructions=false
+
+# To populate your graph with elevation data use SRTM, default is noop
+ graph.elevation.provider=srtm
+ default location for cache is used /tmp/srtm
+ graph.elevation.cachedir=./srtmprovider/
+# If you have a slow disk or plenty of RAM change the default MMAP to
+ graph.elevation.dataaccess=RAM_STORE
+
