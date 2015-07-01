@@ -99,16 +99,38 @@ class ConfigGenerator(cli.Application):
         config_extension = '.config'
         config_file = ''.join([self._city, config_extension])
 
+	with open(os.path.join(subdir,"city-pre.heredoc"), "r") as pre_file:
+		city_pre = pre_file.read() 
+
         city_var = 'CITY_PREFIX = '
         city_var = ''.join([city_var, self._city])
 
 	logger.debug("sensors found: %s"%(self._sensors))
-	
-	
+	sensor_number = 1
+	sensor_section = "[SensorsAvailable]\n"
 
-        
-        
-        
+	for sensor in self._sensors:
+		sensor_var = ''.join(["sensor", str(sensor_number), " = ", sensor])					
+		logger.debug("sensor to be written: %s"%(sensor_var))
+		sensor_section = ''.join([sensor_section, sensor_var, "\n"])
+		sensor_number = sensor_number + 1
+
+	with open(os.path.join(subdir, config_file), "w") as city_file:
+		city_file.write(city_pre)
+		city_file.write(city_var)
+		city_file.write("\n\n")
+		city_file.write(sensor_section)
+		city_file.write("\n\n")
+
+	for sensor in self._sensors:
+		section_var = ''.join(["[", sensor, "]", "\n"])
+		sensor_type = configconstants.getSensorTypeFromName(sensor)
+		ui_text = configconstants.getUITextFromType(sensor_type)
+		section_var = ''.join([section_var, "text = ", ui_text, "\n", "type = ", sensor_type, "\n"])
+		with open(os.path.join(subdir, config_file), "a") as city_file:
+			city_file.write(section_var)
+			city_file.write("\n")
+		
 
     def main(self):
         if not self._is_logging:
