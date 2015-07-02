@@ -3,17 +3,15 @@
  * &host=http://localhost:9000/
  * to the URL or overwrite the 'host' variable.*/
 
-const cop = require('./context-traits.js');
-
 var tmpArgs = parseUrlWithHisto();
 
-for(var key in tmpArgs) {
+for (var key in tmpArgs)
+{
     if (tmpArgs.hasOwnProperty(key)) {
         console.log("main.js..." + key + " = " + tmpArgs[key]);
     }
 
 }
-
 var host = tmpArgs["host"];
 // var host = "http://graphhopper.com/api/1";
 if (!host) {
@@ -42,7 +40,7 @@ var nominatim_reverse = "http://nominatim.openstreetmap.org/reverse";
 var routingLayer;
 var map;
 
-/*@Amal Elgammal: Add to handle the visualization of heatmap based on the selected weighing.
+/*@Amal Elgammal: Add to handle the visualization of heatmap as Layers overlay.
  * noiseData and airData are read from corresponding noise and air data files "./sensor_processing/sensor_readings/noise/noise_heatmap.dat"
  * and "./sensor_processing/sensor_readings/noise/air_heatmap.dat and then an ajax call is made to 
  * the new created SensorDataServlet to return this data
@@ -109,7 +107,7 @@ $(document).ready(function (e) {
 
     var urlParams = parseUrlWithHisto();
 
-    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo()/*, ghRequest.getNoiseAirData()*/)
+    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo(), ghRequest.getNoiseAirData())
             .then(function (arg1, arg2, arg3) {
                 // init translation retrieved from first call (fetchTranslationMap)
                 var translations = arg1[0];
@@ -126,7 +124,7 @@ $(document).ready(function (e) {
                 initI18N();
 
                 var json = arg2[0];
-
+				console.log("JSON OBJECT " + JSON.stringify(json, null, 2));
                 /*for (var key in json)
                  {
                  if (json.hasOwnProperty(key)) {
@@ -176,7 +174,7 @@ $(document).ready(function (e) {
 
                 //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
                 var sensorsTxt = json.sensors;
-
+				
                 for (var i = 0; i < sensorsTxt.length; i++)
                 {
                     var wsensor = sensorsTxt[i];
@@ -221,14 +219,14 @@ $(document).ready(function (e) {
                 var noiseAirData = arg3[0];
                 var noiseData = noiseAirData["noise"];
                 noiseDataJson = JSON.parse(noiseData);
-                
-                var backgroundNoiseData = noiseAirData = noiseAirData["backgroundNoise"];
-                backgroundNoiseJson = JSON.parse(backgroundNoiseData);
+				
+				var backgroundNoiseData = noiseAirData["backgroundNoise"];
+				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
 
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData.substring(1, 100));
+                console.log("airData =  " + airData);
 
                 initMap();
 
@@ -257,7 +255,6 @@ $(document).ready(function (e) {
     setAutoCompleteList("from");
     setAutoCompleteList("to");
 });
-
 
 
 function initFromParams(params, doQuery) {
@@ -405,7 +402,6 @@ function initMap() {
              text: 'Show air pollution',
              callback: visualizeAirHeatLayer
              }
-             
              , {
              text: 'Clear',
              callback: clearHeatLayers
@@ -417,7 +413,7 @@ function initMap() {
 
 
     //Initialize noise heat layer
-
+	
     heat = L.heatLayer(noiseDataJson, {
         radius: 10,
         blur: 20,
@@ -425,7 +421,7 @@ function initMap() {
         minOpacity: 0.3,
         gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
     });
-
+	
 	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
         radius: 50,
         blur: 100,
@@ -450,7 +446,7 @@ function initMap() {
 	    }
 	    return div;
 	};
-
+	
     //Initialize air pollution heat layer
     heatAir = L.heatLayer(airDataJson, {
         radius: 50,
@@ -476,7 +472,7 @@ function initMap() {
 
     var overlays = {"Noise": heat,
         "Air Pollution": heatAir,
-        "Median Noise": heatBackgroundNoise
+		"Median Noise": heatBackgroundNoise
     };
 
 
@@ -515,9 +511,9 @@ function initMap() {
 
     routingLayer = L.geoJson().addTo(map);
 
-    routingLayer.options = {style: {color: "#2B65EC"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
-    
-    map.on('overlayadd', function (eventLayer) {
+    routingLayer.options = {style: {color: "blue"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
+
+	map.on('overlayadd', function (eventLayer) {
 	    console.log("Layer added " + eventLayer.name);
 	    if (eventLayer.name === 'Noise') {
 			noiseLegend.addTo(map);
@@ -531,8 +527,6 @@ function initMap() {
 	    } 
 	});
 }
-
-
 
 function visualizeNoiseHeatLayer(e) {
     map.addLayer(heat);
@@ -709,8 +703,8 @@ function createAmbiguityList(locCoord) {
                 //    continue;
 
                 // if no different properties => skip!
-              //  if (address && JSON.stringify(address) === JSON.stringify(json.address))
-               //     continue;
+                if (address && JSON.stringify(address) === JSON.stringify(json.address))
+                    continue;
 
                 address = json.address;
                 prevImportance = json.importance;
@@ -1417,20 +1411,15 @@ function setWeighting(request) {
 //Gets the value of elevation and  passes it to be appended in the request
 function setElevation(request) {
     //@Amal Elgammal: to add the selected Elevation to the request
-    if ($("#elevationCheck").prop('checked'))
-    {
+    if ($("#elevationCheck").prop('checked')) {
         request.elevation = true;
-    }
-    else
-    {
+    } else {
         request.elevation = false;
     }
     console.log("request.elevation vale in setElevation function is: " + request.elevation);
-
 }
 
-function toTitleCase(str)
-{
+function toTitleCase(str) {
     return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
