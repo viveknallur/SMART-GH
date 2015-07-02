@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -795,7 +794,7 @@ public class GraphHopper implements GraphHopperAPI
             
             return leastNoisyWeighting;
             
-        } else if ("least_air_pollution".equals(weighting)) {
+        } else if ("least_polluted".equals(weighting)) {
             System.out.println("LeastSmokeyWeighting object is created...Huurrraaayyyy");
             String cityName = getCityName();
             System.out.println("current city = " +cityName);
@@ -803,20 +802,31 @@ public class GraphHopper implements GraphHopperAPI
             Weighting leastSmokeyWeighting = new PollutionSensorWeighting(cityName);
             
             return leastSmokeyWeighting;
-        } else if("Least_pollinated".equals(weighting)) {
+        } else if("least_pollen".equals(weighting)) {
         	System.out.println("LeastPollinatedWeighting object is created");
         	String cityName = getCityName();
         	System.out.println("current city " + cityName);
         	Weighting leastPollinatedWeighting = new PollenSensorWeighting(cityName);
         	
         	return leastPollinatedWeighting;
-        } else if("least_ozone".equals(weighting)) {
-        	System.out.println("LeastOzoneWeighting object is created");
+        } else if("most_ozonic".equals(weighting)) {
+        	System.out.println("MostOzoneWeighting object is created");
         	String cityName = getCityName();
         	System.out.println("current city " + cityName);
-        	Weighting leastOzoneWeighting = new OzoneSensorWeighting(cityName);
+        	Weighting mostOzoneWeighting = new OzoneSensorWeighting(cityName);
         	
-        	return leastOzoneWeighting;
+        	return mostOzoneWeighting;
+        } else if("most_scenic".equals(weighting)) {
+        	System.out.println("MostScenicWeighting object is created");
+        	String cityName = getCityName();
+        	System.out.println("current city " + cityName);
+        	Weighting mostScenicWeighting = new ScenicSensorWeighting(cityName);
+        	
+        	return mostScenicWeighting;
+        } else if("least_congested".equals(weighting)) {
+        	System.out.println("LeastCongestedWeighting object is created");
+        	
+        	return null;
         }
         else {
             return new ShortestWeighting();
