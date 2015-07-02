@@ -57,8 +57,8 @@ public class RouteHandler
         {
             throw new RuntimeException(ex);
         }
-        //if no osmMap attribute is specified in config.properties, dublin-m50.osm will be taken as the default map
-        requestedMap = args.get("osmMap", "dublin-m50.osm");
+        //if no osmMap attribute is specified in config.properties, dublin.osm will be taken as the default map
+        requestedMap = args.get("osmMap", "dublin.osm");
         osmFilePath = new Configuration().getOSMPath() + requestedMap;
         hopper.setOSMFile(osmFilePath);
         map = hopper.getTranslationMap();
