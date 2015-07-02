@@ -1405,7 +1405,6 @@ function isProduction() {
 function setWeighting(request) {
     //@Amal Elgammal: to add the selected weighting to the request
     var weighting = $("#weightingSelect").val().toLowerCase();
-    weighting = weighting.replace(" ", "_");
     request.weighting = weighting;
 }
 
