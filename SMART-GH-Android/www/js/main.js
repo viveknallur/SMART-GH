@@ -709,8 +709,8 @@ function createAmbiguityList(locCoord) {
                 //    continue;
 
                 // if no different properties => skip!
-              //  if (address && JSON.stringify(address) === JSON.stringify(json.address))
-               //     continue;
+                if (address && JSON.stringify(address) === JSON.stringify(json.address))
+                    continue;
 
                 address = json.address;
                 prevImportance = json.importance;
