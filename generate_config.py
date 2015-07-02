@@ -125,7 +125,14 @@ class ConfigGenerator(cli.Application):
 	for sensor in self._sensors:
 		section_var = ''.join(["[", sensor, "]", "\n"])
 		sensor_type = configconstants.getSensorTypeFromName(sensor)
+		if not sensor_type:
+			logger.debug("Did not find sensor type for %s. Ignoring and moving on..."%(sensor))
+			continue
 		ui_text = configconstants.getUITextFromType(sensor_type)
+		if not ui_text:
+			logger.debug("Did not find UI text for sensor type: %s"%(sensor_type))
+			logger.debug("Will not write section for sensor. Moving on...")
+			continue
 		section_var = ''.join([section_var, "text = ", ui_text, "\n", "type = ", sensor_type, "\n"])
 		with open(os.path.join(subdir, config_file), "a") as city_file:
 			city_file.write(section_var)

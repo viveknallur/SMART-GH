@@ -9,17 +9,21 @@ SENSOR_NAME = {
 	'GoogleTraffic' : 'traffic',
 	'WazeTraffic': 'traffic',
 	'TrafficApp': 'traffic',
-	'OzoneDetect' : 'air',
-	'PollenWatch' : 'air'
+	'OzoneDetect' : 'atmosphere',
+	'PollenWatch' : 'pollen',
+	'CrowdSourcedRoutes' : 'scenic'
 }
 
 def getSensorTypeFromName(constant):
 	return SENSOR_NAME.get(constant, False)
 
 SENSOR_UI_TEXT = {
-	'air' : 'Least Polluted',
-	'noise' : 'Least Noisy',
-	'traffic' : 'Least Congested'
+	'atmosphere' : 'Most_Ozonic',
+	'pollen' : 'Least_Pollen',
+	'scenic' : 'Most_Scenic',
+	'air' : 'Least_Polluted',
+	'noise' : 'Least_Noisy',
+	'traffic' : 'Least_Congested'
 }
 
 def getUITextFromType(constant):
