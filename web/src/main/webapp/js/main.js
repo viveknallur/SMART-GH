@@ -166,10 +166,12 @@ $(document).ready(function (e) {
                 }
 
                 //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
-                var sensorsTxt = json.sensors;
+                var sensorsTxt = json.sensors; //sensors info using the format [text, type]
 				
-				var noiseAirData = arg3[0]; //sensor data
-                var noiseData = noiseAirData["noise"];
+				console.log(JSON.stringify(arg3, null, 2));
+				
+				var sensorData = arg3[0]; //sensor data
+/*                var noiseData = noiseAirData["noise"];
                 noiseDataJson = JSON.parse(noiseData);
 
 				var backgroundNoiseData = noiseAirData["backgroundNoise"];
@@ -177,20 +179,20 @@ $(document).ready(function (e) {
 
                 var airData = noiseAirData["air"];
                 airDataJson = JSON.parse(airData);
-				
+*/				
 				for (var i = 0; i < sensorsTxt.length; i++) {
-                    var wsensor = sensorsTxt[i].replace(new RegExp("_".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), " ");
-					console.log("Now wsensor = " + wsensor);
-					
-					heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0]["noise"]), {
+					console.log(sensorsTxt[i]);
+					var wsensor = sensorsTxt[i][0].replace(new RegExp("_".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), " ");					
+					var sensorType = sensorsTxt[i][1];
+					console.log("Sensor type " + sensorType);
+					heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0][sensorType]), {
 				        radius: 10,
 				        blur: 20,
-				        //maxZoom: 17,
 				        minOpacity: 0.3,
 				        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
 				    });
 				
-                    optionValue = sensorsTxt[i].toLowerCase();
+                   // optionValue = sensorsTxt[i][0].toLowerCase();
                     $('#weightingSelect').append($('<option>', {
                         value: sensorsTxt[i],
                         text: wsensor
