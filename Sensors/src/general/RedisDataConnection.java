@@ -16,7 +16,7 @@ public class RedisDataConnection {
 	/**
 	 * Port in which the redis intance is running
 	 */
-	private static final int PORT = 6380;
+	private static final int PORT = 6379;
 	
 	private Jedis jedis;
 	
