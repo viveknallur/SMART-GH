@@ -322,8 +322,7 @@ public class RouteHandler
         return json.toString();
     }
 
-    ArrayList getAvailableSensors( String osmFile ) throws IOException
-    {
+    ArrayList getAvailableSensors( String osmFile ) throws IOException {
         //we assume that names of the osm files should be in this format <city><optional '-'><any optional string><.*>
         String cityName = getCity(osmFile);
         String ext = ".config";
@@ -334,26 +333,23 @@ public class RouteHandler
 
         //String fileName = "./sensors-config-files/" + cityName + ".config";
         ArrayList sensorsTxt = new ArrayList();
-        try
-        {
+        try {
             Ini ini = new Ini(new FileReader(realPath + "/" + config_file));
             Set<String> allSensors = ini.get("SensorsAvailable").keySet();
-            for (String key : allSensors)
-            {
+            for (String key : allSensors) {
                 String sensorName = ini.get("SensorsAvailable").fetch(key);
                 String text = ini.get(sensorName).fetch("text");
-                sensorsTxt.add(text);
+				String type = ini.get(sensorName).fetch("type");
+                String[] arr = {text, type};
+				sensorsTxt.add(arr);
             }
-
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return sensorsTxt;
     }
 
-    String getCity( String osmFile )
-    {
+    String getCity( String osmFile ) {
         int num = osmFile.split("/").length;
         String cityName = osmFile.split("/")[num - 1];
 
@@ -410,10 +406,8 @@ public class RouteHandler
     @GET
     @Path("/GHConfig")
     @Produces("application/json")
-    public String returnGHConfig() throws JSONException
-    {
+    public String returnGHConfig() throws JSONException {
         return args.toString();
-
     }
 
     /* **************************END OF GHConfig******************************************************************/
