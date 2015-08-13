@@ -46,6 +46,7 @@ var map;
  * the new created SensorDataServlet to return this data
  */
 var heat;
+var heatLayers = {}; //Map of layers according to all differen sensors
 var noiseDataJson;
 var backgroundNoiseJson;
 var airDataJson;
@@ -107,7 +108,7 @@ $(document).ready(function (e) {
 
     var urlParams = parseUrlWithHisto();
 
-    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo(), ghRequest.getNoiseAirData())
+    $.when(ghRequest.fetchTranslationMap(urlParams.locale), ghRequest.getInfo(), ghRequest.getSensorData())
             .then(function (arg1, arg2, arg3) {
                 // init translation retrieved from first call (fetchTranslationMap)
                 var translations = arg1[0];
@@ -124,16 +125,8 @@ $(document).ready(function (e) {
                 initI18N();
 
                 var json = arg2[0];
-				console.log("JSON OBJECT " + JSON.stringify(json, null, 2));
-                /*for (var key in json)
-                 {
-                 if (json.hasOwnProperty(key)) {
-                 console.log("main.js, values of (ghRequest.getInfo of " + key + " = " + json[key]);
-                 }
-                 
-                 }*/
 
-                // init bounding box from getInfo result
+				// init bounding box from getInfo result
                 var tmp = json.bbox;
                 bounds.initialized = true;
                 bounds.minLon = tmp[0];
@@ -175,32 +168,40 @@ $(document).ready(function (e) {
                 //@Amal Elgammal: takes the returned sensor data and append the weighting dropdown list box
                 var sensorsTxt = json.sensors;
 				
-                for (var i = 0; i < sensorsTxt.length; i++)
-                {
-                    var wsensor = sensorsTxt[i];
-                    wsensor = wsensor.replace("_", " ");
-                    if (wsensor.indexOf("_") >= 0)
-                    {
-                        wsensor = wsensor.replace("_", " ");
-                    }
+				var noiseAirData = arg3[0]; //sensor data
+                var noiseData = noiseAirData["noise"];
+                noiseDataJson = JSON.parse(noiseData);
 
+				var backgroundNoiseData = noiseAirData["backgroundNoise"];
+				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
 
-                    console.log("Now wsensor = " + wsensor);
-
+                var airData = noiseAirData["air"];
+                airDataJson = JSON.parse(airData);
+				
+				for (var i = 0; i < sensorsTxt.length; i++) {
+                    var wsensor = sensorsTxt[i].replace(new RegExp("_".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), " ");
+					console.log("Now wsensor = " + wsensor);
+					
+					heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0]["noise"]), {
+				        radius: 10,
+				        blur: 20,
+				        //maxZoom: 17,
+				        minOpacity: 0.3,
+				        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
+				    });
+				
                     optionValue = sensorsTxt[i].toLowerCase();
                     $('#weightingSelect').append($('<option>', {
-                        value: optionValue,
+                        value: sensorsTxt[i],
                         text: wsensor
                     }));
-
                 }
                 //---End
                 //
                 //@Amal Elgammal: if the user opens the url with a query, the value of the weighting in the query
                 //is reflected to the corresponding drop-down list box on the webpage
 
-                if (selectedWeighting)
-                {
+                if (selectedWeighting) {
                     $("#weightingSelect").prop('value', selectedWeighting);
                 }
                 //--End
@@ -214,19 +215,6 @@ $(document).ready(function (e) {
                     $("#elevationCheck").prop('checked', true);
                 }
                 //--End
-
-
-                var noiseAirData = arg3[0];
-                var noiseData = noiseAirData["noise"];
-                noiseDataJson = JSON.parse(noiseData);
-				
-				var backgroundNoiseData = noiseAirData["backgroundNoise"];
-				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
-
-                var airData = noiseAirData["air"];
-                airDataJson = JSON.parse(airData);
-                console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData);
 
                 initMap();
 
@@ -391,71 +379,8 @@ function initMap() {
                     map.panTo(e.latlng);
                 }
             }
-            //@Amal Elgammal: Add two options in the context menu to visualize noise and air pollution data on the map
-            /*,{
-             separator: true,
-             index: 1
-             }, {
-             text: 'Show noise',
-             callback: visualizeNoiseHeatLayer
-             }, {
-             text: 'Show air pollution',
-             callback: visualizeAirHeatLayer
-             }
-             , {
-             text: 'Clear',
-             callback: clearHeatLayers
-             }*/
-
         ]
     });
-
-
-
-    //Initialize noise heat layer
-	
-    heat = L.heatLayer(noiseDataJson, {
-        radius: 10,
-        blur: 20,
-        //maxZoom: 17,
-        minOpacity: 0.3,
-        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
-    });
-	
-	heatBackgroundNoise = L.heatLayer(backgroundNoiseJson, {
-        radius: 50,
-        blur: 100,
-        //maxZoom: 17,
-        gradient: {.7:'#B30622'}
-    });
-	
-	//LEGEND
-	var noiseLegend = L.control({position: 'bottomright'});
-
-	noiseLegend.onAdd = function (map) {
-	    var div = L.DomUtil.create('div', 'Noise legend'),
-	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
-			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
-	        labels = [];
-
-	    // loop through the noise levels and generate a label with a colored square for each interval
-	    for (var i = 0; i < grades.length; i++) {
-	        div.innerHTML +=
-	            '<i style="background:' + colors[i] + '"></i> ' +
-	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
-	    }
-	    return div;
-	};
-	
-    //Initialize air pollution heat layer
-    heatAir = L.heatLayer(airDataJson, {
-        radius: 50,
-        blur: 20,
-        //maxZoom: 17,
-        minOpacity: 0.5,
-        gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
-    });
-
 
     //Commenting the other layers options
     var baseMaps = {
@@ -470,13 +395,7 @@ function initMap() {
                 //"OpenStreetMap.de": osmde
     };
 
-    var overlays = {"Noise": heat,
-        "Air Pollution": heatAir,
-		"Median Noise": heatBackgroundNoise
-    };
-
-
-    L.control.layers(baseMaps, overlays).addTo(map);
+    L.control.layers(baseMaps, heatLayers).addTo(map);
     L.control.scale().addTo(map);
 
     map.fitBounds(new L.LatLngBounds(new L.LatLng(bounds.minLat, bounds.minLon),
@@ -513,36 +432,40 @@ function initMap() {
 
     routingLayer.options = {style: {color: "blue"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
 
+	//LEGEND
+	var mapLegend = L.control({position: 'bottomright'});
+	var activeLayers = 0;
+	mapLegend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'Heatmap legend'),
+	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
+			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
+	        labels = [];
+	    // loop through the levels and generate a label with a colored square for each interval
+	    for (var i = 0; i < grades.length; i++) {
+	        div.innerHTML +=
+	            '<i style="background:' + colors[i] + '"></i> ' +
+	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
+	    }
+	    return div;
+	};
+
 	map.on('overlayadd', function (eventLayer) {
 	    console.log("Layer added " + eventLayer.name);
-	    if (eventLayer.name === 'Noise') {
-			noiseLegend.addTo(map);
-	    } 
+		if (activeLayers == 0) {
+			mapLegend.addTo(map);
+	    }
+		activeLayers = activeLayers + 1; 
 	});
 	
 	map.on('overlayremove', function (eventLayer) {
-	    console.log("Layer added " + eventLayer.name);
-	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
-	        this.removeControl(noiseLegend);
-	    } 
+	    console.log("Layer removed " + eventLayer.name);
+	    if (activeLayers == 1) {
+	        this.removeControl(mapLegend);
+	    }
+		activeLayers = activeLayers - 1;
 	});
 }
-
-function visualizeNoiseHeatLayer(e) {
-    map.addLayer(heat);
-    noiseLayerFlag = 1;
-}
-
-function visualizeAirHeatLayer(e) {
-    map.addLayer(heatAir);
-    AirLayerFlag = 1;
-}
-
-function clearHeatLayers(e) {
-    map.removeLayer(heat);
-    map.removeLayer(heatAir);
-}
-
+ 
 function setStartCoord(e) {
     ghRequest.from.setCoord(e.latlng.lat, e.latlng.lng);
     resolveFrom();
@@ -1403,9 +1326,7 @@ function isProduction() {
 //Reads the selected weighting option from the webpage and passes it to be appended in the request
 function setWeighting(request) {
     //@Amal Elgammal: to add the selected weighting to the request
-    var weighting = $("#weightingSelect").val().toLowerCase();
-    weighting = weighting.replace(" ", "_");
-    request.weighting = weighting;
+    request.weighting = $("#weightingSelect").val();
 }
 
 //Gets the value of elevation and  passes it to be appended in the request

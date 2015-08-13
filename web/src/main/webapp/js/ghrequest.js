@@ -286,7 +286,7 @@ GHRequest.prototype.doRequest = function (url, callback) {
 
 GHRequest.prototype.getInfo = function () {
     var url = this.host + "/info?type=" + this.dataType + "&key=" + this.key;
-    console.log("url created inside getInfo" + url);
+    console.log("url created inside getInfo " + url);
     return $.ajax({
         "url": url,
         "timeout": 3000,
@@ -295,11 +295,11 @@ GHRequest.prototype.getInfo = function () {
     });
 };
 
-GHRequest.prototype.getNoiseAirData = function () {
+GHRequest.prototype.getSensorData = function () {
 
     var url = this.host + "/sensordata?type=" + this.dataType + "&key=" + this.key;
 
-    console.log("getNoiseAirData url = " + url);
+    console.log("getSensorData url = " + url);
 
     return $.ajax({
         "url": url,
