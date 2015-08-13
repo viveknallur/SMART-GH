@@ -58,3 +58,5 @@ cgiarprovider/
 /SMART-GH-Android/platforms/android/src/com/coolappz/smartghAndroid/CordovaApp.java
 
 /web/.settings/org.eclipse.vjet.eclipse.core.prefs
+
+/web/src/main/webapp/.DS_Store
