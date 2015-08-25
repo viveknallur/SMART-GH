@@ -17,12 +17,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
  * 
  */
-public class NH2Form extends JFrame implements ActionListener {
+public class NH2Form extends JPanel implements ActionListener {
 	
 	/**
 	 * NoiseForm.java:long. Represents 
@@ -37,9 +38,9 @@ public class NH2Form extends JFrame implements ActionListener {
 	private JButton submit;
 	private JButton clear;
 	
-	public NH2Form(String title) {
-		this.setTitle(title);
-		this.setSize(Constants.FORM_WIDTH, Constants.FORM_HEIGHT);
+	public NH2Form(RedisDataConnection db2) {
+		this.db = db2;
+		
 		this.setLayout(new GridLayout(3, 2, Constants.HGAP, Constants.VGAP));
 		
 		clear = new JButton("Clear");
@@ -62,9 +63,6 @@ public class NH2Form extends JFrame implements ActionListener {
 		
 		this.add(clear);
 		this.add(submit);
-
-			
-		db = new RedisDataConnection();
 		
 		this.setVisible(true);
 	}
@@ -96,12 +94,5 @@ public class NH2Form extends JFrame implements ActionListener {
 			sensorLevel.setText("");
 		}
 	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		NH2Form form = new NH2Form("NH2 Data Submission Form");
-		form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
+
 }

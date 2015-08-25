@@ -14,21 +14,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
  * 
  */
-public class RainfalRateForm extends JFrame implements ActionListener {
+public class RainfalRateForm extends JPanel implements ActionListener {
 	
 	/**
 	 * TemperatureForm.java:long. Represents 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SENSOR = "RainfallRate";
+	private static final String SENSOR = "rainfall";
 	
 	private RedisDataConnection db;
 	
@@ -37,9 +37,9 @@ public class RainfalRateForm extends JFrame implements ActionListener {
 	private JButton submit;
 	private JButton clear;
 	
-	public RainfalRateForm(String title) {
-		this.setTitle(title);
-		this.setSize(Constants.FORM_WIDTH, Constants.FORM_HEIGHT);
+	public RainfalRateForm(RedisDataConnection db2) {
+		this.db = db2;
+		
 		this.setLayout(new GridLayout(3, 2, Constants.HGAP, Constants.VGAP));
 		
 		clear = new JButton("Clear");
@@ -63,9 +63,6 @@ public class RainfalRateForm extends JFrame implements ActionListener {
 		this.add(clear);
 		this.add(submit);
 
-			
-		db = new RedisDataConnection();
-		
 		this.setVisible(true);
 	}
 	
@@ -96,12 +93,5 @@ public class RainfalRateForm extends JFrame implements ActionListener {
 			sensorLevel.setText("");
 		}
 	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		RainfalRateForm form = new RainfalRateForm("RainFall Data Submission Form");
-		form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
+
 }

@@ -6,6 +6,8 @@
  */
 package general;
 
+
+
 import redis.clients.jedis.Jedis;
 
 /**
@@ -16,13 +18,18 @@ public class RedisDataConnection {
 	/**
 	 * Port in which the redis intance is running
 	 */
-	private static final int PORT = 6379;
+	private static int PORT = 6379;
+	private static String IP = "localhost";
+	
 	
 	private Jedis jedis;
 	
-	public RedisDataConnection() {
-		jedis = new Jedis("localhost", PORT);
+	public RedisDataConnection(String address, int port) {
+		IP = address;
+		PORT = port;
+		jedis = new Jedis(IP, PORT);
 		System.out.println("Connection to server successfully on port: " + PORT);
+		//System.out.println(jedis.smembers("dublin_noise_set"));
 	}
 	
 	public void insertInDB(String name, String meassure) {

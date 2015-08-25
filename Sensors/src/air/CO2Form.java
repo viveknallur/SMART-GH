@@ -14,15 +14,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
  * 
  */
-public class CO2Form extends JFrame implements ActionListener {
+public class CO2Form extends JPanel implements ActionListener {
 	
 	/**
 	 * NoiseForm.java:long. Represents 
@@ -37,9 +37,8 @@ public class CO2Form extends JFrame implements ActionListener {
 	private JButton submit;
 	private JButton clear;
 	
-	public CO2Form(String title) {
-		this.setTitle(title);
-		this.setSize(Constants.FORM_WIDTH, Constants.FORM_HEIGHT);
+	public CO2Form(RedisDataConnection db2) {
+		this.db = db2;
 		this.setLayout(new GridLayout(3, 2, Constants.HGAP, Constants.VGAP));
 		
 		clear = new JButton("Clear");
@@ -63,9 +62,6 @@ public class CO2Form extends JFrame implements ActionListener {
 		this.add(clear);
 		this.add(submit);
 
-			
-		db = new RedisDataConnection();
-		
 		this.setVisible(true);
 	}
 	
@@ -95,13 +91,5 @@ public class CO2Form extends JFrame implements ActionListener {
 			streetName.setText("");
 			sensorLevel.setText("");
 		}
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		CO2Form form = new CO2Form("CO2 Data Submission Form");
-		form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

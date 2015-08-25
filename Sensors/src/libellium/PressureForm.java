@@ -14,21 +14,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
  * 
  */
-public class PressureForm extends JFrame implements ActionListener {
+public class PressureForm extends JPanel implements ActionListener {
 	
 	/**
 	 * TemperatureForm.java:long. Represents 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SENSOR = "Pressure";
+	private static final String SENSOR = "pressure";
 	
 	private RedisDataConnection db;
 	
@@ -37,9 +37,9 @@ public class PressureForm extends JFrame implements ActionListener {
 	private JButton submit;
 	private JButton clear;
 	
-	public PressureForm(String title) {
-		this.setTitle(title);
-		this.setSize(Constants.FORM_WIDTH, Constants.FORM_HEIGHT);
+	public PressureForm(RedisDataConnection db2) {
+		this.db = db2;
+		
 		this.setLayout(new GridLayout(3, 2, Constants.HGAP, Constants.VGAP));
 		
 		clear = new JButton("Clear");
@@ -62,9 +62,6 @@ public class PressureForm extends JFrame implements ActionListener {
 		
 		this.add(clear);
 		this.add(submit);
-
-			
-		db = new RedisDataConnection();
 		
 		this.setVisible(true);
 	}
@@ -95,13 +92,5 @@ public class PressureForm extends JFrame implements ActionListener {
 			streetName.setText("");
 			sensorLevel.setText("");
 		}
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		PressureForm form = new PressureForm("Pressure Data Submission Form");
-		form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

@@ -17,18 +17,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
  * 
  */
-public class TemperatureForm extends JFrame implements ActionListener {
+public class TemperatureForm extends JPanel implements ActionListener {
 	
 	/**
 	 * TemperatureForm.java:long. Represents 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String SENSOR = "Temperature";
+	private static final String SENSOR = "temperature";
 	
 	private RedisDataConnection db;
 	
@@ -37,9 +38,9 @@ public class TemperatureForm extends JFrame implements ActionListener {
 	private JButton submit;
 	private JButton clear;
 	
-	public TemperatureForm(String title) {
-		this.setTitle(title);
-		this.setSize(Constants.FORM_WIDTH, Constants.FORM_HEIGHT);
+	public TemperatureForm(RedisDataConnection db) {
+		this.db = db;
+		
 		this.setLayout(new GridLayout(3, 2, Constants.HGAP, Constants.VGAP));
 		
 		clear = new JButton("Clear");
@@ -62,9 +63,6 @@ public class TemperatureForm extends JFrame implements ActionListener {
 		
 		this.add(clear);
 		this.add(submit);
-
-			
-		db = new RedisDataConnection();
 		
 		this.setVisible(true);
 	}
@@ -94,13 +92,5 @@ public class TemperatureForm extends JFrame implements ActionListener {
 			streetName.setText("");
 			sensorLevel.setText("");
 		}
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		TemperatureForm form = new TemperatureForm("Termometer Data Submission Form");
-		form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
