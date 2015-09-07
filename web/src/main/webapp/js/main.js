@@ -185,6 +185,7 @@ $(document).ready(function (e) {
 					var wsensor = sensorsTxt[i][0].replace(new RegExp("_".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), " ");					
 					var sensorType = sensorsTxt[i][1];
 					console.log("Sensor type " + sensorType);
+					console.log(JSON.stringify(arg3[0][sensorType], null, 2));
 					heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0][sensorType]), {
 				        radius: 10,
 				        blur: 20,
@@ -212,8 +213,7 @@ $(document).ready(function (e) {
                 //@Amal Elgammal: if the user opens the url with an elevation value, the value of the elevation in the query
                 //is reflected to the corresponding checkbox on the webpage
 
-                if (selectedElevation)
-                {
+                if (selectedElevation) {
                     $("#elevationCheck").prop('checked', true);
                 }
                 //--End
@@ -579,7 +579,7 @@ function createAmbiguityList(locCoord) {
 
     locCoord.error = "";
     locCoord.resolvedList = [];
-    var timeout = 3000;
+    var timeout = 9000;
     if (locCoord.lat && locCoord.lng) {
         var url = nominatim_reverse + "?lat=" + locCoord.lat + "&lon="
                 + locCoord.lng + "&format=json&zoom=16";
@@ -1212,7 +1212,7 @@ function setAutoCompleteList(fromOrTo) {
     var options = {
         containerClass: "complete-" + pointIndex,
         /* as we use can potentially use jsonp we need to set the timeout to a small value */
-        timeout: 1000,
+        timeout: 9000,
         /* avoid too many requests when typing quickly */
         deferRequestBy: 5,
         minChars: 2,
