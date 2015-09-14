@@ -8,18 +8,26 @@ package com.graphhopper.http;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.Set;
 
+//import javax.naming.directory.BasicAttributes;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ini4j.Ini;
 import org.json.JSONObject;
+
+import redis.clients.jedis.Jedis;
+
+//import java.nio.file.*;
+//import java.nio.file.attribute.BasicFileAttributes;
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 
 /**
  * @author Amal Elgammal
@@ -31,9 +39,11 @@ public class SensorDataServlet extends GHBaseServlet {
 	private static final long serialVersionUID = -5487299279396130802L;
 	
 	//File management constants
-	private static final String FILE_PATH = "./sensor_processing/";
+/*	private static final String FILE_PATH = "./sensor_processing/";
 	private static final String EXTENSION = "_heatmap.dat";
-	
+	private static final String GEOCODE_URL = "http://maps.googleapis.com/maps/api/geocode/json";
+	private static final long FILE_LIVENESS_TIME = 900000; //15min
+*/	
 	@Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException {
         try {
@@ -47,13 +57,42 @@ public class SensorDataServlet extends GHBaseServlet {
     }
 
     void writeSensorData( HttpServletRequest req, HttpServletResponse res ) throws Exception {
-        //String jsonTxt = {"noise": [53.345561050008236, -6.266153144973648, 0.36875],[53.34485697622874, -6.276308793517197, -0.0140625],[53.343238988281236, -6.250881488397291, 0.3234375],[53.34479073622439, -6.252396596516416, 0.71875],[53.34417327074869, -6.264826040752744, 0.575],[53.34597551, -6.26792379, 0.125],[53.342325056669004, -6.255005766717831, 0.11396484375],[53.345372448674674, -6.267221951911133, 0.7265625], "air": [53.345561050008236, -6.266153144973648, 0.36875],[53.34485697622874, -6.276308793517197, -0.0140625],[53.343238988281236, -6.250881488397291, 0.3234375],[53.34479073622439, -6.252396596516416, 0.71875],[53.34417327074869, -6.264826040752744, 0.575],[53.34597551, -6.26792379, 0.125],[53.342325056669004, -6.255005766717831, 0.11396484375],[53.345372448674674, -6.267221951911133, 0.7265625]}";
+        //String jsonTxt = {"noise": [53.345561050008236, -6.266153144973648, 0.36875],[53.34485697622874, -6.276308793517197, -0.0140625],[53.343238988281236, -6.250881488397291, 0.3234375]}";
 
         JSONObject json = new JSONObject();
-        //--------- Getting all sensors data, should connect directly to redis?
+        //--------- Getting all sensors data, should connect directly to redis?   
         try {
         	Ini ini = new Ini(new FileReader("./sensors-config-files/dublin.config"));
-            Set<String> allSensors = ini.get("SensorsAvailable").keySet();
+        	String redisURL = ini.get("ConnectionSettings").fetch("REDIS_URL");
+        	int redisPort = Integer.parseInt(ini.get("ConnectionSettings").fetch("REDIS_PORT"));
+        	String city = ini.get("ConnectionSettings").fetch("CITY_PREFIX");
+        	
+        	Jedis jedis = new Jedis(redisURL, redisPort);
+        	
+        	Set<String> allSensors = ini.get("SensorsAvailable").keySet();
+        	GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyA_KjJQteitfgzMpNqgb_Ew6wYeMMqfLH0");
+        	
+        	for (String key : allSensors) {
+            	String sensorName = ini.get("SensorsAvailable").fetch(key);
+            	String type = ini.get(sensorName).fetch("type");      	
+            	
+            	Set<String> keys = jedis.keys(city+"_"+type+"*");
+            	StringBuffer values = new StringBuffer("[");
+            	for(String k : keys) {
+            		values.append("[");
+            		GeocodingResult[] results = GeocodingApi.geocode(context, k.split("_")[2] +", "+ city).await();
+            		values.append(Double.toString(results[0].geometry.location.lat) + ", ");
+            		values.append(Double.toString(results[0].geometry.location.lng)  + ", ");
+            		values.append(jedis.get(k));
+            		values.append("],");
+        		}
+            	values.delete(values.length()-1, values.length());
+            	if(values.length() > 0)
+            		values.append("]");
+            	json.put(type, values.toString());
+            }
+        	//TODO remove pre-calculated data
+/*            Set<String> allSensors = ini.get("SensorsAvailable").keySet();
             for (String key : allSensors) {
                 String sensorName = ini.get("SensorsAvailable").fetch(key);
                 String type = ini.get(sensorName).fetch("type");
@@ -62,28 +101,9 @@ public class SensorDataServlet extends GHBaseServlet {
                 String sensorContent = new Scanner(new File(dataFile)).useDelimiter("\\Z").next();
                 json.put(type, sensorContent);
             }
-            
-        } catch (IOException e) {
+*/      } catch (IOException e) {
             e.printStackTrace();
         }
-/*        String noiseDataFile = "./sensor_processing/sensor_readings/noise/noise_heatmap.dat";
-		String noiseFakeDataFile = "./sensor_processing/sensor_readings/noise/noise_heatmap2.dat";
-        String airDataFile = "./sensor_processing/sensor_readings/noise/air_heatmap.dat";
-        
-        String noiseContent = new Scanner(new File(noiseDataFile)).useDelimiter("\\Z").next();
-		String moreNoiseContent = new Scanner(new File(noiseFakeDataFile)).useDelimiter("\\Z").next();
-/*		noiseContent.substring(0, noiseContent.length()-1);
-		noiseContent += ", ";
-		noiseContent +=  moreNoiseContent.substring(1, moreNoiseContent.length()); 
-//		noiseContent += new Scanner(new File(noiseFakeDataFile)).useDelimiter("\\Z").next();
-  
-  		String airContent = new Scanner(new File(airDataFile)).useDelimiter("\\Z").next();
-        json.put("noise",noiseContent);
-        json.put("air",airContent);
-		json.put("backgroundNoise", moreNoiseContent);
-		*/
         writeJson(req, res, json);
-
     }
-
 }
