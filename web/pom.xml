@@ -25,6 +25,11 @@
             <artifactId>graphhopper</artifactId>
             <version>${project.parent.version}</version>            
         </dependency>
+        <dependency>
+    		<groupId>com.google.maps</groupId>
+    		<artifactId>google-maps-services</artifactId>
+    		<version>0.1.7</version>
+		</dependency>
         <!--  TODO <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
