@@ -85,7 +85,7 @@ public class NH2Form extends JPanel implements ActionListener {
 					sensorLevel.setText("");
 				} else {
 					System.out.println(" Submitting " + SENSOR+"_"+street + " - " + meassurement);
-					db.insertInDB(SENSOR+"_"+street, meassurement);
+					db.insertInDB(SENSOR+"_"+street, "0." + meassurement);
 				}
 			}
 		} else if(actionCommand.equalsIgnoreCase(Constants.CLEAR_PRESSED)) {

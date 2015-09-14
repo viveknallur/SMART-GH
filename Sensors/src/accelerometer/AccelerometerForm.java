@@ -80,7 +80,7 @@ public class AccelerometerForm extends JPanel implements ActionListener {
 				String street = streetName.getText().trim();
 				String dbs = sensorLevel.getText().trim();
 				System.out.println(" Submitting " + SENSOR+"_"+street + " - " + dbs);
-				db.insertInDB(SENSOR+"_"+street, dbs);
+				db.insertInDB(SENSOR+"_"+street, "0." + dbs);
 			}
 		} else if(actionCommand.equalsIgnoreCase(Constants.CLEAR_PRESSED)) {
 			System.out.println("Clearing");

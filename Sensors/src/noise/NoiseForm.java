@@ -78,14 +78,15 @@ public class NoiseForm extends JPanel implements ActionListener {
 			if(!noiseLevel.getText().trim().matches("^-?\\d+$")) {
 				JOptionPane.showMessageDialog(null, "Only numbers can be used in the Noise level field");
 			} else {
-				String dbs = noiseLevel.getText().trim();
+				String dbs = noiseLevel.getText().trim().replaceAll("[.]", "");
+				System.out.println(dbs);
 				if(Double.parseDouble(dbs) < 40 || Double.parseDouble(dbs) > 100.0) {
 					JOptionPane.showInternalMessageDialog(null, "Noise value in DB. A Number between 40 and 100");
 					noiseLevel.setText("");
 				}
 				String street = streetName.getText().trim();
-				System.out.println(" Submitting " + SENSOR+"_"+street + " - " + dbs);
-				db.insertInDB(SENSOR+"_"+street, dbs);
+				System.out.println(" Submitting " + SENSOR+"_"+street + " - 0." + dbs);
+				this.db.insertInDB(SENSOR+"_"+street, "0." + dbs);
 			}
 		} else if(actionCommand.equalsIgnoreCase(Constants.CLEAR_PRESSED)) {
 			System.out.println("Clearing");

@@ -170,7 +170,7 @@ public class MainForm extends JFrame implements ActionListener {
 		String command = e.getActionCommand();
 		if(command.equalsIgnoreCase(Constants.DATA_CONNECTION)) {
 			db = new RedisDataConnection(ip.getText(), Integer.parseInt(port.getText()));
-		}else if(command.equalsIgnoreCase(Constants.SENSOR_SELECTED)) {
+		} else if(command.equalsIgnoreCase(Constants.SENSOR_SELECTED)) {
 			String sensor = (String)sensors.getSelectedItem();
 			System.out.println(sensor);
 			this.getContentPane().remove(sensorPanel);
