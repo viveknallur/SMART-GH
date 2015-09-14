@@ -23,11 +23,11 @@ if (!host) {
     }
 }
 
-console.log("main.js...host = " + host);
+//console.log("main.js...host = " + host);
 
 var selectedWeighting = tmpArgs["weighting"];
 var selectedElevation = tmpArgs["elevation"];
-console.log("Elevation at the beginning of main.js if user directly submitted a query URL= " + selectedElevation);
+//console.log("Elevation at the beginning of main.js if user directly submitted a query URL= " + selectedElevation);
 
 var ghRequest = new GHRequest(host);
 
@@ -47,12 +47,12 @@ var map;
  */
 var heat;
 var heatLayers = {}; //Map of layers according to all differen sensors
-var noiseDataJson;
-var backgroundNoiseJson;
-var airDataJson;
+//var noiseDataJson;
+//var backgroundNoiseJson;
+//var airDataJson;
 
 
-var browserTitle = "GraphHopper Maps - Driving Directions";
+//var browserTitle = "GraphHopper Maps - Driving Directions";
 var defaultTranslationMap = null;
 var enTranslationMap = null;
 var routeSegmentPopup = null;
@@ -91,8 +91,6 @@ $(document).ready(function (e) {
             initFromParams(state.data, true);
         });
     }
-
-
 
     $('#locationform').submit(function (e) {
         // no page reload
@@ -171,39 +169,31 @@ $(document).ready(function (e) {
 				console.log(JSON.stringify(arg3, null, 2));
 				
 				var sensorData = arg3[0]; //sensor data
-/*                var noiseData = noiseAirData["noise"];
-                noiseDataJson = JSON.parse(noiseData);
-
-				var backgroundNoiseData = noiseAirData["backgroundNoise"];
-				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
-
-                var airData = noiseAirData["air"];
-                airDataJson = JSON.parse(airData);
-*/				
+				var cfg = {
+					radius: 10,
+					blur: 20,
+					minOpacity: 0.3,
+					gradient: {.1:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
+				};
+				
 				for (var i = 0; i < sensorsTxt.length; i++) {
-					console.log(sensorsTxt[i]);
 					var wsensor = sensorsTxt[i][0].replace(new RegExp("_".replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), " ");					
 					var sensorType = sensorsTxt[i][1];
-					console.log("Sensor type " + sensorType);
-					console.log(JSON.stringify(arg3[0][sensorType], null, 2));
-					heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0][sensorType]), {
-				        radius: 10,
-				        blur: 20,
-				        minOpacity: 0.3,
-				        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
-				    });
-				
+					
+					if(arg3[0][sensorType] != "") {
+						heatLayers[wsensor] = L.heatLayer(JSON.parse(arg3[0][sensorType]), cfg);
+					}
+											
                    // optionValue = sensorsTxt[i][0].toLowerCase();
                     $('#weightingSelect').append($('<option>', {
                         value: sensorsTxt[i],
                         text: wsensor
                     }));
                 }
-                //---End
+				console.log(JSON.stringify(heatLayers, null, 2));
                 //
                 //@Amal Elgammal: if the user opens the url with a query, the value of the weighting in the query
                 //is reflected to the corresponding drop-down list box on the webpage
-
                 if (selectedWeighting) {
                     $("#weightingSelect").prop('value', selectedWeighting);
                 }
@@ -212,7 +202,6 @@ $(document).ready(function (e) {
                 //
                 //@Amal Elgammal: if the user opens the url with an elevation value, the value of the elevation in the query
                 //is reflected to the corresponding checkbox on the webpage
-
                 if (selectedElevation) {
                     $("#elevationCheck").prop('checked', true);
                 }
@@ -222,13 +211,10 @@ $(document).ready(function (e) {
 
                 // execute query
                 initFromParams(urlParams, true);
-
-
             }, function (err) {
                 console.log(err);
                 $('#error').html('GraphHopper API offline? <a href="http://graphhopper.com/maps">Refresh</a>'
                         + '<br/>Status: ' + err.statusText + '<br/>' + host);
-
                 bounds = {
                     "minLon": -180,
                     "minLat": -90,
@@ -297,7 +283,7 @@ function adjustMapSize() {
 
 function initMap() {
     adjustMapSize();
-    console.log("init map at " + JSON.stringify(bounds));
+    //console.log("init map at " + JSON.stringify(bounds));
 
     // mapquest provider
     var osmAttr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -309,7 +295,7 @@ function initMap() {
         attribution: osmAttr + ', <a href="http://geodienste.lyrk.de/">Lyrk</a>',
         subdomains: ['a', 'b', 'c']
     });
-
+/*
     var mapquest = L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
         attribution: osmAttr + ', <a href="http://open.mapquest.co.uk">MapQuest</a>',
         subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
@@ -319,12 +305,12 @@ function initMap() {
         attribution: osmAttr + ', <a href="http://open.mapquest.co.uk">MapQuest</a>',
         subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
     });
-
+*/
     var thunderTransport = L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
         attribution: osmAttr + ', <a href="http://www.thunderforest.com/transport/">Thunderforest Transport</a>',
         subdomains: ['a', 'b', 'c']
     });
-
+/*
     var thunderCycle = L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
         attribution: osmAttr + ', <a href="http://www.thunderforest.com/opencyclemap/">Thunderforest Cycle</a>',
         subdomains: ['a', 'b', 'c']
@@ -347,16 +333,14 @@ function initMap() {
     var osmde = L.tileLayer('http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
         attribution: osmAttr
     });
+*/
 
-
-    /*@Amal Elgammal: adding leaflet-heat layer to visualize noise and air pollution data on the map
+    /*@Amal Elgammal: adding leaflet-heat layer to visualize sensor data on the map
      * We use leaflet-heat library, which assumes that the readings exist in this format [[lat, lag, value], [lat, lag, value], ...]
      * leaflet-heat requires data to be normalized (takes a value from zero to 1). Alternalively, _max variable could be
      * changed inside leaflet-heat.js.
-     *  Data is read from external files; i.e., "./sensor_processing/sensor_readings/noise/noise_heatmap.dat" and 
-     *  "./sensor_processing/sensor_readings/noise/air_heatmap.dat" through sensorDataServlet via an ajax call when the pages loads;
+     *  Data is read from the database through sensorDataServlet via an ajax call when the pages loads;
      */
-
     map = L.map('map', {
         layers: [lyrk],
         contextmenu: true,
@@ -390,13 +374,13 @@ function initMap() {
         //"MapQuest": mapquest,
         //"MapQuest Aerial": mapquestAerial,
         "TF Transport": thunderTransport,
-//        "TF Cycle": thunderCycle
-                //,"TF Outdoors": thunderOutdoors,
-                //"WanderReitKarte": wrk,
-                //"OpenStreetMap": osm,
-                //"OpenStreetMap.de": osmde
+//      "TF Cycle": thunderCycle,
+     // "TF Outdoors": thunderOutdoors,
+     // "WanderReitKarte": wrk,
+     // "OpenStreetMap": osm,
+     // "OpenStreetMap.de": osmde
     };
-
+    
     L.control.layers(baseMaps, heatLayers).addTo(map);
     L.control.scale().addTo(map);
 
@@ -452,15 +436,13 @@ function initMap() {
 	};
 
 	map.on('overlayadd', function (eventLayer) {
-	    console.log("Layer added " + eventLayer.name);
-		if (activeLayers == 0) {
+	    if (activeLayers == 0) {
 			mapLegend.addTo(map);
 	    }
 		activeLayers = activeLayers + 1; 
 	});
 	
 	map.on('overlayremove', function (eventLayer) {
-	    console.log("Layer removed " + eventLayer.name);
 	    if (activeLayers == 1) {
 	        this.removeControl(mapLegend);
 	    }
@@ -579,7 +561,7 @@ function createAmbiguityList(locCoord) {
 
     locCoord.error = "";
     locCoord.resolvedList = [];
-    var timeout = 9000;
+    var timeout = 1000;
     if (locCoord.lat && locCoord.lng) {
         var url = nominatim_reverse + "?lat=" + locCoord.lat + "&lon="
                 + locCoord.lng + "&format=json&zoom=16";
@@ -1212,7 +1194,7 @@ function setAutoCompleteList(fromOrTo) {
     var options = {
         containerClass: "complete-" + pointIndex,
         /* as we use can potentially use jsonp we need to set the timeout to a small value */
-        timeout: 9000,
+        timeout: 1000,
         /* avoid too many requests when typing quickly */
         deferRequestBy: 5,
         minChars: 2,
@@ -1350,5 +1332,4 @@ function toTitleCase(str) {
 
 function setVechile(request)
 {
-
 }
