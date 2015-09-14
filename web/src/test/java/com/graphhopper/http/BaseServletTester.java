@@ -60,7 +60,7 @@ public class BaseServletTester
         server = new GHServer(args);
 
         if (injector == null)
-            setUpGuice(new DefaultModule(args), new GHServletModule(args));
+            setUpGuice(/*new DefaultModule(args),*/ new GHServletModule(args));
 
         for (int i = 0; i < retryCount; i++)
         {
