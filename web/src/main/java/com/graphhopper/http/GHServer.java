@@ -96,7 +96,7 @@ public class GHServer
 
         SelectChannelConnector connector0 = new SelectChannelConnector();
         int httpPort = args.getInt("jetty.port", 8989);
-        String host = args.get("jetty.host", "");
+        String host = args.get("jetty.host", "localhost");
         connector0.setPort(httpPort);
         if (!host.isEmpty())
             connector0.setHost(host);
@@ -122,7 +122,7 @@ public class GHServer
             {
                 binder().requireExplicitBindings();
 
-                install(new DefaultModule(args));
+                //install(new DefaultModule(args));
                 install(new GHServletModule(args));
 
                 bind(GuiceFilter.class);

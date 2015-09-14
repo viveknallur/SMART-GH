@@ -49,7 +49,7 @@ public class NominatimGeocoder implements Geocoding, ReverseGeocoding
     private String nominatimReverseUrl;
     private BBox bounds;
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private int timeoutInMillis = 10000;
+    private int timeoutInMillis = 1000; //10000;
     private String userAgent = "GraphHopper Web Service";
 
     public NominatimGeocoder()

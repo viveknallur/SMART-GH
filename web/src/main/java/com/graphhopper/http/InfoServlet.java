@@ -34,10 +34,13 @@ import org.json.JSONObject;
 /**
  * @author Peter Karich
  */
-public class InfoServlet extends GHBaseServlet
-{
+public class InfoServlet extends GHBaseServlet {
+    /**
+	 * InfoServlet.java:long. Represents 
+	 */
+	private static final long serialVersionUID = -2159520190756305397L;
 
-    @Override
+	@Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
     {
         try
