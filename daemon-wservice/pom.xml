@@ -54,11 +54,7 @@
                             <!-- this is relative to the pom.xml directory --> 
                             <directory>../maps</directory>                     
                             <targetPath>WEB-INF/classes/maps</targetPath>      
-                            <!-- the list has a default value of ** -->        
-                            <includes>                                         
-                                <include>**/*.osm</include>  
-                                <include>dublin-gh/**/*.*</include>
-                            </includes>                                        
+                            <!-- the list has a default value of ** -->    
                         </resource>                                            
                                                                                
                     </webResources>                                            
