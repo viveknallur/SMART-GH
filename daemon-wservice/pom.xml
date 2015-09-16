@@ -56,7 +56,8 @@
                             <targetPath>WEB-INF/classes/maps</targetPath>      
                             <!-- the list has a default value of ** -->        
                             <includes>                                         
-                                <include>**/*.osm</include>                    
+                                <include>**/*.osm</include>  
+                                <include>dublin-gh/**/*.*</include>
                             </includes>                                        
                         </resource>                                            
                                                                                
