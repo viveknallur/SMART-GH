@@ -194,7 +194,7 @@ public class ScooterFlagEncoder extends AbstractFlagEncoder
     {
         // first two bits are reserved for route handling in superclass
         shift = super.defineWayBits(index, shift);
-        speedEncoder = new EncodedDoubleValue("Speed", shift, speedBits, speedFactor, highwaySpeed.get("cycleway"), 30);
+        speedEncoder = new EncodedDoubleValue("Speed", shift, speedBits, speedFactor, highwaySpeed.get("cycleway"), 2);
         shift += speedEncoder.getBits();
 
         unpavedBit = 1L << shift++;

@@ -59,7 +59,7 @@ public class MonocycleFlagEncoder extends AbstractFlagEncoder
 		
 	protected MonocycleFlagEncoder() 
 	{
-		this(2, 2);
+		this(3, 3);
 	}
 	
 	protected MonocycleFlagEncoder(int speedBits, double speedFactor) 
@@ -194,7 +194,7 @@ public class MonocycleFlagEncoder extends AbstractFlagEncoder
     {
         // first two bits are reserved for route handling in superclass
         shift = super.defineWayBits(index, shift);
-        speedEncoder = new EncodedDoubleValue("Speed", shift, speedBits, speedFactor, highwaySpeed.get("cycleway"), 30);
+        speedEncoder = new EncodedDoubleValue("Speed", shift, speedBits, speedFactor, highwaySpeed.get("cycleway"), 3);
         shift += speedEncoder.getBits();
 
         unpavedBit = 1L << shift++;
