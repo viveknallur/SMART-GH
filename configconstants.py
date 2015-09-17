@@ -28,3 +28,15 @@ SENSOR_UI_TEXT = {
 
 def getUITextFromType(constant):
 	return SENSOR_UI_TEXT.get(constant, False)
+
+TRAVEL_MODES = {
+    'car': 'car',
+    'bike': 'bike',
+    'walk': 'foot',
+    'scooter': 'scooter',
+    'motorcycle': 'motorcycle',
+    'monocycle': 'monocycle'
+}
+
+def getTravelMode(constant):
+    return TRAVEL_MODES.get(constant, False)

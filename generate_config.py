@@ -59,6 +59,14 @@ class ConfigGenerator(cli.Application):
         """
             The modes of transport available with this city
         """
+        given_modes = modes.split(",")
+        for mode in given_modes:
+            if mode not in configconstants.TRAVEL_MODES:
+                print("Illegal travel mode!")
+                print("Legal travel modes are as follows:")
+                for legal_mode in configconstants.TRAVEL_MODES.keys():
+                    print(legal_mode)
+                exit()
         self._modes = modes
 
     @cli.switch(["--redis"], str)
