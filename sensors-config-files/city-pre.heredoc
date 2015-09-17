@@ -1,3 +1,2 @@
 [ConnectionSettings]
-REDIS_URL=localhost
 HASH = sensor_data

@@ -61,6 +61,13 @@ class ConfigGenerator(cli.Application):
         """
         self._modes = modes
 
+    @cli.switch(["--redis"], str)
+    def redis(self, redis):
+        """
+           The url where REDIS sits
+        """
+        self._redis = redis
+
     def create_main_config(self):
         """
         Creates the main config file called config.properties
@@ -99,9 +106,17 @@ class ConfigGenerator(cli.Application):
         config_extension = '.config'
         config_file = ''.join([self._city, config_extension])
 
-	with open(os.path.join(subdir,"city-pre.heredoc"), "r") as pre_file:
+        with open(os.path.join(subdir,"city-pre.heredoc"), "r") as pre_file:
 		city_pre = pre_file.read() 
+    
+        redis_var = 'REDIS_URL = '
+        if not self._redis:
+            logger.debug("No redis specified. Assuming localhost")
+            redis_var = ''.join([redis_var, 'localhost'])
+        else:
+            redis_var = ''.join([redis_var, self._redis])
 
+            
         city_var = 'CITY_PREFIX = '
         city_var = ''.join([city_var, self._city])
 
@@ -117,6 +132,8 @@ class ConfigGenerator(cli.Application):
 
 	with open(os.path.join(subdir, config_file), "w") as city_file:
 		city_file.write(city_pre)
+                city_file.write(redis_var)
+                city_file.write("\n")
 		city_file.write(city_var)
 		city_file.write("\n\n")
 		city_file.write(sensor_section)
