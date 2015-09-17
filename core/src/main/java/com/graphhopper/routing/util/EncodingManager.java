@@ -51,6 +51,10 @@ public class EncodingManager
     public static final String RACINGBIKE = "racingbike";
     public static final String MOUNTAINBIKE = "mtb";
     public static final String FOOT = "foot";
+	public static final String MONOCYCLE = "monocycle";
+	public static final String MOTORCYCLE = "motorcycle";
+	public static final String SCOOTER = "scooter";
+	
     private static final Map<String, String> defaultEdgeFlagEncoders = new HashMap<String, String>();
     private static final Map<String, String> defaultTurnFlagEncoders = new HashMap<String, String>();
 
@@ -62,6 +66,9 @@ public class EncodingManager
         defaultEdgeFlagEncoders.put(RACINGBIKE, RacingBikeFlagEncoder.class.getName());
         defaultEdgeFlagEncoders.put(MOUNTAINBIKE, MountainBikeFlagEncoder.class.getName());
         defaultEdgeFlagEncoders.put(FOOT, FootFlagEncoder.class.getName());
+		defaultEdgeFlagEncoders.put(MONOCYCLE, MonocycleFlagEncoder.class.getName());
+		defaultEdgeFlagEncoders.put(MOTORCYCLE, MotorcycleFlagEncoder.class.getName());
+		defaultEdgeFlagEncoders.put(SCOOTER, ScooterFlagEncoder.class.getName());
     }
 
     private final List<AbstractFlagEncoder> edgeEncoders = new ArrayList<AbstractFlagEncoder>();
