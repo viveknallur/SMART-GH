@@ -26,7 +26,7 @@
         </init-param>  
         <!--enable server-wide tracing-->
         <init-param>
-            <param-name>com.sun.jersey.config.feature.Trace</param-name>
+            <param-name>jersey.config.feature.Trace</param-name>
             <param-value>true</param-value>
         </init-param>
          <init-param>
@@ -35,27 +35,24 @@
         </init-param>
         <!--enable per-request tracing-->
         <init-param>
-            <param-name>com.sun.jersey.config.feature.TracePerRequest</param-name>
+            <param-name>jersey.config.feature.TracePerRequest</param-name>
             <param-value>true</param-value>
         </init-param>
             
         <!--The request headers, request entity, response headers and response entity will be logged. By default logging will be output to System.out.-->
-       <init-param>
+ <!--      <init-param>
             <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
             <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
             <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
-        </init-param>
+        </init-param>-->
         
         <load-on-startup>1</load-on-startup>                           
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey</servlet-name>
-        <url-pattern>/foo/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>toto.html</welcome-file>
-    </welcome-file-list>
 </web-app>
