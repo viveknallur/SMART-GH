@@ -30,7 +30,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("")
+@Path("foo")
 public class RouteHandler
 {
     private static GraphHopper hopper;
@@ -51,7 +51,8 @@ public class RouteHandler
         try
         {
 
-            configFile = new Configuration().getRealPath() + "/config.properties";
+//            configFile = new Configuration().getRealPath() + "/config.properties";
+            configFile = "/tmp/config.properties";
             args = CmdArgs.readFromConfig(configFile, "graphhopper.config");
         } catch (Exception ex)
         {
@@ -114,6 +115,13 @@ public class RouteHandler
      * ROUTE********************************************************
      */
     @GET
+    @Path("/test")
+    public String foo(){
+        return "foo";
+    }
+
+
+    @GET
     @Path("/route")
     @Produces("application/json")
     public String returnRoute( @QueryParam("lat1") double lat1,
@@ -129,6 +137,7 @@ public class RouteHandler
             @QueryParam("enableInstructions") boolean enableInstructions,
             @QueryParam("calcPoints") boolean calcPoints ) throws JSONException, IOException
     {
+        System.err.println("pass par la");
 
         GHPoint source = new GHPoint(lat1, lon1);
         GHPoint destination = new GHPoint(lat2, lon2);
