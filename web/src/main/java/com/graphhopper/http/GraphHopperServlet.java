@@ -39,10 +39,13 @@ import javax.ws.rs.core.MultivaluedMap;
  * <p/>
  * @author Peter Karich
  */
-public class GraphHopperServlet extends GHBaseServlet
-{
+public class GraphHopperServlet extends GHBaseServlet {
+    /**
+	 * GraphHopperServlet.java:long. Represents 
+	 */
+	private static final long serialVersionUID = 1722866947965564699L;
 
-    @Override
+	@Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
     {
         try
@@ -110,11 +113,8 @@ public class GraphHopperServlet extends GHBaseServlet
         
         ClientResponse response = webResource.get(ClientResponse.class);
         int status = response.getStatus();
-        String entity = response.getEntity(String.class);
         logger.info("Invoking route WS, HTTP Status: " + status);
-        //TODO: Decide with Vivek what needs to be logged
-        //logger.info(entity);
-
+ 
         JSONObject jsonInfo = (JSONObject) json.get("info");
         
         if (json.getBoolean("hasErrors"))
@@ -129,7 +129,7 @@ public class GraphHopperServlet extends GHBaseServlet
                 + ", debug - " + json.getString("debugInfo") + ", " + algoStr + ", "
                 + weighting + ", " + vehicleStr;
            
-        logger.info(logStr);
+            logger.info(logStr);
         }
 
         //if (writeGPX)

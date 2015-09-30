@@ -68,16 +68,11 @@ public class InfoServlet extends GHBaseServlet {
 
         ClientResponse response = webResource.get(ClientResponse.class);
         int status = response.getStatus();
-        String entity = response.getEntity(String.class);
         logger.info("Invoking info WS, HTTP Status: " + status);
-        
-        //TODO: Decide with Vivek what needs to be logged
-        //logger.info(entity);
         
         JSONObject json = new JSONObject(infoWSResponse);
 
         writeJson(req, res, json);
-
     }
 
 }

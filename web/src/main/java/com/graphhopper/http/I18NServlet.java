@@ -37,10 +37,12 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Karich
  */
-public class I18NServlet extends GHBaseServlet
-{
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class I18NServlet extends GHBaseServlet {
+	/**
+	 * I18NServlet.java:long. Represents 
+	 */
+	private static final long serialVersionUID = 4963915170576350144L;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
     
     @Override
     public void doGet( HttpServletRequest req, HttpServletResponse res ) throws ServletException, IOException
@@ -66,13 +68,9 @@ public class I18NServlet extends GHBaseServlet
             
             ClientResponse response = webResource.get(ClientResponse.class);
             int status = response.getStatus();
-            String entity = response.getEntity(String.class);
             logger.info("Invoking i18n WS, HTTP Status: " + status);
             
-            //TODO: Decide with Vivek what needs to be logged
-            //logger.info(entity);
-        
-            JSONObject json = new JSONObject(wsResponse);
+               JSONObject json = new JSONObject(wsResponse);
             //String myResource = wsResponse.getEntity(String.class);
             //logger.info("Sending a request to i18n WS, HTTP status: " + wsResponse.);
 
