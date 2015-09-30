@@ -60,3 +60,5 @@ cgiarprovider/
 /web/.settings/org.eclipse.vjet.eclipse.core.prefs
 
 /web/src/main/webapp/.DS_Store
+
+/daemon-wservice/experiments/.DS_Store
