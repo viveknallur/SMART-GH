@@ -52,7 +52,7 @@ var heatLayers = {}; //Map of layers according to all differen sensors
 //var airDataJson;
 
 
-//var browserTitle = "GraphHopper Maps - Driving Directions";
+var browserTitle = "SmartHopper - Driving Directions";
 var defaultTranslationMap = null;
 var enTranslationMap = null;
 var routeSegmentPopup = null;
@@ -190,7 +190,8 @@ $(document).ready(function (e) {
                         text: wsensor
                     }));
                 }
-				console.log(JSON.stringify(heatLayers, null, 2));
+				
+                //console.log(JSON.stringify(heatLayers, null, 2));
                 //
                 //@Amal Elgammal: if the user opens the url with a query, the value of the weighting in the query
                 //is reflected to the corresponding drop-down list box on the webpage
@@ -414,11 +415,7 @@ function initMap() {
             "style": myStyle
         }).addTo(map);
 
-    routingLayer = L.geoJson().addTo(map);
-
-    routingLayer.options = {style: {color: "blue"  /*"#00cc33"*/, "weight": 5, "opacity": 1}};
-
-	//LEGEND
+    //LEGEND
 	var mapLegend = L.control({position: 'bottomright'});
 	var activeLayers = 0;
 	mapLegend.onAdd = function (map) {
@@ -448,6 +445,10 @@ function initMap() {
 	    }
 		activeLayers = activeLayers - 1;
 	});
+	
+	//costum blue cloro for the route
+	routingLayer = L.geoJson().addTo(map);
+	routingLayer.options = {style: {color: "blue", "weight": 5, "opacity": 1}};
 }
  
 function setStartCoord(e) {
@@ -592,7 +593,7 @@ function createAmbiguityList(locCoord) {
         });
     } else {
         return doGeoCoding(locCoord.input, 10, timeout).pipe(function (jsonArgs) {
-            console.log("value returned to doGeoCoding = " + jsonArgs[0]);
+            //console.log("value returned to doGeoCoding = " + JSON.stringify(jsonArgs[0], null, 2));
             if (!jsonArgs || jsonArgs.length == 0) {
                 locCoord.error = "No area description found";
                 return [locCoord];
@@ -693,7 +694,7 @@ function doGeoCoding(input, limit, timeout) {
         limit = 10;
     var url = nominatim + "?format=json&addressdetails=1&q=" + encodeURIComponent(input) + "&limit=" + limit;
 
-    console.log("Value of nominatim url = " + url);
+    //console.log("Value of nominatim url = " + url);
     if (bounds.initialized) {
         // minLon, minLat, maxLon, maxLat => left, top, right, bottom
         url += "&bounded=1&viewbox=" + bounds.minLon + "," + bounds.maxLat + "," + bounds.maxLon + "," + bounds.minLat;
@@ -749,7 +750,7 @@ function routeLatLng(request, doQuery) {
         //console.log("urlForHistory = " + urlForHistory);
         var params = parseUrl(urlForHistory);
 
-        console.log(params);
+        //console.log(params);
         params.do_zoom = doZoom;
         // force a new request even if we have the same parameters
         params.mathRandom = Math.random();
@@ -784,11 +785,11 @@ function routeLatLng(request, doQuery) {
     descriptionDiv.html('<img src="img/indicator.gif"/> Search Route ...');
     request.doRequest(urlForAPI, function (json) {
 
-        console.log("Sent URL to the servlet: " + urlForAPI);
+        //console.log("Sent URL to the servlet: " + urlForAPI);
         descriptionDiv.html("");
         if (json.info.errors) {
             var tmpErrors = json.info.errors;
-            console.log(tmpErrors);
+            //console.log(tmpErrors);
             for (var m = 0; m < tmpErrors.length; m++) {
                 descriptionDiv.append("<div class='error'>" + tmpErrors[m].message + "</div>");
             }
@@ -1121,11 +1122,11 @@ function tr(key, args) {
 
 function tr2(key, args) {
     if (key === null) {
-        console.log("ERROR: key was null?");
+        //console.log("ERROR: key was null?");
         return "";
     }
     if (defaultTranslationMap === null) {
-        console.log("ERROR: defaultTranslationMap was not initialized?");
+        //console.log("ERROR: defaultTranslationMap was not initialized?");
         return key;
     }
     key = key.toLowerCase();
@@ -1321,7 +1322,7 @@ function setElevation(request) {
     } else {
         request.elevation = false;
     }
-    console.log("request.elevation vale in setElevation function is: " + request.elevation);
+    //console.log("request.elevation vale in setElevation function is: " + request.elevation);
 }
 
 function toTitleCase(str) {
