@@ -44,9 +44,10 @@ public class RouteHandler
     {
 
         hopper = new GraphHopper();
-        hopper.setInMemory(true);
-        hopper.setDoPrepare(false);
-        hopper.forServer();
+  //      hopper.setInMemory(true);
+  //      hopper.setDoPrepare(false);
+  //      hopper.forServer();
+        hopper.forMobile();
       
         try
         {
