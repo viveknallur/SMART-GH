@@ -8,13 +8,16 @@ graph.dataaccess=RAM_STORE
 # The high-resolution index is bigger and slightly slower but a lot more precise. see #17.
 # Resolution is in meter, decrease from 1000 to 500 in order to speed up queries (but will increase size)
 #index.highResolution=-1
-index.highResolution=500
+index.highResolution=1000
 
 
 # use contraction hierarchies to speed things up. requires more RAM/disc space for holding the graph
 # uncomment this if you need more control of you algorithm. then use graphhopper.chShortcuts(false, false)
 #prepare.chShortcuts=fastest
 prepare.chShortcuts=no
+
+# if you want to reduce storage size and you don't need instructions for a path uncomment this
+osmreader.instructions=false
 
 # advanced options:
 # prepare.updates.periodic=3
@@ -23,6 +26,6 @@ prepare.chShortcuts=no
 
 
 # increase from 1 to 5, to reduce way geometry e.g. for android
-osmreader.wayPointMaxDistance=1
+osmreader.wayPointMaxDistance=5
 
 

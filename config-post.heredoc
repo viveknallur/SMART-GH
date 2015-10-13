@@ -6,5 +6,5 @@
  default location for cache is used /tmp/srtm
  graph.elevation.cachedir=./srtmprovider/
 # If you have a slow disk or plenty of RAM change the default MMAP to
- graph.elevation.dataaccess=RAM_STORE
+ graph.elevation.dataaccess=MMAP_STORE_SYNC
 
