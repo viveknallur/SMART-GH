@@ -44,14 +44,16 @@ public class RouteHandler
     {
 
         hopper = new GraphHopper();
-        hopper.setInMemory(true);
-        hopper.setDoPrepare(false);
-        hopper.forServer();
+  //      hopper.setInMemory(true);
+  //      hopper.setDoPrepare(false);
+  //      hopper.forServer();
+        hopper.forMobile();
       
         try
         {
 
-            configFile = new Configuration().getRealPath() + "/config.properties";
+//            configFile = new Configuration().getRealPath() + "/config.properties";
+            configFile = "/tmp/config.properties";
             args = CmdArgs.readFromConfig(configFile, "graphhopper.config");
         } catch (Exception ex)
         {
@@ -113,6 +115,13 @@ public class RouteHandler
      * **************************START OF
      * ROUTE********************************************************
      */
+    @GET
+    @Path("/test")
+    public String foo(){
+        return "foo";
+    }
+
+
     @GET
     @Path("/route")
     @Produces("application/json")

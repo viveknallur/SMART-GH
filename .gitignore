@@ -3,7 +3,6 @@ target/
 *largeEWD.txt.gz
 TODO.txt
 *-gh/
-*.osm
 nbactions-*.xml
 config.properties
 build.xml
