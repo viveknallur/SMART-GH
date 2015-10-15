@@ -69,12 +69,21 @@ class ConfigGenerator(cli.Application):
                 exit()
         self._modes = modes
 
+<<<<<<< HEAD
+    @cli.switch(["--redis"], str)                                              
+    def redis(self, redis):                                                    
+        """                                                                    
+           The url where REDIS sits                                            
+        """                                                                    
+        self._redis = redis 
+=======
     @cli.switch(["--redis"], str)
     def redis(self, redis):
         """
            The url where REDIS sits
         """
         self._redis = redis
+>>>>>>> 312150d48f55fe8cb4cb05efc2fde9abe6c3af64
 
     def create_main_config(self):
         """
@@ -124,7 +133,17 @@ class ConfigGenerator(cli.Application):
         else:
             redis_var = ''.join([redis_var, self._redis])
 
+<<<<<<< HEAD
+        redis_var = 'REDIS_URL = '                                             
+        if not self._redis:                                                    
+            logger.debug("No redis specified. Assuming localhost")             
+            redis_var = ''.join([redis_var, 'localhost'])                      
+        else:                                                                  
+            redis_var = ''.join([redis_var, self._redis])
+
+=======
             
+>>>>>>> 312150d48f55fe8cb4cb05efc2fde9abe6c3af64
         city_var = 'CITY_PREFIX = '
         city_var = ''.join([city_var, self._city])
 
