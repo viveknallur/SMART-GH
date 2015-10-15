@@ -69,21 +69,12 @@ class ConfigGenerator(cli.Application):
                 exit()
         self._modes = modes
 
-<<<<<<< HEAD
     @cli.switch(["--redis"], str)                                              
     def redis(self, redis):                                                    
         """                                                                    
            The url where REDIS sits                                            
         """                                                                    
         self._redis = redis 
-=======
-    @cli.switch(["--redis"], str)
-    def redis(self, redis):
-        """
-           The url where REDIS sits
-        """
-        self._redis = redis
->>>>>>> 312150d48f55fe8cb4cb05efc2fde9abe6c3af64
 
     def create_main_config(self):
         """
