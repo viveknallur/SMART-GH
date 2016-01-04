@@ -78,7 +78,7 @@ public class EncodingManager
     private int nextNodeBit = 0;
     private int nextRelBit = 0;
     private int nextTurnBit = 0;
-    private final int bytesForFlags;
+    private final long bytesForFlags;
     private final int maxTurnFlagsBits;
     private final int maxTurnCost;
     private boolean enableInstructions = true;
@@ -149,7 +149,7 @@ public class EncodingManager
         }
     }
 
-    public int getBytesForFlags()
+    public long getBytesForFlags()
     {
         return bytesForFlags / 8;
     }
