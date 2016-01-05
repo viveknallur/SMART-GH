@@ -566,7 +566,7 @@ public class OSMReaderTest
             private EncodedValue objectEncoder;
 
             @Override
-            public int defineNodeBits( int index, int shift )
+            public long defineNodeBits( long index, long shift )
             {
                 shift = super.defineNodeBits(index, shift);
                 objectEncoder = new EncodedValue("oEnc", shift, 2, 1, 0, 3, true);

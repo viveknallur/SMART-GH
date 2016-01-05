@@ -107,7 +107,7 @@ public class EncodingManagerTest
         BikeFlagEncoder lessRelationCodes = new BikeFlagEncoder()
         {
             @Override
-            public int defineRelationBits( int index, int shift )
+            public long defineRelationBits( long index, long shift )
             {
                 relationCodeEncoder = new EncodedValue("RelationCode2", shift, 2, 1, 0, 3);
                 return shift + 2;
