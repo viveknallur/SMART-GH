@@ -53,7 +53,7 @@ public class GraphHopperStorage implements GraphStorage
     private static final double INT_DIST_FACTOR = 1000d;
     private final Directory dir;
     // edge memory layout:
-    protected int E_NODEA, E_NODEB, E_LINKA, E_LINKB, E_DIST, E_FLAGS, E_GEO, E_NAME, E_ADDITIONAL;
+    protected long E_NODEA, E_NODEB, E_LINKA, E_LINKB, E_DIST, E_FLAGS, E_GEO, E_NAME, E_ADDITIONAL;
     /**
      * Specifies how many entries (integers) are used per edge.
      */
@@ -120,7 +120,7 @@ public class GraphHopperStorage implements GraphStorage
                     + "after calling create or loadExisting. Calling one of the methods twice is also not allowed.");
     }
 
-    protected final int nextEdgeEntryIndex( int sizeInBytes )
+    protected final long nextEdgeEntryIndex( long sizeInBytes )
     {
         int tmp = edgeEntryIndex;
         edgeEntryIndex += sizeInBytes;

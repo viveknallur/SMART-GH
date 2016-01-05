@@ -40,8 +40,8 @@ public class LevelGraphStorage extends GraphHopperStorage implements LevelGraph
     // 2 bits for access, for now only 32bit => not Long.MAX
     private static final long MAX_WEIGHT_LONG = (Integer.MAX_VALUE >> 2) << 2;
     private static final double MAX_WEIGHT = (Integer.MAX_VALUE >> 2) / WEIGHT_FACTOR;
-    private int I_SKIP_EDGE1;
-    private int I_SKIP_EDGE2;
+    private long I_SKIP_EDGE1;
+    private long I_SKIP_EDGE2;
     private int I_LEVEL;
     // after the last edge only shortcuts are stored
     private int lastEdgeIndex = -1;
