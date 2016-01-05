@@ -72,12 +72,12 @@ public class EncodingManager
     }
 
     private final List<AbstractFlagEncoder> edgeEncoders = new ArrayList<AbstractFlagEncoder>();
-    private int edgeEncoderNextBit = 0;
+    private long edgeEncoderNextBit = 0;
 
-    private int nextWayBit = 0;
-    private int nextNodeBit = 0;
-    private int nextRelBit = 0;
-    private int nextTurnBit = 0;
+    private long nextWayBit = 0;
+    private long nextNodeBit = 0;
+    private long nextRelBit = 0;
+    private long nextTurnBit = 0;
     private final long bytesForFlags;
     private final int maxTurnFlagsBits;
     private final int maxTurnCost;
@@ -196,7 +196,7 @@ public class EncodingManager
     private void registerEncoder( AbstractFlagEncoder encoder )
     {
         int encoderCount = edgeEncoders.size();
-        int usedBits = encoder.defineNodeBits(encoderCount, edgeEncoderNextBit);
+        long usedBits = encoder.defineNodeBits(encoderCount, edgeEncoderNextBit);
         if (usedBits > bytesForFlags)
             throw new IllegalArgumentException(String.format(ERR, bytesForFlags, "node"));
         encoder.setNodeBitMask(usedBits - nextNodeBit, nextNodeBit);

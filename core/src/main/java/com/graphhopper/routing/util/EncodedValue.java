@@ -31,7 +31,7 @@ public class EncodedValue
     protected final long defaultValue;
     private final long maxValue;
     private final boolean allowZero;
-    private final int bits;
+    private final long bits;
 
     /**
      * Define a bit-encoded value
@@ -43,24 +43,24 @@ public class EncodedValue
      * @param defaultValue default value
      * @param maxValue default maximum value
      */
-    public EncodedValue( String name, int shift, int bits, double factor, long defaultValue, int maxValue )
+    public EncodedValue( String name, long shift, long bits, double factor, long defaultValue, int maxValue )
     {
         this(name, shift, bits, factor, defaultValue, maxValue, true);
     }
 
-    public EncodedValue( String name, int shift, int bits, double factor, long defaultValue, int maxValue, boolean allowZero )
+    public EncodedValue( String name, long shift2, long bits2, double factor, long defaultValue, int maxValue, boolean allowZero )
     {
         this.name = name;
-        this.shift = shift;
+        this.shift = shift2;
         this.factor = factor;
         this.defaultValue = defaultValue;
-        this.bits = bits;
-        long tmpMask = (1L << bits) - 1;
+        this.bits = bits2;
+        long tmpMask = (1L << bits2) - 1;
         this.maxValue = Math.min(maxValue, Math.round(tmpMask * factor));
         if (maxValue > this.maxValue)
-            throw new IllegalStateException(name + " -> maxValue " + maxValue + " is too large for " + bits + " bits");
+            throw new IllegalStateException(name + " -> maxValue " + maxValue + " is too large for " + bits2 + " bits");
 
-        mask = tmpMask << shift;
+        mask = tmpMask << shift2;
         this.allowZero = allowZero;
     }
 
@@ -96,7 +96,7 @@ public class EncodedValue
         return Math.round(flags * factor);
     }
 
-    public int getBits()
+    public long getBits()
     {
         return bits;
     }

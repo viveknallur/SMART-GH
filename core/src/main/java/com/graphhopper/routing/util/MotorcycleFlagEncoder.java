@@ -125,7 +125,7 @@ public class MotorcycleFlagEncoder extends AbstractFlagEncoder
      * Define the place of speedBits in the flags variable for car.
      */
     @Override
-    public int defineWayBits( int index, int shift )
+    public long defineWayBits( long index, long shift )
     {
         // first two bits are reserved for route handling in superclass
         shift = super.defineWayBits(index, shift);

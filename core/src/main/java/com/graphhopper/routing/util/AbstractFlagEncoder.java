@@ -59,7 +59,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
     protected long ferryBit = 0;
 
     /* Turn Cost Flag Encoder fields */
-    protected int maxCostsBits;
+    protected long maxCostsBits;
     protected long costsMask;
 
     protected long restrictionBit;
@@ -107,7 +107,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
      * <p>
      * @return incremented shift value pointing behind the last used bit
      */
-    public int defineNodeBits( int index, int shift )
+    public long defineNodeBits( long index, long shift )
     {
         return shift;
     }
@@ -119,7 +119,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
      * @param shift bit offset for the first bit used by this encoder
      * @return incremented shift value pointing behind the last used bit
      */
-    public int defineWayBits( int index, int shift )
+    public long defineWayBits( long index, long shift )
     {
         if (forwardBit != 0)
             throw new IllegalStateException("You must not register a FlagEncoder (" + toString() + ") twice!");
@@ -145,7 +145,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
      * <p>
      * @return incremented shift value pointing behind the last used bit
      */
-    public int defineRelationBits( int index, int shift )
+    public long defineRelationBits( long index, long shift )
     {
         return shift;
     }
@@ -158,7 +158,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
      * 2^numberCostBits - 1] seconds )
      * @return incremented shift value pointing behind the last used bit
      */
-    public int defineTurnBits( int index, int shift, int numberCostsBits )
+    public long defineTurnBits( long index, long shift, long numberCostsBits )
     {
         this.maxCostsBits = numberCostsBits;
 
@@ -502,7 +502,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
         }
     }
 
-    void setWayBitMask( int usedBits, int shift )
+    void setWayBitMask( long usedBits, long shift )
     {
         wayBitMask = (1L << usedBits) - 1;
         wayBitMask <<= shift;
@@ -513,7 +513,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
         return wayBitMask;
     }
 
-    void setRelBitMask( int usedBits, int shift )
+    void setRelBitMask( long usedBits, long shift )
     {
         relBitMask = (1L << usedBits) - 1;
         relBitMask <<= shift;
@@ -524,7 +524,7 @@ public abstract class AbstractFlagEncoder implements FlagEncoder, TurnCostEncode
         return relBitMask;
     }
 
-    void setNodeBitMask( int usedBits, int shift )
+    void setNodeBitMask( long usedBits, long shift )
     {
         nodeBitMask = (1L << usedBits) - 1;
         nodeBitMask <<= shift;

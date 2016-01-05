@@ -190,7 +190,7 @@ public class BikeCommonFlagEncoder extends AbstractFlagEncoder
     }
 
     @Override
-    public int defineWayBits( int index, int shift )
+    public long defineWayBits( long index, long shift )
     {
         // first two bits are reserved for route handling in superclass
         shift = super.defineWayBits(index, shift);
@@ -209,7 +209,7 @@ public class BikeCommonFlagEncoder extends AbstractFlagEncoder
     }
 
     @Override
-    public int defineRelationBits( int index, int shift )
+    public long defineRelationBits( long index, long shift )
     {
         relationCodeEncoder = new EncodedValue("RelationCode", shift, 3, 1, 0, 7);
         return shift + relationCodeEncoder.getBits();

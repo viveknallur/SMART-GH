@@ -99,7 +99,7 @@ public class FootFlagEncoder extends AbstractFlagEncoder
     }
 
     @Override
-    public int defineWayBits( int index, int shift )
+    public long defineWayBits( long index, long shift )
     {
         // first two bits are reserved for route handling in superclass
         shift = super.defineWayBits(index, shift);
@@ -115,7 +115,7 @@ public class FootFlagEncoder extends AbstractFlagEncoder
      * Foot flag encoder does not provide any turn cost / restrictions
      */
     @Override
-    public int defineTurnBits( int index, int shift, int numberCostsBits )
+    public long defineTurnBits( long index, long shift, long numberCostsBits )
     {
         return shift;
     }

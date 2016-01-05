@@ -34,7 +34,7 @@ public class Bike2WeightFlagEncoder extends BikeFlagEncoder
     private EncodedDoubleValue reverseSpeed;
 
     @Override
-    public int defineWayBits( int index, int shift )
+    public long defineWayBits( long index, long shift )
     {
         shift = super.defineWayBits(index, shift);
         reverseSpeed = new EncodedDoubleValue("Speed", shift, speedBits, speedFactor, getHighwaySpeed("cycleway"), 30);

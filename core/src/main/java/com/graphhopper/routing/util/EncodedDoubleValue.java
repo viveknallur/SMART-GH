@@ -25,12 +25,12 @@ package com.graphhopper.routing.util;
 public class EncodedDoubleValue extends EncodedValue
 {
 
-    public EncodedDoubleValue( String name, int shift, int bits, double factor, long defaultValue, int maxValue )
+    public EncodedDoubleValue( String name, long shift, long bits, double factor, long defaultValue, int maxValue )
     {
         this(name, shift, bits, factor, defaultValue, maxValue, true);
     }
 
-    public EncodedDoubleValue( String name, int shift, int bits, double factor, long defaultValue, int maxValue, boolean allowZero )
+    public EncodedDoubleValue( String name, long shift, long bits, double factor, long defaultValue, int maxValue, boolean allowZero )
     {
         super(name, shift, bits, factor, defaultValue, maxValue, allowZero);
     }
