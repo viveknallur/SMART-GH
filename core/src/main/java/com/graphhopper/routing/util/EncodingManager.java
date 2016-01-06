@@ -79,7 +79,7 @@ public class EncodingManager
     private long nextRelBit = 0;
     private long nextTurnBit = 0;
     private final long bytesForFlags;
-    private final int maxTurnFlagsBits;
+    private final long maxTurnFlagsBits;
     private final int maxTurnCost;
     private boolean enableInstructions = true;
 
@@ -95,12 +95,12 @@ public class EncodingManager
         this(flagEncodersStr, 4);
     }
 
-    public EncodingManager( String flagEncodersStr, int bytesForFlags )
+    public EncodingManager( String flagEncodersStr, long bytesForFlags )
     {
         this(flagEncodersStr, bytesForFlags, 0);
     }
 
-    public EncodingManager( String flagEncodersStr, int bytesForFlags, int maxTurnCost )
+    public EncodingManager( String flagEncodersStr, long bytesForFlags, int maxTurnCost )
     {
         this(Arrays.asList(readFromEncoderString(defaultEdgeFlagEncoders, flagEncodersStr).toArray(new FlagEncoder[0])), bytesForFlags, maxTurnCost);
     }
@@ -126,7 +126,7 @@ public class EncodingManager
         this(flagEncoders, 4, 0);
     }
 
-    public EncodingManager( List<? extends FlagEncoder> flagEncoders, int bytesForFlags, int maxTurnCost )
+    public EncodingManager( List<? extends FlagEncoder> flagEncoders, long bytesForFlags, int maxTurnCost )
     {
         if (bytesForFlags != 4 && bytesForFlags != 8)
             throw new IllegalStateException("For 'flags' currently only 4 or 8 bytes supported");
