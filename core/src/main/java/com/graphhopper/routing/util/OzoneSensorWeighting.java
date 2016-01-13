@@ -17,16 +17,17 @@ public class OzoneSensorWeighting implements Weighting {
 	/**
 	 * MAX and MIN values for the range of acceptable pollution measurements
 	 */
-	private final static int MAX_VALUE = 0; 
-	private final static int MIN_VALUE = -1;
+	private final static int MAX_VALUE = 2; 
+	private final static int MIN_VALUE = 1;
 	
+	String currentCity;
+    String sensorReading = "ozone";
 	private double DEFAULT_OZONE_VALUE;
 	
 	/**
 	 * Constructor
 	 */
 	public OzoneSensorWeighting() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public OzoneSensorWeighting(String city) {
@@ -39,14 +40,14 @@ public class OzoneSensorWeighting implements Weighting {
 	 * @return double - random value in the range (MIN, MAX]
 	 */
 	private double getAvgSensorValue() {
-		return Math.random()*MIN_VALUE;
+		return MIN_VALUE; //Math.random()*MIN_VALUE;
 	}
 	/* (non-Javadoc)
 	 * @see com.graphhopper.routing.util.Weighting#getMinWeight(double)
 	 */
 	@Override
 	public double getMinWeight(double ozoneValue) {
-		return Math.random()*MIN_VALUE*ozoneValue;
+		return MIN_VALUE; //Math.random()*MIN_VALUE*ozoneValue;
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +55,7 @@ public class OzoneSensorWeighting implements Weighting {
 	 */
 	@Override
 	public double calcWeight(EdgeIteratorState edge, boolean reverse) {
-		return Math.random()*MIN_VALUE;
+		return MIN_VALUE; //Math.random()*MIN_VALUE;
 	}
 
 }

@@ -16,8 +16,8 @@ public class ScenicSensorWeighting implements Weighting {
 	/**
 	 * MAX and MIN values for the range of acceptable pollution measurements
 	 */
-	private final static int MAX_VALUE = 0;
-	private final static int MIN_VALUE = -11;
+	private final static int MAX_VALUE = 11;
+	private final static int MIN_VALUE = 1;
 	
 	private double DEAFAULT_SCENIC_VALUE;
 	private String currentCity;
@@ -41,14 +41,14 @@ public class ScenicSensorWeighting implements Weighting {
 	
 	
 	private double getAvgSensorValue() {
-		return Math.floor(Math.random()*MIN_VALUE);
+		return MIN_VALUE; //Math.floor(Math.random()*MIN_VALUE);
 	}
 	/* (non-Javadoc)
 	 * @see com.graphhopper.routing.util.Weighting#getMinWeight(double)
 	 */
 	@Override
 	public double getMinWeight(double scenicValue) {
-		return Math.floor(Math.random()*MIN_VALUE*scenicValue);
+		return MIN_VALUE; //Math.floor(Math.random()*MIN_VALUE*scenicValue);
 	}
 
 	/* (non-Javadoc)
@@ -56,6 +56,6 @@ public class ScenicSensorWeighting implements Weighting {
 	 */
 	@Override
 	public double calcWeight(EdgeIteratorState edge, boolean reverse) {
-		return Math.floor(Math.random()*MIN_VALUE);
+		return MIN_VALUE; //Math.floor(Math.random()*MIN_VALUE);
 	}
 }
