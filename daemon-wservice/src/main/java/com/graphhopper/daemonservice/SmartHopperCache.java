@@ -60,7 +60,7 @@ public class SmartHopperCache<K, T> {
     @SuppressWarnings("unchecked")
     public T get(K key) {
         synchronized (cacheMap) {
-            SmartHopperCacheObject c = (SmartHopperCacheObject) cacheMap.get(key);
+          /*  SmartHopperCacheObject c = (SmartHopperCacheObject) cacheMap.get(key);
             
             if (c == null)
                 return null;
@@ -68,6 +68,8 @@ public class SmartHopperCache<K, T> {
                 c.lastAccessed = System.currentTimeMillis();
                 return (T) c.value;
             }
+*/
+return cacheMap.get(key);
         }
     }
     

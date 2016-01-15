@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @Path("")
 public class RouteHandler
 {
-    private static SmartHopperCache hopperCache;
+    private static SmartHopperCache<String, String> hopperCache;
 	private static GraphHopper hopper;
     private static String osmFilePath;
     private static CmdArgs args;
@@ -43,7 +43,7 @@ public class RouteHandler
 
     static
     {
-		hopperCache = new SmartHopperCache(1, 1 , 1);
+		hopperCache = new SmartHopperCache<String, String>(1, 1 , 10);
 		for(int i=0; i<89; i++) {
 			String arr[] = CachedData.array[i].split(" - ");
 			hopperCache.put(arr[0], arr[1]);
