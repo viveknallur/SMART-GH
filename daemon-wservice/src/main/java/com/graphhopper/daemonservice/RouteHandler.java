@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 @Path("")
 public class RouteHandler
 {
-    private static GraphHopper hopper;
+    private static SmartHopperCache hopperCache;
+	private static GraphHopper hopper;
     private static String osmFilePath;
     private static CmdArgs args;
     private static TranslationMap map;
@@ -42,31 +43,11 @@ public class RouteHandler
 
     static
     {
-
-        hopper = new GraphHopper();
-  //      hopper.setInMemory(true);
-  //      hopper.setDoPrepare(false);
-  //      hopper.forServer();
-        hopper.forMobile();
-      
-        try
-        {
-
-//            configFile = new Configuration().getRealPath() + "/config.properties";
-            configFile = "/tmp/config.properties";
-            args = CmdArgs.readFromConfig(configFile, "graphhopper.config");
-        } catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        //if no osmMap attribute is specified in config.properties, dublin.osm will be taken as the default map
-        requestedMap = args.get("osmMap", "dublin.osm");
-        osmFilePath = new Configuration().getOSMPath() + requestedMap;
-        hopper.setOSMFile(osmFilePath);
-        map = hopper.getTranslationMap();
-        hopper.init(args);
-        hopper.importOrLoad();
-
+		hopperCache = new SmartHopperCache(1, 1 , 1);
+		for(int i=0; i<89; i++) {
+			String arr[] = CachedData.array[i].split(" - ");
+			hopperCache.put(arr[0], arr[1]);
+		}
     }
 
     @Context
@@ -143,64 +124,19 @@ public class RouteHandler
         GHPoint destination = new GHPoint(lat2, lon2);
 
         //setting default values
-        if (!calcPoints)
-            calcPoints = true;
-        if (!enableInstructions)
-            enableInstructions = true;
-
-        if(localeStr != null && localeStr.equals("")){
-                localeStr = "en";
-        }
         if (vehicleStr != null && !(vehicleStr.equals("")))
         {
-            vehicleStr = vehicleStr.toUpperCase();
+            vehicleStr = vehicleStr;
         } else
         {
-            vehicleStr = "CAR";
+            vehicleStr = "car";
         }
         if (weighting != null && weighting.equals(""))
             weighting = "fastest";
-
-        //Set the defaults of non-relevant parameters
-        minPathPrecision = 1d;
-        boolean writeGPX = false;
-        boolean elevation = elevationValue;
-        boolean pointsEncoded = true;
-
-        List<GHPoint> infoPoints = new ArrayList<GHPoint>();
-        infoPoints.add(source);
-        infoPoints.add(destination);
-        hopper.setElevation(elevation);
-
-        StopWatch sw = new StopWatch().start();
-
-        //GHResponse response = hopper.route(request);
-        GHResponse rsp;
-
-        FlagEncoder algoVehicle = hopper.getEncodingManager().getEncoder(vehicleStr);
-
-        if (!hopper.getEncodingManager().supports(vehicleStr))
-        {
-            rsp = new GHResponse().addError(new IllegalArgumentException("Vehicle not supported: " + vehicleStr));
-        } else if (elevation && !hopper.hasElevation())
-        {
-            rsp = new GHResponse().addError(new IllegalArgumentException("Elevation not supported!"));
-        } else
-        {
-
-            rsp = hopper.route(new GHRequest(infoPoints).
-                    setVehicle(algoVehicle.toString()).
-                    setWeighting(weighting).
-                    setAlgorithm(algoStr).
-                    setLocale(localeStr).
-                    putHint("calcPoints", calcPoints).
-                    putHint("instructions", enableInstructions).
-                    putHint("douglas.minprecision", minPathPrecision));
-        }
-
-        float took = sw.stop().getSeconds();
-        JSONObject json = writeJson(rsp, elevation, calcPoints, pointsEncoded, enableInstructions, took);
-        return json.toString();
+		if(algoStr != null && algoStr.equals(""))
+			algoStr = "dijkstra";
+		String query = vehicleStr + "|" + algoStr + "|" + weighting;
+        return (String) hopperCache.get(query);
 
     }
 

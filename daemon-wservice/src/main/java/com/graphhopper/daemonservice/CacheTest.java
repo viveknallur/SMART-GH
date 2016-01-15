@@ -1,3 +1,4 @@
+package com.graphhopper.daemonservice;
 
 public class CacheTest {
  
@@ -12,7 +13,9 @@ public class CacheTest {
         System.out.println("\n\n==========Test3: TestObjectsCleanupTime ==========");
         Cache.TestObjectsCleanupTime();
     }
- 
+ 	
+	
+
     private void TestAddRemoveObjects() {
  
         // Test with timeToLiveInSeconds = 200 seconds

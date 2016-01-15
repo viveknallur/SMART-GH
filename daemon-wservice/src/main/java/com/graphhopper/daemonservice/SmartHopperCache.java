@@ -1,3 +1,5 @@
+package com.graphhopper.daemonservice;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +26,7 @@ public class SmartHopperCache<K, T> {
     }
     
     public SmartHopperCache(long timeToLive, final long timeInterval, int max) {
-        this.timeToLive = timeToLive * 20000;
+        this.timeToLive = timeToLive * 20000000; //The time to live is equal to 333 minutes (when passed a 1 as parameter)
         
         cacheMap = new HashMap<K, T>();
         
