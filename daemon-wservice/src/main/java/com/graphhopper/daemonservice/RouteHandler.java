@@ -136,8 +136,11 @@ public class RouteHandler
 		if(algoStr != null && algoStr.equals(""))
 			algoStr = "dijkstra";
 		String query = vehicleStr + "|" + algoStr + "|" + weighting;
-        return (String) hopperCache.get(query);
+        String result = (String) hopperCache.get(query);
+		if(result == null)
+			result = hopperCache.get("car|dijkstra|fastest");
 
+		return result;
     }
 
     private JSONObject writeJson( GHResponse rsp, boolean elevation, boolean calcPoints, boolean pointsEncoded, boolean enableInstructions, float took ) throws JSONException, IOException
