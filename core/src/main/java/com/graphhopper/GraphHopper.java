@@ -90,8 +90,8 @@ public class GraphHopper implements GraphHopperAPI
     private int minOnewayNetworkSize = 0;
     // for CH prepare
     private AlgorithmPreparation prepare;
-    private boolean doPrepare = false;
-    private boolean chEnabled = false;
+    private boolean doPrepare = true;
+    private boolean chEnabled = true;
     private String chWeighting = "fastest";
     private int periodicUpdates = -1;
     private int lazyUpdates = -1;
@@ -180,11 +180,8 @@ public class GraphHopper implements GraphHopperAPI
     {
         // simplify to reduce network IO
         setSimplifyRequest(true);
-        setPreciseIndexResolution(1000);
-        // Since we're runnning low on memory, make hopper non-memory oriented
-        //return setInMemory(false);
-
-        return setMemoryMapped();
+        setPreciseIndexResolution(500);
+        return setInMemory(true);
     }
 
     /**
@@ -195,9 +192,7 @@ public class GraphHopper implements GraphHopperAPI
     {
         setSimplifyRequest(false);
         setPreciseIndexResolution(500);
-        // Since we're runnning low on memory, make hopper non-memory oriented
-        //return setInMemory(true);
-        return setMemoryMapped();
+        return setInMemory(true);
     }
 
     /**
@@ -266,8 +261,7 @@ public class GraphHopper implements GraphHopperAPI
      */
     public GraphHopper setDoPrepare( boolean doPrepare )
     {
-        //this.doPrepare = doPrepare;
-        this.doPrepare = false;
+        this.doPrepare = doPrepare;
         return this;
     }
 
@@ -280,9 +274,7 @@ public class GraphHopper implements GraphHopperAPI
     public GraphHopper setCHShortcuts( String weighting )
     {
         ensureNotLoaded();
-        // Since we're runnning low on memory, make hopper non-memory oriented
-        //chEnabled = true;
-        chEnabled = false;
+        chEnabled = true;
         chWeighting = weighting;
         return this;
     }
@@ -320,9 +312,7 @@ public class GraphHopper implements GraphHopperAPI
      */
     public GraphHopper setElevation( boolean includeElevation )
     {
-        //Since we're running low on memory
-        //this.elevation = includeElevation;
-        this.elevation = false;
+        this.elevation = includeElevation;
         return this;
     }
 
@@ -340,9 +330,7 @@ public class GraphHopper implements GraphHopperAPI
     public GraphHopper setEnableTurnRestrictions( boolean b )
     {
         ensureNotLoaded();
-        // Since we're running low on memory
-        // turnCosts = b;
-        turnCosts = false;
+        turnCosts = b;
         return this;
     }
 
@@ -353,9 +341,7 @@ public class GraphHopper implements GraphHopperAPI
     public GraphHopper setEnableInstructions( boolean b )
     {
         ensureNotLoaded();
-        // Since we're running low on memory
-        // enableInstructions = b;
-        enableInstructions = false;
+        enableInstructions = b;
         return this;
     }
 
@@ -364,9 +350,7 @@ public class GraphHopper implements GraphHopperAPI
      */
     public GraphHopper setEnableCalcPoints( boolean b )
     {
-        // Since we're running low on memory, always false
-        // calcPoints = b;
-        calcPoints = false;
+        calcPoints = b;
         return this;
     }
 
@@ -526,10 +510,6 @@ public class GraphHopper implements GraphHopperAPI
         String baseURL = args.get("graph.elevation.baseurl", "");
         DAType elevationDAType = DAType.fromString(args.get("graph.elevation.dataaccess", "MMAP"));
         ElevationProvider tmpProvider = ElevationProvider.NOOP;
-        /**
-         * Commenting elevation provision, since we want hopper
-         * to use as little memory as possible
-         *
         if (eleProviderStr.equalsIgnoreCase("srtm"))
         {
             tmpProvider = new SRTMProvider();
@@ -539,7 +519,6 @@ public class GraphHopper implements GraphHopperAPI
             cgiarProvider.setAutoRemoveTemporaryFiles(args.getBool("graph.elevation.cgiar.clear", true));
             tmpProvider = cgiarProvider;
         }
-        */
 
         tmpProvider.setCalcMean(eleCalcMean);
         tmpProvider.setCacheDir(new File(cacheDirStr));
@@ -555,12 +534,7 @@ public class GraphHopper implements GraphHopperAPI
         // prepare CH
         doPrepare = args.getBool("prepare.doPrepare", doPrepare);
         String chShortcuts = args.get("prepare.chShortcuts", "fastest");
-        /**
-         * We set chEnabled to false, so that ContractionHierarchies are not 
-         * built at all
         chEnabled = "true".equals(chShortcuts) || "fastest".equals(chShortcuts) || "shortest".equals(chShortcuts);
-        */
-        chEnabled = false;
         if (chEnabled)
             setCHShortcuts(chShortcuts);
 
@@ -851,8 +825,9 @@ public class GraphHopper implements GraphHopperAPI
         	return mostScenicWeighting;
         } else if("least_congested".equals(weighting)) {
         	System.out.println("LeastCongestedWeighting object is created");
-        	
-        	return null;
+        	String cityName = getCityName();
+        	Weighting leastCongestedWeighting = new CongestionSensorWeighting(cityName);
+        	return leastCongestedWeighting;
         }
         else {
             return new ShortestWeighting();
