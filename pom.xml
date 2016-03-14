@@ -147,7 +147,15 @@
         </plugins>
     </build>    
     
-    <dependencies>      
+    <dependencies>
+
+	<!-- Andre: Added to remove the missing module exception -->
+	<dependency>
+	    <groupId>org.jboss.msc</groupId>
+	    <artifactId>jboss-msc</artifactId>
+	    <version>1.2.6.Final</version>
+	</dependency> 
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
