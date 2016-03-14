@@ -151,6 +151,11 @@
 
 	<!-- Andre: Added to remove the missing module exception -->
 	<dependency>
+	    <groupId>org.jboss.spec.javax.sql</groupId>
+	    <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
+	    <version>1.1.0.Final</version>
+	</dependency> 
+	<dependency>
 	    <groupId>org.jboss.msc</groupId>
 	    <artifactId>jboss-msc</artifactId>
 	    <version>1.2.6.Final</version>
