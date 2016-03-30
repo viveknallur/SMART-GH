@@ -799,15 +799,15 @@ public class GraphHopper implements GraphHopperAPI
             return leastNoisyWeighting;
             
         }
-        else if ("least_air_pollution".equals(weighting))
+        else if ("least_bumpy".equals(weighting))
         {
-            System.out.println("LeastSmokeyWeighting object is created...Huurrraaayyyy");
+            System.out.println("LeastBumpyWeighting object is created...Huurrraaayyyy");
             String cityName = getCityName();
             System.out.println("current city = " +cityName);
            
-            Weighting leastSmokeyWeighting = new LeastSmokeyWeighting(cityName);
+            Weighting leastBumpyWeighting = new LeastBumpyWeighting(cityName);
             
-            return leastSmokeyWeighting;
+            return leastBumpyWeighting;
             
         }
         else{

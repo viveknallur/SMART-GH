@@ -223,10 +223,10 @@ $(document).ready(function (e) {
 				var backgroundNoiseData = noiseAirData["backgroundNoise"];
 				backgroundNoiseJson = JSON.parse(backgroundNoiseData);
 
-                var airData = noiseAirData["air"];
-                airDataJson = JSON.parse(airData);
+                var surfaceData = noiseAirData["surface"];
+                surfaceDataJson = JSON.parse(surfaceData);
                 console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("airData =  " + airData);
+                console.log("surfaceData =  " + surfaceData);
 
                 initMap();
 
@@ -447,14 +447,33 @@ function initMap() {
 	    return div;
 	};
 	
-    //Initialize air pollution heat layer
-    heatAir = L.heatLayer(airDataJson, {
-        radius: 50,
+    //Initialize surface smoothness heat layer
+    heatSurface = L.heatLayer(surfaceDataJson, {
+        radius: 20,
         //blur: 10,
         //maxZoom: 17,
         minOpacity: 0.5,
         gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
     });
+
+	//LEGEND
+	var surfaceLegend = L.control({position: 'bottomright'});
+
+	surfaceLegend.onAdd = function (map) {
+	    var div = L.DomUtil.create('div', 'Surface legend'),
+	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
+			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
+	        labels = [];
+
+	    // loop through the surface levels and generate a label with a colored square for each interval
+	    for (var i = 0; i < grades.length; i++) {
+	        div.innerHTML +=
+	            '<i style="background:' + colors[i] + '"></i> ' +
+	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
+	    }
+	    return div;
+	};
+
 
 
     //Commenting the other layers options
@@ -471,8 +490,8 @@ function initMap() {
     };
 
     var overlays = {"Noise": heat,
-        "Air Pollution": heatAir,
-		"Median Noise": heatBackgroundNoise
+        "Road Smoothness": heatSurface,
+	"Median Noise": heatBackgroundNoise
     };
 
 
@@ -517,13 +536,21 @@ function initMap() {
 	    console.log("Layer added " + eventLayer.name);
 	    if (eventLayer.name === 'Noise') {
 			noiseLegend.addTo(map);
+	    }else{
+		if (eventLayer.name == 'Road Smoothness'){
+			surfaceLegend.addTo(map);
+		}
 	    } 
 	});
 	
 	map.on('overlayremove', function (eventLayer) {
-	    console.log("Layer added " + eventLayer.name);
+	    console.log("Layer removed " + eventLayer.name);
 	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
 	        this.removeControl(noiseLegend);
+	    }else{
+		if(eventLayer.name == 'Road Smoothness'){
+			this.removeControl(surfaceLegend);
+		}
 	    } 
 	});
 }
@@ -533,14 +560,14 @@ function visualizeNoiseHeatLayer(e) {
     noiseLayerFlag = 1;
 }
 
-function visualizeAirHeatLayer(e) {
-    map.addLayer(heatAir);
-    AirLayerFlag = 1;
+function visualizeSurfaceHeatLayer(e) {
+    map.addLayer(heatSurface);
+    SurfaceLayerFlag = 1;
 }
 
 function clearHeatLayers(e) {
     map.removeLayer(heat);
-    map.removeLayer(heatAir);
+    map.removeLayer(heatSurface);
 }
 
 function setStartCoord(e) {
