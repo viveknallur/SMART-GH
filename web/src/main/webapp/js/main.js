@@ -449,7 +449,7 @@ function initMap() {
 	
     //Initialize surface smoothness heat layer
     heatSurface = L.heatLayer(surfaceDataJson, {
-        radius: 20,
+        radius: 10,
         //blur: 10,
         //maxZoom: 17,
         minOpacity: 0.5,
