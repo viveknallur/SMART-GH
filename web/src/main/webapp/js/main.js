@@ -40,7 +40,7 @@ var nominatim_reverse = "http://nominatim.openstreetmap.org/reverse";
 var routingLayer;
 var map;
 
-/*@Amal Elgammal: Add to handle the visualization of heatmap as Layers overlay.
+/* @Amal Elgammal: Add to handle the visualization of heatmap as Layers overlay.
  * noiseData and airData are read from corresponding noise and air data files "./sensor_processing/sensor_readings/noise/noise_heatmap.dat"
  * and "./sensor_processing/sensor_readings/noise/air_heatmap.dat and then an ajax call is made to 
  * the new created SensorDataServlet to return this data
@@ -70,6 +70,8 @@ var iconTo = L.icon({
     shadowAnchor: [4, 62],
     iconAnchor: [12, 40]
 });
+
+var surface_heatmap_count = 0;
 
 
 $(document).ready(function (e) {
@@ -225,8 +227,8 @@ $(document).ready(function (e) {
 
                 var surfaceData = noiseAirData["surface"];
                 surfaceDataJson = JSON.parse(surfaceData);
-                console.log("noiseData =  " + noiseData.substring(1, 150));
-                console.log("surfaceData =  " + surfaceData);
+                // console.log("noiseData =  " + noiseData.substring(1, 10));
+                // console.log("surfaceData =  " + surfaceData);
 
                 initMap();
 
@@ -450,28 +452,48 @@ function initMap() {
     //Initialize surface smoothness heat layer
     heatSurface = L.heatLayer(surfaceDataJson, {
         radius: 10,
-        //blur: 10,
+        blur: 20,
         //maxZoom: 17,
-        minOpacity: 0.5,
-        gradient: {.1: '#B799CD' , .2: '#FF00FF', .3: '#FF8C00', .6: '#61300D', .8: '#2A1506', 1: '#000000'}
+        minOpacity: 0.3,
+        gradient: {.35:'#238443', .4: '#78C679', .45:'#C2E699', .5:'#FFFFB2', .55:'#FECC5C', .6: '#FD8D3C', .65:'#FF0909', .7:'#B30622', .75: '#67033B', .8: '#1C0054'}
     });
+
+    // NEW
+    var heat0 = L.heatLayer(points0, {
+        radius : 25,
+        blur : 15,
+        gradient : {0: '#CDEAB0',  1: 'green'} 
+    });
+    var heat1 = L.heatLayer(points1, {
+        radius : 25,
+        blur : 15,
+        gradient : { 1 : 'orange'} 
+    });
+    var heat2 = L.heatLayer(points2, {
+        radius : 25,
+        blur   : 15,
+        max    : 1.5,
+        gradient : { 0.6: 'red',  0.7: 'purple'} 
+    });
+    // \NEW
+
+
 
 	//LEGEND
 	var surfaceLegend = L.control({position: 'bottomright'});
 
 	surfaceLegend.onAdd = function (map) {
-	    var div = L.DomUtil.create('div', 'Surface legend'),
-	        grades = [35, 40, 44, 49, 54, 59, 64, 69, 74, 79],
-			colors = ['#238443', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FD8D3C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
-	        labels = [];
+        var div = L.DomUtil.create('div', 'Surface legend'),
+            grades = ['Excellent', '', 'Good', '', 'OK', '', 'Bad', '', 'Awful'],
+            colors = ['#008000', '#78C679', '#C2E699', '#FFFFB2', '#FECC5C', '#FF0909', '#B30622', '#67033B', '#1C0054'],
+            labels = [];
 
-	    // loop through the surface levels and generate a label with a colored square for each interval
-	    for (var i = 0; i < grades.length; i++) {
-	        div.innerHTML +=
-	            '<i style="background:' + colors[i] + '"></i> ' +
-	            (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + "<br>": ">80");
-	    }
-	    return div;
+        // loop through the noise levels and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + colors[i] + '"></i> <b>' + grades[i] + "</b><br>";
+        }
+        return div;
 	};
 
 
@@ -490,8 +512,10 @@ function initMap() {
     };
 
     var overlays = {"Noise": heat,
-        "Road Smoothness": heatSurface,
-	"Median Noise": heatBackgroundNoise
+        "Road Smoothness Good": heat0,
+        "Road Smoothness OK": heat1,
+        "Road Smoothness Bad": heat2,
+        "Median Noise": heatBackgroundNoise
     };
 
 
@@ -537,8 +561,11 @@ function initMap() {
 	    if (eventLayer.name === 'Noise') {
 			noiseLegend.addTo(map);
 	    }else{
-		if (eventLayer.name == 'Road Smoothness'){
-			surfaceLegend.addTo(map);
+        if(eventLayer.name.indexOf('Road Smoothness') > -1){
+            surface_heatmap_count++;
+            if(!surfaceLegend._map){
+    			surfaceLegend.addTo(map);
+            }
 		}
 	    } 
 	});
@@ -548,8 +575,12 @@ function initMap() {
 	    if (eventLayer.name === 'Noise' || eventLayer.name === 'Median Noise') {
 	        this.removeControl(noiseLegend);
 	    }else{
-		if(eventLayer.name == 'Road Smoothness'){
-			this.removeControl(surfaceLegend);
+		if(eventLayer.name.indexOf('Road Smoothness') > -1){
+            surface_heatmap_count--;
+            // Check if any of the layers still added
+            if(surface_heatmap_count==0){
+    			map.removeControl(surfaceLegend);
+            }
 		}
 	    } 
 	});

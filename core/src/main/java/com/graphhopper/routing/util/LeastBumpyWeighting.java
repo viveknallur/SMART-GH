@@ -84,7 +84,7 @@ public class LeastBumpyWeighting implements Weighting
 
     double getAvgSurfaceValue()
     {
-        double medianSurfaceValue = 130;
+        double medianSurfaceValue = 30;
         String pattern = currentCity + "_" + sensorReading + "_*";
         System.out.println(" pattern = " + pattern);
         Set matchedRedisKeys = jedis.keys(pattern);
